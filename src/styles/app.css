@@ -1,0 +1,33 @@
+.app {
+    background-color: #fff;
+    padding: 20px;
+}
+
+.ant-layout-header {
+    background: #fff!important;
+    padding: 0!important;
+}
+
+.ant-layout-content {
+    height: calc(100vh - 160px);
+    padding: 10px;
+}
+
+.ant-layout-footer {
+    height: 50px;
+    line-height: 0px;
+    text-align: center;
+}
+
+ul li {
+    list-style-type: none;
+}
+
+li {
+    padding: 10px 0;
+}
+
+.home li:hover {
+    color: #108ee9;
+    cursor: pointer;
+}

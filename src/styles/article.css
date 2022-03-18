@@ -1,0 +1,25 @@
+.article {
+    padding: 10px;
+    position: relative;
+    height: inherit;
+}
+.title {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 50px;
+}
+
+.content {
+    line-height: 30px;
+    margin: 10px 0;
+}
+
+.datetime {
+    text-align: right;
+}
+
+.back {
+    position: absolute;
+    bottom: 30px;
+    margin-left: 50%;
+}

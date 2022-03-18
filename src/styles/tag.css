@@ -1,0 +1,12 @@
+.tag-ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tag-ul li {
+    margin: 5px;
+}
+
+.ant-tag {
+    padding: 3px 10px;
+}
