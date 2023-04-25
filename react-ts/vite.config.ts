@@ -7,6 +7,6 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     // 配置别名路径
-    '@': path.resolve(__dirname, './src')
+    '@': path.resolve(__dirname, '/src')
   }
 })
