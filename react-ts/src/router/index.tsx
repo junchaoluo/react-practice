@@ -1,10 +1,12 @@
-import { useRoutes, RouteObject } from 'react-router-dom'
-import { lazy, Suspense, LazyExoticComponent } from 'react'
-import * as React from 'react'
+import { useRoutes, RouteObject, Navigate, Outlet } from 'react-router-dom'
+import { lazy, Suspense, LazyExoticComponent, ReactNode } from 'react'
+import { FundProjectionScreenOutlined, SettingOutlined } from '@ant-design/icons'
 
 type RouteType = {
     path: string,
-    element: React.ReactNode,
+    element: ReactNode,
+    name?: string,
+    icon?: ReactNode,
     children?: RouteType[]
 }
 
@@ -16,25 +18,45 @@ const Layout = lazy(() => import('../layout/index'))
 const Home = lazy(() => import('../views/home'))
 const Page1 = lazy(() => import('../views/page1'))
 const Page2 = lazy(() => import('../views/page2'))
+const Project = lazy(() => import('../views/project'))
+const Template = lazy(() => import('../views/template'))
+const Type = lazy(() => import('../views/type'))
+
+const Menus: RouteType[] = [
+    {
+        path: '/project',
+        name: '项目',
+        icon: <FundProjectionScreenOutlined />,
+        element: <Project/>
+    },
+    {
+        path: '/set',
+        name: '设置',
+        icon: <SettingOutlined />,
+        element: <Outlet/>,
+        children: [
+            {
+                path: '/set/template',
+                name: '实验模板',
+                element: <Template/>,
+            },
+            {
+                path: '/set/type',
+                name: '实验类型',
+                element: <Type/>,
+            }
+        ]
+    },
+
+]
 
 const Routes: RouteType[] = [
     {
         path: '/',
         element: <Layout />,
         children: [
-            {
-                path: '/home',
-                element: <Home/>
-            },
-            {
-                path: '/page1',
-                element: <Page1/>
-            },
-            {
-                path: '/page2',
-                element: <Page2/>
-            }
-        ]
+            ...Menus,
+        ],
     },
 ]
 
@@ -52,6 +74,11 @@ const syncRouter = (routes: RouteType[]): RouteObject[] => {
         })
     })
     return syncRoutes
+}
+
+export {
+    Menus,
+    type RouteType,
 }
 
 export default () => useRoutes(syncRouter(Routes));
