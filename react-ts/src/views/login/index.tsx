@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import {login} from '../../api/login'
 import Crypto from '../../util/secret'
 import Util from '../../util/util.js'
-import { fingerpring } from '@/util/device.js'
+import { fingerpring } from '../../util/device.js'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
