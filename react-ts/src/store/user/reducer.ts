@@ -1,6 +1,6 @@
-const defaultState = {}
+import handleUser from './index'
 
-const user = (state = defaultState, action:{type: string}) => {
+const user = (state = handleUser.state, action:{type: string}) => {
     let newState = JSON.parse(JSON.stringify(state))
     // switch(action.type) {
 
