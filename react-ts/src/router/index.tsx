@@ -16,8 +16,8 @@ type RouteType = {
 
 const Layout = lazy(() => import('../layout/index'))
 const Home = lazy(() => import('../views/home'))
-const Page1 = lazy(() => import('../views/page1'))
-const Page2 = lazy(() => import('../views/page2'))
+const Login = lazy(() => import('../views/login'))
+const NoPage = lazy(() => import('../views/nopage'))
 const Project = lazy(() => import('../views/project'))
 const Template = lazy(() => import('../views/template'))
 const Type = lazy(() => import('../views/type'))
@@ -58,6 +58,14 @@ const Routes: RouteType[] = [
             ...Menus,
         ],
     },
+    {
+        path: '/login',
+        element: <Login/>
+    },
+    {
+        path: '*',
+        element: <NoPage/>
+    }
 ]
 
 const syncRouter = (routes: RouteType[]): RouteObject[] => {
