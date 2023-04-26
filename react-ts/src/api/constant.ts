@@ -1,0 +1,1 @@
+export const ELN_PREFIX = '/eln'

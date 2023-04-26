@@ -1,11 +1,34 @@
 import style from './index.module.scss'
 import { Space, Form, Input, Radio, Button } from 'antd'
 import { UserOutlined, EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {login} from '../../api/login'
+import Crypto from '../../util/secret'
+import Util from '../../util/util.js'
+import { fingerpring } from '@/util/device.js'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+    const navigate = useNavigate()
+
+    const [clientId, setClientId] = useState('')
+    useEffect(() => {
+        initClientId()
+    }, [])
+    const initClientId = () => {
+        setClientId(localStorage.getItem('clientId'))
+        if (clientId) {
+            setClientId(rebuildClientId())
+        }
+    }
+    const rebuildClientId = () => {
+        const sClientId = Util.gsid(16)
+        localStorage.setItem('clientId', sClientId)
+        return sClientId
+    }
+
     const [form] = Form.useForm()
-    const [initialValues, setInitialValues] = useState({
+    const [initialValues] = useState({
         userrole: '0'
     })
     const [usernameValidateStatus, setUsernameValidateStatus] = useState("")
@@ -32,6 +55,65 @@ const Login = () => {
             setUsernameValidateStatus("")
             setErrorMsg('')
             // 登录成功
+            let password = ''
+			const secretKey = Util.gid16()
+            if (obj.userrole == 0) {
+				password = Crypto.encrypt(obj.password, secretKey, secretKey)
+			}
+            login({
+                account: obj.username,
+                password: password,
+                adLogin: obj.uaerrole,
+                key: secretKey,
+                // source 登录源 0 => PC
+                source: 0,
+                // 客户端身份
+                identification: clientId,
+                // 图形验证码
+                kaptcha: '',
+                // 短信码
+                verificationCode: ''
+            }).then(async res => {
+                if(res.code === 0){
+                    const r = res.result
+                    const userInfo:any = {
+						id: r.id,
+						admin: obj.username === 'admin' ? true : false,
+						sysAdmin: r.sysAdmin,
+						token: r.token,
+						account: r.account,
+						avator: r.avatar,
+						status: r.status,
+						nickname: r.realName,
+						logintime: new Date().getTime(),
+						uuid: 'uuid' + (await fingerpring()),
+						researchRooms: r.researchRooms,
+						location: r.location ? r.location : '',
+						departmentList: r.department,
+						departmentName: r.departmentName,
+
+						pwdExpirationTime: r.pwdExpirationTime,
+						remindDay: r.remindDay,
+						hasReminded: false
+					}
+                    self.$store.commit('setUserInfo', userInfo)
+					const arr = JSON.parse(localStorage.getItem('historyUserName')) || []
+					if (!arr.includes(userInfo.account)) {
+						arr.push(userInfo.account)
+					}
+
+					localStorage.setItem('historyUserName', JSON.stringify(arr))
+					const redirectURL = sessionStorage.getItem('redirectURL')
+					Util.setCookie('adLogin', obj.userrole)
+					if (redirectURL) {
+						self.$store.dispatch('handleJumpTo', redirectURL)
+					} else {
+						// self.$router.replace('/portal')
+						// 登录成功默认到首页
+                        navigate('/home')
+					}
+                }
+            })
         }
     }
 
