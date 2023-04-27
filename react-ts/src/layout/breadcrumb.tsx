@@ -1,6 +1,6 @@
 import { Breadcrumb } from 'antd'
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Menus } from '../router/index'
 
 interface BreadcrumbProps {
@@ -10,6 +10,8 @@ interface BreadcrumbProps {
 
 const BreadcrumbCom = () => {
     const location = useLocation()
+    const navigate = useNavigate()
+
     const [breadcrumb, setBreadcrumb] = useState<Array<BreadcrumbProps>>([])
 
     useEffect(() => {
@@ -18,12 +20,14 @@ const BreadcrumbCom = () => {
     }, [location.pathname])
 
     const assembleBreadCrumb = (arr = Menus) => {
-        console.log(breadcrumb)
         arr.forEach(item => {
             if(item.children && item.children.length > 0){
                 item.children.forEach(aItem => {
                     if(location.pathname === aItem.path) {
                         setBreadcrumb(Object.assign([], breadcrumb, [{
+                            name: item.name,
+                            path: item.path
+                        }, {
                             name: aItem.name,
                             path: item.path
                         }]))
@@ -40,12 +44,18 @@ const BreadcrumbCom = () => {
         })
     }
 
-    console.log(breadcrumb)
+    const routerPage = (item: BreadcrumbProps) => {
+        console.log(item.path)
+        navigate(item.path)
+    }
 
     return (
         <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            {
+                breadcrumb.map(item => {
+                    return <Breadcrumb.Item key={item.path} onClick={() => routerPage(item)}>{item.name}</Breadcrumb.Item>
+                })
+            }
         </Breadcrumb>
     )
 }

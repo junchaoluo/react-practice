@@ -48,7 +48,7 @@ const LayoutApp: FC =  () => {
         setCollapsed(collapsed)
     }
 
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['/template'])
+    const [selectedKeys, setSelectedKeys] = useState(['/template'])
     const items: MenuItem[] = changeRouterToMenu(Menus)
     const navigate = useNavigate()
     const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
@@ -65,7 +65,7 @@ const LayoutApp: FC =  () => {
                 changeSelectKeys(item.children)
             }else{
                 if(location.pathname === item.path) {
-                    setDefaultSelectedKeys([item.path])
+                    setSelectedKeys([item.path])
                 }
             }
         })
@@ -74,7 +74,7 @@ const LayoutApp: FC =  () => {
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible={true} style={{backgroundColor: '#fff'}} collapsed={collapsed} onCollapse={onCollapse}>
-                <Menu defaultSelectedKeys={defaultSelectedKeys} mode="inline" items={items} onClick={handleClickMenuItem} />
+                <Menu selectedKeys={selectedKeys} mode="inline" items={items} onClick={handleClickMenuItem} />
             </Sider>
             <Layout className="site-layout">
                 <Header style={{ paddingLeft: '16px',height: '56px', background: '#fff' }}>
