@@ -29,7 +29,7 @@ const BreadcrumbCom = () => {
                             path: item.path
                         }, {
                             name: aItem.name,
-                            path: item.path
+                            path: aItem.path
                         }]))
                     }
                 })
@@ -45,7 +45,6 @@ const BreadcrumbCom = () => {
     }
 
     const routerPage = (item: BreadcrumbProps) => {
-        console.log(item.path)
         navigate(item.path)
     }
 
