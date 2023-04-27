@@ -1,5 +1,5 @@
-import { Outlet, useNavigate } from 'react-router-dom'
-import { FC, useState } from 'react'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { FC, useEffect, useState } from 'react'
 import { Layout, Menu, Breadcrumb } from 'antd'
 import type { MenuProps } from 'antd'
 import { RouteType, Menus } from '../router/index'
@@ -22,34 +22,51 @@ const getItem = (
     } as MenuItem;
 } 
 
-const changeRouterToMenu = (Menus: RouteType[]) => {
-    const tempMenus: MenuItem[] = []
-    Menus.forEach(menu => {
-        const obj: MenuItem = {}
-        obj.label = menu.name;
-        obj.key = menu.path;
-        if(menu.icon) {
-            obj.icon = menu.icon;
-        }
-        if(menu.children) {
-            obj.children = changeRouterToMenu(menu.children);
-        }
-        tempMenus.push(obj)
-    })
-    return tempMenus;
-}
+
 
 const LayoutApp: FC =  () => {
     const [collapsed, setCollapsed] = useState(false)
+    const navigate = useNavigate()
+    const location = useLocation()
+
     const onCollapse = (collapsed: boolean, type?: string) => {
         setCollapsed(collapsed)
     }
 
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['1'])
+    const changeRouterToMenu = (Menus: RouteType[]) => {
+        const tempMenus: MenuItem[] = []
+        Menus.forEach(menu => {
+            const obj: MenuItem = {}
+            obj.label = menu.name;
+            obj.key = menu.path;
+            if(menu.icon) {
+                obj.icon = menu.icon;
+            }
+            if(menu.children) {
+                obj.children = changeRouterToMenu(menu.children);
+            }
+            tempMenus.push(obj)
+        })
+        return tempMenus;
+    }
     const items: MenuItem[] = changeRouterToMenu(Menus)
-    const navigate = useNavigate()
+
     const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
         navigate(key)
+    }
+
+    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([''])
+    useEffect(() => {
+        searchDefaultSelect()
+    }, [])
+    const searchDefaultSelect = (arr = Menus) => {
+        arr.forEach(item => {
+            if(item.children && item.children.length > 0){
+                searchDefaultSelect(item.children)
+            }else if(item.path === location.pathname) {
+                setDefaultSelectedKeys([item.path])
+            }
+        })
     }
 
     return (
