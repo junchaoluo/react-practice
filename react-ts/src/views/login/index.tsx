@@ -8,7 +8,7 @@ import Util from '../../util/util.js'
 import { fingerpring } from '../../util/device.js'
 import { useNavigate } from 'react-router-dom'
 import { UserInfo } from '../../types/user'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -147,10 +147,10 @@ const Login = () => {
                             </Form.Item>
                             <Form.Item name="password" validateStatus={passwordValidateStatus}>
                                 <Input.Password size="large" prefix={<UserOutlined/>} placeholder="请输入登录密码" 
-                                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
+                                iconRender={(visible:boolean) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
                             </Form.Item>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                <Button type="primary" className={style.antBtn} htmlType="submit">
                                     登录
                                 </Button>
                             </Form.Item>

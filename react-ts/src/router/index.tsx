@@ -56,6 +56,10 @@ const Routes: RouteType[] = [
         element: <Layout />,
         children: [
             ...Menus,
+            {
+                path: '/home',
+                element: <Home/>
+            }
         ],
     },
     {

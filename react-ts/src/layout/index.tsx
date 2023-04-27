@@ -3,26 +3,26 @@ import { FC, useState } from 'react'
 import { Layout, Menu, Breadcrumb } from 'antd'
 import type { MenuProps } from 'antd'
 import { RouteType, Menus } from '../router/index'
-// import Routes from '../router'
+import PermissionOutlet from './permission'
 
 const { Header, Content, Footer, Sider } = Layout
 type MenuItem = Required<MenuProps>['items'][number]
 
-function getItem(
+const getItem = (
     label: React.ReactNode,
     key: React.Key,
     icon?: React.ReactNode,
     children?: MenuItem[],
-  ): MenuItem {
+    ): MenuItem =>  {
     return {
-      key,
-      icon,
-      children,
-      label,
+        key,
+        icon,
+        children,
+        label,
     } as MenuItem;
-  }
+} 
 
-  function changeRouterToMenu(Menus: RouteType[]){
+const changeRouterToMenu = (Menus: RouteType[]) => {
     const tempMenus: MenuItem[] = []
     Menus.forEach(menu => {
         const obj: MenuItem = {}
@@ -37,12 +37,12 @@ function getItem(
         tempMenus.push(obj)
     })
     return tempMenus;
-  }
+}
 
 const LayoutApp: FC =  () => {
     const [collapsed, setCollapsed] = useState(false)
     const onCollapse = (collapsed: boolean, type?: string) => {
-        console.log(collapsed, type)
+        setCollapsed(collapsed)
     }
 
     const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['1'])
@@ -51,25 +51,22 @@ const LayoutApp: FC =  () => {
     const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
         navigate(key)
     }
-    console.log( items)
 
     return (
         <Layout style={{minHeight: '100vh'}}>
-            <Sider collapsible={true} collapsed={collapsed} onCollapse={onCollapse}>
-                <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
-                <Menu theme="dark" defaultSelectedKeys={defaultSelectedKeys} mode="inline" items={items} onClick={handleClickMenuItem} />
+            <Sider collapsible={true} style={{backgroundColor: '#fff'}} collapsed={collapsed} onCollapse={onCollapse}>
+                <Menu defaultSelectedKeys={defaultSelectedKeys} mode="inline" items={items} onClick={handleClickMenuItem} />
             </Sider>
             <Layout className="site-layout">
-                <Header style={{ padding: 0, background: '#ccc' }}>
+                <Header style={{ paddingLeft: '16px',height: '56px', background: '#fff' }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>User</Breadcrumb.Item>
                         <Breadcrumb.Item>Bill</Breadcrumb.Item>
                     </Breadcrumb>
                 </Header>
-                <Content style={{ margin: '16px', background: '#ccc' }}>
-                    <Outlet/>
+                <Content style={{ margin: '16px', background: '#fff' }}>
+                    <PermissionOutlet/>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer>
             </Layout>
         </Layout>
     )
