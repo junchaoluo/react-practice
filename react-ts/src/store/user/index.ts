@@ -2,18 +2,19 @@ import {UserInfo} from '../../types/user'
 
 const user =  {
     state: {
-        userInfo: {},
-        token: ''
+        userInfo: sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')):{}
     },
     actions: {
-        setUserInfo(action: {val: UserInfo}) {
+        setUserInfo(newState: UserInfo, action: {val: UserInfo}) {
             user.state.userInfo = action.val
+            sessionStorage.setItem("userInfo", JSON.stringify(action.val))
             sessionStorage.setItem("token", action.val.token)
-            user.state.token = sessionStorage.getItem('token') || ''
+            Object.assign(newState, user.state)
         },
-        handleJumpTo(action: {val: string}){
+        handleJumpTo(newState: UserInfo, action: {val: string}){
             window.open(action.val, '')
 			sessionStorage.removeItem('redirectURL')
+            Object.assign(newState, user.state)
         }
     },
     asyncActions: {},
