@@ -7,14 +7,18 @@ import Crypto from '../../util/secret'
 import Util from '../../util/util.js'
 import { fingerpring } from '../../util/device.js'
 import { useNavigate } from 'react-router-dom'
+import { UserInfo } from '../../types/user'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Login = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [clientId, setClientId] = useState('')
     useEffect(() => {
         initClientId()
     }, [])
+
     const initClientId = () => {
         setClientId(localStorage.getItem('clientId'))
         if (clientId) {
@@ -76,7 +80,7 @@ const Login = () => {
             }).then(async res => {
                 if(res.code === 0){
                     const r = res.result
-                    const userInfo:any = {
+                    const userInfo:UserInfo = {
 						id: r.id,
 						admin: obj.username === 'admin' ? true : false,
 						sysAdmin: r.sysAdmin,
@@ -91,12 +95,11 @@ const Login = () => {
 						location: r.location ? r.location : '',
 						departmentList: r.department,
 						departmentName: r.departmentName,
-
 						pwdExpirationTime: r.pwdExpirationTime,
 						remindDay: r.remindDay,
 						hasReminded: false
 					}
-                    self.$store.commit('setUserInfo', userInfo)
+                    dispatch({type: 'setUserInfo', val: userInfo})
 					const arr = JSON.parse(localStorage.getItem('historyUserName')) || []
 					if (!arr.includes(userInfo.account)) {
 						arr.push(userInfo.account)
@@ -106,9 +109,8 @@ const Login = () => {
 					const redirectURL = sessionStorage.getItem('redirectURL')
 					Util.setCookie('adLogin', obj.userrole)
 					if (redirectURL) {
-						self.$store.dispatch('handleJumpTo', redirectURL)
+                        dispatch({type: 'setUserInfo', val: redirectURL})
 					} else {
-						// self.$router.replace('/portal')
 						// 登录成功默认到首页
                         navigate('/home')
 					}

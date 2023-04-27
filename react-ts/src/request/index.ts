@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 let isResrLogin = true
 
 const request = axios.create({
-    baseURL:'https://dev.pharmaoryx.tech:9000',
+    baseURL:'https://test.pharmaoryx.tech:9000',
     timeout: 60000
 })
 
