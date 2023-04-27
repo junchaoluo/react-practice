@@ -52,6 +52,7 @@ const LayoutApp: FC =  () => {
     const items: MenuItem[] = changeRouterToMenu(Menus)
     const navigate = useNavigate()
     const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
+        setSelectedKeys([key])
         navigate(key)
     }
 
