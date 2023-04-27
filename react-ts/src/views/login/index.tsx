@@ -126,7 +126,7 @@ const Login = () => {
                 <div className={style.loginRight}>
                     <div className={style.loginTitle}>
                         <Space direction="vertical" size="middle">
-                            <div>账号登录</div>
+                            <div className={style.titleUserCode}>账号登录</div>
                             <div>欢迎使用E-Lab智能实验室管理平台</div>
                         </Space>
                     </div>

@@ -1,9 +1,10 @@
-import { Outlet, useNavigate } from 'react-router-dom'
-import { FC, useState } from 'react'
-import { Layout, Menu, Breadcrumb } from 'antd'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { FC, useEffect, useState } from 'react'
+import { Layout, Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { RouteType, Menus } from '../router/index'
 import PermissionOutlet from './permission'
+import BreadcrumbCom from './breadcrumb'
 
 const { Header, Content, Footer, Sider } = Layout
 type MenuItem = Required<MenuProps>['items'][number]
@@ -40,16 +41,34 @@ const changeRouterToMenu = (Menus: RouteType[]) => {
 }
 
 const LayoutApp: FC =  () => {
+    const location = useLocation()
+
     const [collapsed, setCollapsed] = useState(false)
     const onCollapse = (collapsed: boolean, type?: string) => {
         setCollapsed(collapsed)
     }
 
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['1'])
+    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['/template'])
     const items: MenuItem[] = changeRouterToMenu(Menus)
     const navigate = useNavigate()
     const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
         navigate(key)
+    }
+
+    useEffect(() => {
+        changeSelectKeys()
+    }, [])
+
+    const changeSelectKeys = (arr = Menus) => {
+        arr.forEach(item => {
+            if(item.children && item.children.length > 0){
+                changeSelectKeys(item.children)
+            }else{
+                if(location.pathname === item.path) {
+                    setDefaultSelectedKeys([item.path])
+                }
+            }
+        })
     }
 
     return (
@@ -59,10 +78,7 @@ const LayoutApp: FC =  () => {
             </Sider>
             <Layout className="site-layout">
                 <Header style={{ paddingLeft: '16px',height: '56px', background: '#fff' }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
+                    <BreadcrumbCom/>
                 </Header>
                 <Content style={{ margin: '16px', background: '#fff' }}>
                     <PermissionOutlet/>
