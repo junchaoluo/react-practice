@@ -19,9 +19,8 @@ const Project = () => {
     const [status, setStatus] = useState(0)
     const [searchValue, setSearchValue] = useState('')
     const search = useCallback(() => {
-        console.log(searchValue)
         
-    }, [searchValue])
+    }, [])
 
     return (
         <div className='page-conetnt'>

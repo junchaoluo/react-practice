@@ -14,6 +14,8 @@ const BreadcrumbCom = () => {
 
     const [breadcrumb, setBreadcrumb] = useState<Array<BreadcrumbProps>>([])
 
+    console.log(location.pathname, breadcrumb)
+
     useEffect(() => {
         // 组装面包屑
         assembleBreadCrumb()
@@ -24,7 +26,8 @@ const BreadcrumbCom = () => {
             if(item.children && item.children.length > 0){
                 item.children.forEach(aItem => {
                     if(location.pathname === aItem.path) {
-                        setBreadcrumb(Object.assign([], breadcrumb, [{
+                        setBreadcrumb([])
+                        setBreadcrumb(Object.assign([], [{
                             name: item.name,
                             path: item.path
                         }, {
@@ -35,7 +38,8 @@ const BreadcrumbCom = () => {
                 })
             }else{
                 if(location.pathname === item.path) {
-                    setBreadcrumb(Object.assign([], breadcrumb, [{
+                    setBreadcrumb([])
+                    setBreadcrumb(Object.assign([], [{
                         name: item.name,
                         path: item.path
                     }]))
