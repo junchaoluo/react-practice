@@ -11,7 +11,6 @@ const user = (state = handleUser.state, action:{type: string, val: any}) => {
             break;
         default: break;
     }
-    console.log(newState)
     return newState
 }
 export default user;

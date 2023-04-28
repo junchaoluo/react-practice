@@ -1,9 +1,10 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FC, useEffect, useState } from 'react'
-import { Layout, Menu, Breadcrumb } from 'antd'
+import { Layout, Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { RouteType, Menus } from '../router/index'
 import PermissionOutlet from './permission'
+import BreadcrumbCom from './breadcrumb'
 
 const { Header, Content, Footer, Sider } = Layout
 type MenuItem = Required<MenuProps>['items'][number]
@@ -22,49 +23,51 @@ const getItem = (
     } as MenuItem;
 } 
 
-
+const changeRouterToMenu = (Menus: RouteType[]) => {
+    const tempMenus: MenuItem[] = []
+    Menus.forEach(menu => {
+        const obj: MenuItem = {}
+        obj.label = menu.name;
+        obj.key = menu.path;
+        if(menu.icon) {
+            obj.icon = menu.icon;
+        }
+        if(menu.children) {
+            obj.children = changeRouterToMenu(menu.children);
+        }
+        tempMenus.push(obj)
+    })
+    return tempMenus;
+}
 
 const LayoutApp: FC =  () => {
-    const [collapsed, setCollapsed] = useState(false)
-    const navigate = useNavigate()
     const location = useLocation()
 
+    const [collapsed, setCollapsed] = useState(false)
     const onCollapse = (collapsed: boolean, type?: string) => {
         setCollapsed(collapsed)
     }
 
-    const changeRouterToMenu = (Menus: RouteType[]) => {
-        const tempMenus: MenuItem[] = []
-        Menus.forEach(menu => {
-            const obj: MenuItem = {}
-            obj.label = menu.name;
-            obj.key = menu.path;
-            if(menu.icon) {
-                obj.icon = menu.icon;
-            }
-            if(menu.children) {
-                obj.children = changeRouterToMenu(menu.children);
-            }
-            tempMenus.push(obj)
-        })
-        return tempMenus;
-    }
+    const [selectedKeys, setSelectedKeys] = useState(['/template'])
     const items: MenuItem[] = changeRouterToMenu(Menus)
-
+    const navigate = useNavigate()
     const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
+        setSelectedKeys([key])
         navigate(key)
     }
 
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([''])
     useEffect(() => {
-        searchDefaultSelect()
+        changeSelectKeys()
     }, [])
-    const searchDefaultSelect = (arr = Menus) => {
+
+    const changeSelectKeys = (arr = Menus) => {
         arr.forEach(item => {
             if(item.children && item.children.length > 0){
-                searchDefaultSelect(item.children)
-            }else if(item.path === location.pathname) {
-                setDefaultSelectedKeys([item.path])
+                changeSelectKeys(item.children)
+            }else{
+                if(location.pathname === item.path) {
+                    setSelectedKeys([item.path])
+                }
             }
         })
     }
@@ -72,14 +75,11 @@ const LayoutApp: FC =  () => {
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible={true} style={{backgroundColor: '#fff'}} collapsed={collapsed} onCollapse={onCollapse}>
-                <Menu defaultSelectedKeys={defaultSelectedKeys} mode="inline" items={items} onClick={handleClickMenuItem} />
+                <Menu selectedKeys={selectedKeys} mode="inline" items={items} onClick={handleClickMenuItem} />
             </Sider>
             <Layout className="site-layout">
                 <Header style={{ paddingLeft: '16px',height: '56px', background: '#fff' }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
+                    <BreadcrumbCom/>
                 </Header>
                 <Content style={{ margin: '16px', background: '#fff' }}>
                     <PermissionOutlet/>
