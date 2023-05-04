@@ -27,10 +27,10 @@ const HighSearch = (props: IProps) => {
             <Form layout="vertical">
                 <Space size="small" direction="vertical">
                     <Form.Item label="项目编号" name="code">
-                        <Input placeholder="请输入项目编号"/>
+                        <Input placeholder="请输入项目编号" onChange={(e) => setForm(Object.assign({}, form, {code: e.target.value}))}/>
                     </Form.Item>
                     <Form.Item label="产品号" name="productCode">
-                        <Input placeholder="请输入产品号"/>
+                        <Input placeholder="请输入产品号" onChange={(e) => setForm(Object.assign({}, form, {productCode: e.target.value}))}/>
                     </Form.Item>
                 </Space>
             </Form>

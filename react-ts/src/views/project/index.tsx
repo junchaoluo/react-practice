@@ -214,7 +214,9 @@ const Project = () => {
     // 高级搜索
     const [open, setOpen] = useState(false)
     const handleSure = useCallback((form) => {
-        console.log(form)
+        setSearchForm(Object.assign(searchForm, form, {
+            pageIndex: 1
+        }))
     }, [])
 
     return (
