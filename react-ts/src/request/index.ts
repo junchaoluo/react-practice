@@ -10,7 +10,7 @@ const request = axios.create({
 })
 
 request.interceptors.request.use(config  => {
-    config.headers['Authorization'] = '123'
+    config.headers['Authorization'] = sessionStorage.getItem('token')
     return config
 }, error => {
     return Promise.reject(error)

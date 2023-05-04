@@ -14,8 +14,6 @@ const BreadcrumbCom = () => {
 
     const [breadcrumb, setBreadcrumb] = useState<Array<BreadcrumbProps>>([])
 
-    console.log(location.pathname, breadcrumb)
-
     useEffect(() => {
         // 组装面包屑
         assembleBreadCrumb()
