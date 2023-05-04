@@ -5,6 +5,7 @@ import { useCallback, useState, useEffect } from 'react'
 import { Divider, Button, Input, Table, Pagination } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
 import { getProjectListByPage, getArchiveProjectListByPage } from '../../api/project'
+import HighSearch from './highSearch'
 
 const Project = () => {
     const statusList = [
@@ -17,13 +18,22 @@ const Project = () => {
             key: 1
         }
     ]
-    const [status, setStatus] = useState(0)
 
     const [searchValue, setSearchValue] = useState('')
     const [searchForm, setSearchForm] = useState({
         pageIndex: 1,
         pageSize: 20
     })
+
+    
+    const [status, setStatus] = useState(0)
+    const changeStatus = useCallback((key) => {
+        setStatus(key)
+        const data = Object.assign({}, searchForm, {
+            pageIndex: 1
+        })
+        setSearchForm(data)
+    }, [])
 
     const [dataSource, setDataSource] = useState([])
     const [total, setTotal] = useState(0)
@@ -127,7 +137,7 @@ const Project = () => {
     const [tableColumns, setTableColumns] = useState([])
     const [scroll, setScroll] = useState({
         x: 1000,
-        y: 300
+        y: 450
     })
 
     useEffect(() => {
@@ -149,23 +159,9 @@ const Project = () => {
         )
     }, [columns])
 
-    useEffect(() => {
-        search()
-    }, [])
-
-    const search = useCallback(() => {
-        setSearchForm(Object.assign({}, searchForm, {
-            pageIndex: 1
-        }))
-        getData()
-    }, [])
-    const getSearchParams = () => {
+    const getData = useCallback(() => {
         const searchParams = Object.assign({}, searchForm)
         delete searchParams.time
-        return searchParams
-    }
-    const getData = useCallback(() => {
-        const searchParams = getSearchParams()
         if (status === 0) {
             // 进行中
             getProjectListByPage(
@@ -194,15 +190,31 @@ const Project = () => {
                 setTotal((result && +result.total) || 0)
             })
         }
-    }, [])
+    }, [searchForm, searchValue, status])
 
-    const changePage = useCallback((page, pageSize) => {
+    const search = useCallback(() => {
+        setSearchForm(Object.assign({}, searchForm, {
+            pageIndex: 1
+        }))
+        getData()
+    }, [getData, searchForm])
+
+    useEffect(() => {
+        getData()
+    }, [getData])
+
+    const changePage = useCallback((page: number, pageSize: number) => {
         const data = Object.assign({}, searchForm, {
             pageIndex: page,
             pageSize: pageSize
         })
         setSearchForm(data)
-        getData()
+    }, [])
+
+    // 高级搜索
+    const [open, setOpen] = useState(false)
+    const handleSure = useCallback((form) => {
+        console.log(form)
     }, [])
 
     return (
@@ -212,7 +224,7 @@ const Project = () => {
                 <div className={style.status}>
                     {
                         statusList.map(item => {
-                            return <div key={item.key} className={item.key === status ? `${style.active} ${style.tabLabel}`:`${style.tabLabel}`} onClick={() => setStatus(item.key)}>{item.label}</div>
+                            return <div key={item.key} className={item.key === status ? `${style.active} ${style.tabLabel}`:`${style.tabLabel}`} onClick={() => changeStatus(item.key)}>{item.label}</div>
                         })
                     }
                 </div>
@@ -223,7 +235,7 @@ const Project = () => {
                 <div className={style.search}>
                     <Input placeholder="请输入项目编号查询" prefix={<SearchOutlined />} value={searchValue} onChange={(event: Event) => setSearchValue(((event.target) as HTMLInputElement).value)} />
                     <Button type="primary" className={style.marginLeft12} onClick={() => search()}>搜索</Button>
-                    <div className={`${style.marginLeft12} ${style.searchIcon}`}>
+                    <div className={`${style.marginLeft12} ${style.searchIcon}`} onClick={() => setOpen(true)}>
                         <VideoCameraAddOutlined/>
                     </div>
                     <div className={`${style.marginLeft12} ${style.searchIcon}`}>
@@ -247,6 +259,7 @@ const Project = () => {
                     />
                 </div>
             </div>
+            <HighSearch open={open} handleSure={handleSure} closeDrawer={() => setOpen(false)}/>
         </div>
     )
 }
