@@ -1,7 +1,7 @@
 import { Breadcrumb } from 'antd'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Menus } from '../router/index'
+import { Menus } from '@/router/index'
 
 interface BreadcrumbProps {
     name: string,

@@ -1,4 +1,4 @@
-import request from '../request/index'
+import request from '@/request/index'
 import { ELN_PREFIX } from './constant'
 
 export function getProjectListByPage(oPathParams: any, oParams: any) {

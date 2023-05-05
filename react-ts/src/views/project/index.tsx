@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
-import user from '../../store/user/index'
+import user from '@/store/user/index'
 import style from './index.module.scss'
 import { useCallback, useState, useEffect } from 'react'
 import { Divider, Button, Input, Table, Pagination, Popconfirm } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
-import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive } from '../../api/project'
+import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive } from '@/api/project'
 import HighSearch from './highSearch'
 
 const Project = () => {

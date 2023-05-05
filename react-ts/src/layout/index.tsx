@@ -2,7 +2,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FC, useEffect, useState } from 'react'
 import { Layout, Menu } from 'antd'
 import type { MenuProps } from 'antd'
-import { RouteType, Menus } from '../router/index'
+import { RouteType, Menus } from '@/router/index'
 import PermissionOutlet from './permission'
 import BreadcrumbCom from './breadcrumb'
 

@@ -6,7 +6,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    // 配置别名路径
-    '@': path.resolve(__dirname, '/src')
+    alias: {
+      // 配置别名路径
+      '@': path.resolve(__dirname, './src')
+    }
   }
 })

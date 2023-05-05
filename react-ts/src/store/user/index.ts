@@ -1,4 +1,4 @@
-import {UserInfo} from '../../types/user'
+import {UserInfo} from '@/types/user'
 
 const user =  {
     state: {

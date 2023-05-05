@@ -14,13 +14,13 @@ type RouteType = {
 // import Page1 from '../views/page1'
 // import Page2 from '../views/page2'
 
-const Layout = lazy(() => import('../layout/index'))
-const Home = lazy(() => import('../views/home'))
-const Login = lazy(() => import('../views/login'))
-const NoPage = lazy(() => import('../views/nopage'))
-const Project = lazy(() => import('../views/project'))
-const Template = lazy(() => import('../views/template'))
-const Type = lazy(() => import('../views/type'))
+const Layout = lazy(() => import('@/layout/index'))
+const Home = lazy(() => import('@/views/home'))
+const Login = lazy(() => import('@/views/login'))
+const NoPage = lazy(() => import('@/views/nopage'))
+const Project = lazy(() => import('@/views/project'))
+const Template = lazy(() => import('@/views/template'))
+const Type = lazy(() => import('@/views/type'))
 
 const Menus: RouteType[] = [
     {

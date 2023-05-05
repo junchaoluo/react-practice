@@ -1,8 +1,8 @@
 // 类似路由守卫，看看是否登录
 import { useLocation, Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import user from '../store/user/index'
-import Login from '../views/login'
+import user from '@/store/user/index'
+import Login from '@/views/login'
 
 const PermissionOutlet = () => {
     const location = useLocation()
