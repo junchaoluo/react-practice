@@ -1,14 +1,16 @@
 import { Drawer, Form, Space, Input, Button } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 type IProps = {
     open: boolean,
-    handleSure: any,
-    closeDrawer: any
+    handleSure: (form: {
+        code: string, productCode: string
+    }) => void,
+    closeDrawer: () => void
 }
 
-const HighSearch = (props: IProps) => {
+const HighSearch = memo((props: IProps) => {
     const { open, handleSure, closeDrawer } = props
     const [form, setForm] = useState({
         code: '',
@@ -17,10 +19,12 @@ const HighSearch = (props: IProps) => {
 
     return (
         <Drawer title="高级筛选" open={open} footer={
-            <Space>
-                <Button onClick={() => closeDrawer()}>取消</Button>
-                <Button type="primary" onClick={() => handleSure(form)}>确定</Button>
-            </Space>
+            <div style={{display: 'flex', justifyContent: 'end'}}>
+                <Space>
+                    <Button onClick={() => closeDrawer()}>取消</Button>
+                    <Button type="primary" onClick={() => handleSure(form)}>确定</Button>
+                </Space>
+            </div>
         } closable={false} extra={
             <CloseOutlined onClick={() => closeDrawer()} />
         }>
@@ -36,6 +40,6 @@ const HighSearch = (props: IProps) => {
             </Form>
         </Drawer>
     )
-}
+})
 
 export default HighSearch;

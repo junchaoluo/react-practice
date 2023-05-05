@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux'
 import user from '../../store/user/index'
 import style from './index.module.scss'
 import { useCallback, useState, useEffect } from 'react'
-import { Divider, Button, Input, Table, Pagination } from 'antd'
+import { Divider, Button, Input, Table, Pagination, Popconfirm } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
-import { getProjectListByPage, getArchiveProjectListByPage } from '../../api/project'
+import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive } from '../../api/project'
 import HighSearch from './highSearch'
 
 const Project = () => {
@@ -140,24 +140,76 @@ const Project = () => {
         y: 450
     })
 
+    const handleTableRow = useCallback((record: any, type: number) => {
+        console.log(record)
+        switch(type) {
+            case 0:
+                // 查看
+                break;
+            case 1: 
+                // 编辑
+                break;
+            case 2:
+                // 结束
+                break;
+            case 3:
+                // 恢复
+                break;
+            default: break;
+        }
+    }, [])
+
+    const operationRender = useCallback((record: any) => {
+        return (
+            <>
+                <Button type="link" onClick={() => handleTableRow(record, 0)}>查看</Button>
+                {
+                    status === 0 
+                    && (record.canArchive?
+                        (
+                        <>
+                            <Button type="link" disabled={!record.canEdit} onClick={() => handleTableRow(record, 1)}>编辑</Button>
+                            <Popconfirm title={`请确认是否将项目${record.code}完结`} description="项目完结后请进入「已完成」项目列表中查看" onConfirm={() => handleTableRow(record, 2)}>
+                                <Button type="link">结束</Button>
+                            </Popconfirm>
+                        </>
+                        )
+                        :
+                        <>
+                            <Button type="link" disabled={!record.canEdit} onClick={() => handleTableRow(record, 1)}>编辑</Button>
+                            <Button type="link" disabled={true}>结束</Button>
+                        </>
+                        )
+                }
+                {
+                    status === 1 && (record.canRenew?
+                        <Popconfirm title={`请确认是否将项目${record.code}恢复`} description="项目恢复后请进入「进行中」项目列表中查看" onConfirm={() => handleTableRow(record, 3)}>
+                            <Button type="link">恢复</Button>
+                        </Popconfirm>
+                        :
+                        <Button type="link" disabled={true}>恢复</Button>
+                    )
+                }
+            </>
+        )
+    }, [status])
+
     useEffect(() => {
         setTableColumns(
-            columns.filter(item => item.isVisible).concat([
-                {
+            columns.filter(item => item.isVisible).concat(
+                [{
                     title: '操作',
                     key: 'operation',
                     dataIndex: 'operation',
                     fixed: 'right',
                     width: 220,
                     render: (text, record, index:number) => {
-                        return (
-                            <><Button type="link">查看</Button><Button type="link">编辑</Button><Button type="link">结束</Button></>
-                        )
+                        return operationRender(record)
                     }
-                }
-            ])
+                }]
+            )
         )
-    }, [columns])
+    }, [columns, operationRender])
 
     const getData = useCallback(() => {
         const searchParams = Object.assign({}, searchForm)
@@ -196,8 +248,7 @@ const Project = () => {
         setSearchForm(Object.assign({}, searchForm, {
             pageIndex: 1
         }))
-        getData()
-    }, [getData, searchForm])
+    }, [ searchForm])
 
     useEffect(() => {
         getData()
@@ -213,11 +264,30 @@ const Project = () => {
 
     // 高级搜索
     const [open, setOpen] = useState(false)
-    const handleSure = useCallback((form) => {
-        setSearchForm(Object.assign(searchForm, form, {
+    const handleSure = (form: {
+        code: string,
+        productCode: string
+    }) => {
+        // 高级搜索
+        const searchParams = Object.assign({}, searchForm, form, {
             pageIndex: 1
-        }))
-    }, [])
+        })
+        if (status === 0) {
+            // 进行中
+            getProjectByAdvanceCondition(searchParams, searchParams).then(({ result }) => {
+                setDataSource((result && result.list) || [])
+                setTotal((result && +result.total) || 0)
+                setOpen(false)
+            })
+        } else {
+            // 已完成
+            findProjectByAdvanceConditionArchive(searchParams, searchParams).then(({ result }) => {
+                setDataSource((result && result.list) || [])
+                setTotal((result && +result.total) || 0)
+                setOpen(false)
+            })
+        }
+    }
 
     return (
         <div className='page-conetnt'>
