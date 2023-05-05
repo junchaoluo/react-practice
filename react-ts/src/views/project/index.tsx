@@ -264,7 +264,7 @@ const Project = () => {
 
     // 高级搜索
     const [open, setOpen] = useState(false)
-    const handleSure = (form: {
+    const handleSure = useCallback((form: {
         code: string,
         productCode: string
     }) => {
@@ -287,7 +287,7 @@ const Project = () => {
                 setOpen(false)
             })
         }
-    }
+    }, [])
 
     return (
         <div className='page-conetnt'>
