@@ -5,6 +5,7 @@ import { FundProjectionScreenOutlined, SettingOutlined } from '@ant-design/icons
 type RouteType = {
     path: string,
     element: ReactNode,
+    isRedirect?: boolean,
     name?: string,
     icon?: ReactNode,
     children?: RouteType[]
@@ -32,6 +33,7 @@ const Menus: RouteType[] = [
     {
         path: '/set',
         name: '设置',
+        isRedirect: true,
         icon: <SettingOutlined />,
         element: <Outlet/>,
         children: [

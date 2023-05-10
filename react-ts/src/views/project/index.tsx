@@ -6,6 +6,7 @@ import { Divider, Button, Input, Table, Pagination, Popconfirm } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
 import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive } from '@/api/project'
 import HighSearch from './highSearch'
+import moment from 'moment'
 
 const Project = () => {
     const statusList = [
@@ -22,7 +23,9 @@ const Project = () => {
     const [searchValue, setSearchValue] = useState('')
     const [searchForm, setSearchForm] = useState({
         pageIndex: 1,
-        pageSize: 20
+        pageSize: 20,
+        createEndTime: '',
+        createStartTime: ''
     })
 
     
@@ -62,7 +65,7 @@ const Project = () => {
             render: (text, record, index:number) => {
                 return (
                     <>
-                        <span>{record.startTime}</span>
+                        <span>{record.startTime}~</span>
                         <span>{record.endTime}</span>
                     </>
                 )
@@ -266,11 +269,15 @@ const Project = () => {
     const [open, setOpen] = useState(false)
     const handleSure = useCallback((form: {
         code: string,
-        productCode: string
+        productCode: string,
+        time: string[]
     }) => {
-        // 高级搜索
-        const searchParams = Object.assign({}, searchForm, form, {
-            pageIndex: 1
+        const searchParams = Object.assign({}, searchForm, {
+            pageIndex: 1,
+            createStartTime: form.time?moment(form.time[0]).format('YYYY-MM-DD'):'',
+            createEndTime: form.time?moment(form.time[1]).format('YYYY-MM-DD'):'',
+            code: form.code,
+            productCode: form.productCode
         })
         if (status === 0) {
             // 进行中

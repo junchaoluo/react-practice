@@ -5,7 +5,8 @@ import { Menus } from '@/router/index'
 
 interface BreadcrumbProps {
     name: string,
-    path: string
+    path: string,
+    isRedirect?: boolean
 }
 
 const BreadcrumbCom = () => {
@@ -27,10 +28,12 @@ const BreadcrumbCom = () => {
                         setBreadcrumb([])
                         setBreadcrumb(Object.assign([], [{
                             name: item.name,
-                            path: item.path
+                            path: item.path,
+                            isRedirect: item.isRedirect
                         }, {
                             name: aItem.name,
-                            path: aItem.path
+                            path: aItem.path,
+                            isRedirect: aItem.isRedirect
                         }]))
                     }
                 })
@@ -39,7 +42,8 @@ const BreadcrumbCom = () => {
                     setBreadcrumb([])
                     setBreadcrumb(Object.assign([], [{
                         name: item.name,
-                        path: item.path
+                        path: item.path,
+                        isRedirect: item.isRedirect
                     }]))
                 }
             }
@@ -47,7 +51,9 @@ const BreadcrumbCom = () => {
     }
 
     const routerPage = (item: BreadcrumbProps) => {
-        navigate(item.path)
+        if(!item.isRedirect) {
+            navigate(item.path)
+        }
     }
 
     return (
