@@ -1,6 +1,8 @@
 import { Drawer, Form, Space, Input, Button, DatePicker } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { memo, useState } from 'react'
+import { formToJSON } from 'node_modules/axios/index'
+import dayjs from 'dayjs'
 
 const { RangePicker } = DatePicker
 
@@ -16,6 +18,10 @@ const HighSearch = memo((props: IProps) => {
     const [form] = Form.useForm()
 
     const { open, handleSure, closeDrawer } = props
+
+    const setTimeValue = (date: dayjs[], dateString: string[]) => {
+        form.setFieldValue('time', date)
+    }
 
     const reset = () => {
         form.resetFields()
@@ -47,7 +53,7 @@ const HighSearch = memo((props: IProps) => {
                         <Input placeholder="请输入产品号"/>
                     </Form.Item>
                     <Form.Item label="创建时间" name="time">
-                        <RangePicker format="YYYY-MM-DD" placeholder={['开始时间','结束时间']} onChange={(date: 'YYYY-MM-DD', dateString: string[]) => form.setFieldValue('time', dateString)}/>
+                        <RangePicker format="YYYY-MM-DD" placeholder={['开始时间','结束时间']} onChange={(date: dayjs[], dateString: string[]) => setTimeValue(date, dateString)}/>
                     </Form.Item>
                 </Space>
             </Form>

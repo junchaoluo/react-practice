@@ -6,7 +6,7 @@ import { Divider, Button, Input, Table, Pagination, Popconfirm } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
 import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive } from '@/api/project'
 import HighSearch from './highSearch'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 const Project = () => {
     const statusList = [
@@ -270,12 +270,12 @@ const Project = () => {
     const handleSure = useCallback((form: {
         code: string,
         productCode: string,
-        time: string[]
+        time: dayjs[]
     }) => {
         const searchParams = Object.assign({}, searchForm, {
             pageIndex: 1,
-            createStartTime: form.time?moment(form.time[0]).format('YYYY-MM-DD'):'',
-            createEndTime: form.time?moment(form.time[1]).format('YYYY-MM-DD'):'',
+            createStartTime: form.time?form.time[0].format('YYYY-MM-DD'):'',
+            createEndTime: form.time?form.time[1].format('YYYY-MM-DD'):'',
             code: form.code,
             productCode: form.productCode
         })
