@@ -32,6 +32,7 @@ const Project = () => {
     const [status, setStatus] = useState(0)
     const changeStatus = useCallback((key) => {
         setStatus(key)
+        setSearchValue('')
         const data = Object.assign({}, searchForm, {
             pageIndex: 1
         })
@@ -214,15 +215,17 @@ const Project = () => {
         )
     }, [columns, operationRender])
 
-    const getData = useCallback(() => {
+    const getData = useCallback((keywords?: string, param?: {
+        pageIndex: number
+    }) => {
         const searchParams = Object.assign({}, searchForm)
         delete searchParams.time
         if (status === 0) {
             // 进行中
             getProjectListByPage(
-            { pageIndex: searchForm.pageIndex, pageSize: searchForm.pageSize },
+            { pageIndex: searchForm.pageIndex, pageSize: searchForm.pageSize, ...param },
             {
-                keywords: searchValue,
+                keywords: keywords,
                 ...searchParams
             }
             ).then(({ result }) => {
@@ -234,10 +237,11 @@ const Project = () => {
             getArchiveProjectListByPage(
             {
                 pageIndex: searchForm.pageIndex,
-                pageSize: searchForm.pageSize
+                pageSize: searchForm.pageSize,
+                ...param 
             },
             {
-                keywords: searchValue,
+                keywords: keywords,
                 ...searchParams
             }
             ).then(({ result }) => {
@@ -245,13 +249,7 @@ const Project = () => {
                 setTotal((result && +result.total) || 0)
             })
         }
-    }, [searchForm, searchValue, status])
-
-    const search = useCallback(() => {
-        setSearchForm(Object.assign({}, searchForm, {
-            pageIndex: 1
-        }))
-    }, [ searchForm])
+    }, [searchForm, status])
 
     useEffect(() => {
         getData()
@@ -313,7 +311,9 @@ const Project = () => {
                 <Button type="primary" icon={<PlusOutlined/>}>新增项目</Button>
                 <div className={style.search}>
                     <Input placeholder="请输入项目编号查询" prefix={<SearchOutlined />} value={searchValue} onChange={(event: Event) => setSearchValue(((event.target) as HTMLInputElement).value)} />
-                    <Button type="primary" className={style.marginLeft12} onClick={() => search()}>搜索</Button>
+                    <Button type="primary" className={style.marginLeft12} onClick={() => getData(searchValue, {
+                        pageIndex: 1
+                    })}>搜索</Button>
                     <div className={`${style.marginLeft12} ${style.searchIcon}`} onClick={() => setOpen(true)}>
                         <VideoCameraAddOutlined/>
                     </div>
