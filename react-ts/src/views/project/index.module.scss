@@ -55,3 +55,10 @@
         justify-content: flex-end;
     }
 }
+
+.timetagList {
+    margin-top: 8px;
+    &:hover {
+        cursor: pointer;
+    }
+}
