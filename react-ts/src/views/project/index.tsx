@@ -2,13 +2,17 @@ import { useSelector } from 'react-redux'
 import user from '@/store/user/index'
 import style from './index.module.scss'
 import { useCallback, useState, useEffect } from 'react'
-import { Divider, Button, Input, Table, Pagination, Popconfirm } from 'antd'
+import { Divider, Button, Input, Table, Pagination, Popconfirm, message } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
-import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive } from '@/api/project'
+import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive, archiveAndProject, renewAndProject } from '@/api/project'
 import HighSearch from './highSearch'
 import dayjs from 'dayjs'
+import { useNavigate } from 'react-router-dom'
 
 const Project = () => {
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage();
+
     const statusList = [
         {
             label: '进行中',
@@ -144,8 +148,7 @@ const Project = () => {
         y: 450
     })
 
-    const handleTableRow = useCallback((record: any, type: number) => {
-        console.log(record)
+    const handleTableRow = (record: any, type: number) => {
         switch(type) {
             case 0:
                 // 查看
@@ -155,13 +158,55 @@ const Project = () => {
                 break;
             case 2:
                 // 结束
+                archiveAndProject([
+                    {
+                        id: record.id
+                    }
+                    ]).then(res => {
+                    if (res.code === 0) {
+                        messageApi.open({
+                            type: 'success',
+                            content: '项目归档成功！',
+                        });
+                        setSearchValue('')
+                        getData('', {
+                            pageIndex: 1
+                        })
+                    } else {
+                        messageApi.open({
+                            type: 'error',
+                            content: res.expandMsg,
+                        });
+                    }
+                })
                 break;
             case 3:
                 // 恢复
+                renewAndProject([
+                    {
+                      id: record.id
+                    }
+                  ]).then(res => {
+                    if (res.code === 0) {
+                        messageApi.open({
+                            type: 'success',
+                            content: '项目项目恢复成功！',
+                        });
+                        setSearchValue('')
+                        getData('', {
+                            pageIndex: 1
+                        })
+                    } else {
+                        messageApi.open({
+                            type: 'error',
+                            content: res.expandMsg,
+                        });
+                    }
+                  })
                 break;
             default: break;
         }
-    }, [])
+    }
 
     const operationRender = useCallback((record: any) => {
         return (
@@ -173,7 +218,7 @@ const Project = () => {
                         (
                         <>
                             <Button type="link" disabled={!record.canEdit} onClick={() => handleTableRow(record, 1)}>编辑</Button>
-                            <Popconfirm title={`请确认是否将项目${record.code}完结`} description="项目完结后请进入「已完成」项目列表中查看" onConfirm={() => handleTableRow(record, 2)}>
+                            <Popconfirm title={`请确认是否将项目${record.code}完结`} description="项目完结后请进入「已完成」项目列表中查看" okText="确定" cancelText="取消" onConfirm={() => handleTableRow(record, 2)}>
                                 <Button type="link">结束</Button>
                             </Popconfirm>
                         </>
@@ -187,7 +232,7 @@ const Project = () => {
                 }
                 {
                     status === 1 && (record.canRenew?
-                        <Popconfirm title={`请确认是否将项目${record.code}恢复`} description="项目恢复后请进入「进行中」项目列表中查看" onConfirm={() => handleTableRow(record, 3)}>
+                        <Popconfirm title={`请确认是否将项目${record.code}恢复`} okText="确定" cancelText="取消" description="项目恢复后请进入「进行中」项目列表中查看" onConfirm={() => handleTableRow(record, 3)}>
                             <Button type="link">恢复</Button>
                         </Popconfirm>
                         :
@@ -294,8 +339,14 @@ const Project = () => {
         }
     }, [])
 
+    // 新增项目
+    const AddProject = () => {
+        navigate('/project/add')
+    }
+
     return (
         <div className='page-conetnt'>
+            {contextHolder}
             <div className={style.header}>
                 <span>当前状态：</span>
                 <div className={style.status}>
@@ -308,7 +359,7 @@ const Project = () => {
             </div>
             <Divider dashed={true} style={{borderColor: 'rgba(5, 5, 5, 0.2)',borderWidth: '1.5px 0 0'}}/>
             <div className={style.searchModule}>
-                <Button type="primary" icon={<PlusOutlined/>}>新增项目</Button>
+                <Button type="primary" icon={<PlusOutlined/>} onClick={() => AddProject()}>新增项目</Button>
                 <div className={style.search}>
                     <Input placeholder="请输入项目编号查询" prefix={<SearchOutlined />} value={searchValue} onChange={(event: Event) => setSearchValue(((event.target) as HTMLInputElement).value)} />
                     <Button type="primary" className={style.marginLeft12} onClick={() => getData(searchValue, {

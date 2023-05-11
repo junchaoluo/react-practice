@@ -8,7 +8,8 @@ type RouteType = {
     isRedirect?: boolean,
     name?: string,
     icon?: ReactNode,
-    children?: RouteType[]
+    children?: RouteType[],
+    isMenu?: boolean
 }
 
 // import Layout from '../layout/index'
@@ -20,6 +21,7 @@ const Home = lazy(() => import('@/views/home'))
 const Login = lazy(() => import('@/views/login'))
 const NoPage = lazy(() => import('@/views/nopage'))
 const Project = lazy(() => import('@/views/project'))
+const AddProject = lazy(() => import('@/views/project/addProject'))
 const Template = lazy(() => import('@/views/template'))
 const Type = lazy(() => import('@/views/type'))
 
@@ -28,23 +30,33 @@ const Menus: RouteType[] = [
         path: '/project',
         name: '项目',
         icon: <FundProjectionScreenOutlined />,
-        element: <Project/>
+        element: <Project/>,
+        isMenu: true
+    },
+    {
+        path: '/project/add',
+        name: '新增项目',
+        element: <AddProject/>,
+        isMenu: false,
     },
     {
         path: '/set',
         name: '设置',
         isRedirect: true,
+        isMenu: true,
         icon: <SettingOutlined />,
         element: <Outlet/>,
         children: [
             {
                 path: '/set/template',
                 name: '实验模板',
+                isMenu: true,
                 element: <Template/>,
             },
             {
                 path: '/set/type',
                 name: '实验类型',
+                isMenu: true,
                 element: <Type/>,
             }
         ]

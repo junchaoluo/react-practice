@@ -33,9 +33,13 @@ const changeRouterToMenu = (Menus: RouteType[]) => {
             obj.icon = menu.icon;
         }
         if(menu.children) {
-            obj.children = changeRouterToMenu(menu.children);
+            if(menu.children.some(i => i.isMenu)){
+                obj.children = changeRouterToMenu(menu.children);                
+            }
         }
-        tempMenus.push(obj)
+        if(menu.isMenu) {
+            tempMenus.push(obj)
+        }
     })
     return tempMenus;
 }

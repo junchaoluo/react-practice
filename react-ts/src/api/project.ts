@@ -2,19 +2,19 @@ import request from '@/request/index'
 import { ELN_PREFIX } from './constant'
 
 export function getProjectListByPage(oPathParams: any, oParams: any) {
-    return request({
-        url: ELN_PREFIX + `/project/list/${oPathParams.pageIndex}/${oPathParams.pageSize}`,
-        method: 'post',
-        params: oParams
-    })
+  return request({
+      url: ELN_PREFIX + `/project/list/${oPathParams.pageIndex}/${oPathParams.pageSize}`,
+      method: 'post',
+      params: oParams
+  })
 }
 
 export function getArchiveProjectListByPage(oPathParams: any, oParams: any) {
-    return request({
-      url: ELN_PREFIX + `/project/list/archive/${oPathParams.pageIndex}/${oPathParams.pageSize}`,
-      method: 'post',
-      params: oParams
-    })
+  return request({
+    url: ELN_PREFIX + `/project/list/archive/${oPathParams.pageIndex}/${oPathParams.pageSize}`,
+    method: 'post',
+    params: oParams
+  })
 }
 
 /**
@@ -29,12 +29,12 @@ type oParams = {
 }
 
  export function getProjectByAdvanceCondition(page: oParams, data: oParams) {
-    return request({
-      url: ELN_PREFIX + `/project/findProjectByAdvanceCondition/${page.pageIndex}/${page.pageSize}`,
-      method: 'post',
-      data
-    })
-  }
+  return request({
+    url: ELN_PREFIX + `/project/findProjectByAdvanceCondition/${page.pageIndex}/${page.pageSize}`,
+    method: 'post',
+    data
+  })
+}
 
   /**
  *
@@ -43,9 +43,39 @@ type oParams = {
  * @returns {Promise}
  */
 export function findProjectByAdvanceConditionArchive(page: oParams, data: oParams) {
-    return request({
-      url: ELN_PREFIX + `/project/findProjectByAdvanceCondition/archive/${page.pageIndex}/${page.pageSize}`,
-      method: 'post',
-      data
-    })
-  }
+  return request({
+    url: ELN_PREFIX + `/project/findProjectByAdvanceCondition/archive/${page.pageIndex}/${page.pageSize}`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * ELN基础项目管理   完成并存档项目
+ * @param {Array} aParams 参数
+ * @return {Promise}
+ */
+ export function archiveAndProject(aParams: {
+  id: string
+ }) {
+  return request({
+    url: ELN_PREFIX + '/project/archive',
+    method: 'put',
+    data: aParams
+  })
+}
+
+/**
+ * ELN基础项目管理   恢复项目
+ * @param {Array} aParams 参数
+ * @return {Promise}
+ */
+ export function renewAndProject(aParams: {
+  id: string
+ }) {
+  return request({
+    url: ELN_PREFIX + '/project/renew',
+    method: 'put',
+    data: aParams
+  })
+}
