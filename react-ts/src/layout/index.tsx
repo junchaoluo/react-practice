@@ -5,6 +5,7 @@ import type { MenuProps } from 'antd'
 import { RouteType, Menus } from '@/router/index'
 import PermissionOutlet from './permission'
 import BreadcrumbCom from './breadcrumb'
+import Routes from '@/router'
 
 const { Header, Content, Footer, Sider } = Layout
 type MenuItem = Required<MenuProps>['items'][number]

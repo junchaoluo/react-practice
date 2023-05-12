@@ -37,7 +37,7 @@ const Menus: RouteType[] = [
         path: '/project/add',
         name: '新增项目',
         element: <AddProject/>,
-        isMenu: false,
+        isMenu: false
     },
     {
         path: '/set',

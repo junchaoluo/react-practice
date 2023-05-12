@@ -3,6 +3,7 @@ import { useLocation, Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import user from '@/store/user/index'
 import Login from '@/views/login'
+import Routes from '@/router'
 
 const PermissionOutlet = () => {
     const location = useLocation()
