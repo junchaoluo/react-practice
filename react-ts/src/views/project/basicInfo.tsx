@@ -3,7 +3,7 @@ import { Card, Form, Row, Col,  Select, Input, AutoComplete, DatePicker, Cascade
 import { useEffect, useState } from 'react'
 import { getProducts } from '@/api/project'
 import { getDeptTree } from '@/api/user'
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -25,7 +25,7 @@ type IProps = {
     }
 }
 
-const BasicInfo = (props: IProps) => {
+const BasicInfo = (props: IProps, ref: any) => {
     
     const projectTypeList: Array<{
         value: string
@@ -50,15 +50,19 @@ const BasicInfo = (props: IProps) => {
         // 查询下拉框数据 产品下拉框、部门下拉框
         getProductList(true)
         getDepartmentOptions()
+    }, [])
+
+    useEffect(() => {
         // 默认的部门
         const departmentIds: string[] = Array.from(props.projectInfo.departments, item => item.id)
         setInitialValues(Object.assign({}, initialValues, {
             departmentIds: departmentIds
         }))
+        form.setFieldValue('departmentIds', departmentIds)
     }, [props.projectInfo.departments])
 
     // 产品下拉框
-    const getProductList = (reset: boolean, key = '') => {
+    const getProductList = useCallback((reset: boolean, key = '') => {
         if (reset) {
             setLoadMoreProductPageNum(1)
             setProductOptions([])
@@ -77,19 +81,19 @@ const BasicInfo = (props: IProps) => {
               setProductOptions(productOptions.concat(...arr))
             }
           })
-    }
+    }, [])
     // 所属部门
-    const getDepartmentOptions = () => {
+    const getDepartmentOptions = useCallback(() => {
         getDeptTree().then((res: {
             result?: Array<never>
         }) => {
             setDepartmentOptions(res.result || [])
         })
-    }
+    },[])
 
     return (
         <>
-            <Card title="基础信息" size="small">
+            <Card title="基础信息" size="small" ref={ref}>
                 <Form form={form} initialValues={initialValues}>
                     <Row gutter={20}>
                         <Col span={8}>
