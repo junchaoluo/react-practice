@@ -2,12 +2,39 @@ import { Space } from 'antd'
 import BasicInfo from "./basicInfo"
 import ProjectMember from "./projectMember"
 import style from './index.module.scss'
+import { getUserDepartment } from '@/api/user'
+import { useState, useEffect } from 'react'
+import store from '@/store/index'
 
 const AddProject = () => {
+    const userInfo = store.getState().handleUser.userInfo
+
+    const [project, setProject] = useState({
+        departments: [],
+        departmentId: '',
+        departmentName: ''
+    })
+
+    // 查询项目信息
+    useEffect(() => {
+        getUserDepartment(userInfo.id).then((res: {
+            result: any
+        }) => {
+            if (res.result.departmentTier?.hasChildren) return
+            const departments = res.result.departmentTier?.departments || []
+            const deparmentLength = departments.length
+            setProject(Object.assign({}, project, {
+                departments: departments,
+                departmentId: departments[deparmentLength - 1]?.id,
+                departmentName: departments[deparmentLength - 1]?.name,
+            }))
+        })
+    }, [])
+
     return (
         <div className={style.backGround}>
             <Space direction="vertical" style={{width: '100%'}}>
-                <BasicInfo type={0}></BasicInfo>
+                <BasicInfo type={0} projectInfo={project}></BasicInfo>
                 <ProjectMember type={0}></ProjectMember>
             </Space>
         </div>

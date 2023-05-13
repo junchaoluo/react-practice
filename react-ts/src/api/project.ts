@@ -1,5 +1,5 @@
 import request from '@/request/index'
-import { ELN_PREFIX } from './constant'
+import { ELN_PREFIX, CHEM_PREFIX, BASE_PREFIX } from './constant'
 
 export function getProjectListByPage(oPathParams: any, oParams: any) {
   return request({
@@ -77,5 +77,19 @@ export function findProjectByAdvanceConditionArchive(page: oParams, data: oParam
     url: ELN_PREFIX + '/project/renew',
     method: 'put',
     data: aParams
+  })
+}
+
+/**
+ * 获取产品list(新增记录本)
+ * @return {Promise}
+ */
+ export function getProducts(pageNum: number, pageSize: number, pdNo: string) {
+  return request({
+    url: CHEM_PREFIX + `/v1/product/product/findProductList/${pageNum}/${pageSize}`,
+    method: 'get',
+    params: {
+      pdNo
+    }
   })
 }
