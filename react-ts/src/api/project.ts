@@ -93,3 +93,14 @@ export function findProjectByAdvanceConditionArchive(page: oParams, data: oParam
     }
   })
 }
+
+/**
+ * 获取项目角色列表
+ * @return {Promise}
+ */
+ export function getProjectRoleList() {
+  return request({
+    url: BASE_PREFIX + '/role/project/query',
+    method: 'get'
+  })
+}

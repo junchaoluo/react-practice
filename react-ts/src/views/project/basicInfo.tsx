@@ -3,7 +3,7 @@ import { Card, Form, Row, Col,  Select, Input, AutoComplete, DatePicker, Cascade
 import { useEffect, useState } from 'react'
 import { getProducts } from '@/api/project'
 import { getDeptTree } from '@/api/user'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, forwardRef } from 'react'
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -25,7 +25,7 @@ type IProps = {
     }
 }
 
-const BasicInfo = (props: IProps, ref: any) => {
+const BasicInfo = memo(forwardRef((props: IProps, ref: any) => {
     
     const projectTypeList: Array<{
         value: string
@@ -93,8 +93,8 @@ const BasicInfo = (props: IProps, ref: any) => {
 
     return (
         <>
-            <Card title="基础信息" size="small" ref={ref}>
-                <Form form={form} initialValues={initialValues}>
+            <Card title="基础信息" size="small">
+                <Form form={form} initialValues={initialValues} ref={ref}>
                     <Row gutter={20}>
                         <Col span={8}>
                             <Form.Item {...layout} label="产品号" name="productId">
@@ -149,6 +149,6 @@ const BasicInfo = (props: IProps, ref: any) => {
             </Card>
         </>
     )
-}
+}))
 
-export default memo(BasicInfo)
+export default BasicInfo

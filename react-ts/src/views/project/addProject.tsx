@@ -33,8 +33,7 @@ const AddProject = () => {
     }, [])
 
     const save = () => {
-        console.log('123')
-        console.log(basicInfoRef)
+        console.log(basicInfoRef.current.getFieldsValue())
     }
 
     return (
@@ -42,13 +41,13 @@ const AddProject = () => {
             <Space direction="vertical" style={{width: '100%'}}>
                 <BasicInfo type={0} projectInfo={project} ref={basicInfoRef}></BasicInfo>
                 <ProjectMember type={0}></ProjectMember>
+                <Card size="small">
+                    <div className={style.footer}>
+                        <Button>取消</Button>
+                        <Button type="primary" onClick={save}>保存</Button>
+                    </div>
+                </Card>
             </Space>
-            <Card size="small">
-                <div className={style.footer}>
-                    <Button>取消</Button>
-                    <Button type="primary" onClick={save}>保存</Button>
-                </div>
-            </Card>
         </div>
     )
 }
