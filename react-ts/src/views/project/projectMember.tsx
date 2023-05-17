@@ -1,12 +1,13 @@
 import style from './index.module.scss'
 import { Card, Table, Divider, Tooltip  } from 'antd'
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState, memo, useRef } from 'react'
 import { getProjectRoleList } from '@/api/project'
 import type { ColumnsType } from 'antd/es/table';
 import {
     UsergroupDeleteOutlined,
     HighlightOutlined
   } from '@ant-design/icons';
+  import ChooseUser from '@/components/chooseUser'
 
 type IProps = {
     type: 0 | 1 | 2 // 新增、编辑、详情
@@ -50,7 +51,7 @@ const ProjectMember = memo((props: IProps) => {
                 return (
                     <div className={style.action}>
                         <Tooltip title="选择人员">
-                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}}/>
+                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal()}/>
                         </Tooltip>
                         <Divider type="vertical"/>
                         <Tooltip title="清除全部">
@@ -95,13 +96,17 @@ const ProjectMember = memo((props: IProps) => {
             setDataSource(arr || [])
         })
     }
-
-    console.log(roleList)
+    const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
+    const chooseUserRef = useRef()
+    const showChooseUserModal = () => {
+        setChooseUserModal(true)
+    }
 
     return (
         <>
             <Card title='项目人员' size="small">
                 <Table dataSource={dataSource} columns={columns} size="small" pagination={false} />
+                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} closeModal={() => setChooseUserModal(false)}/>
             </Card>
         </>
     )
