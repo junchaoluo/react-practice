@@ -97,7 +97,7 @@ const ProjectMember = memo((props: IProps) => {
         })
     }
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
-    const chooseUserRef = useRef()
+    const chooseUserRef = useRef<HTMLElement>()
     const showChooseUserModal = () => {
         setChooseUserModal(true)
     }
