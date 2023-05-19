@@ -16,7 +16,7 @@ const ChooseUser = memo(forwardRef((props:IProps, ref: HTMLElement) => {
     console.log(props, ref)
     const { visible, title = '重庆博腾制药科技股份有限公司', closeModal} = props
     return (
-        <Modal width={800} ref={ref} open={visible} title="选择人员" destroyOnClose={true} onCancel={() => closeModal}>
+        <Modal width={800} ref={ref} open={visible} title="选择人员" destroyOnClose={true} onOk={() => closeModal()} onCancel={() => closeModal()}>
             <div className={style.header}>
                 <div className={style.title}>{title}</div>
                 <div className={style.search}>
