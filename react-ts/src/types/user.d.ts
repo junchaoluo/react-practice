@@ -15,5 +15,31 @@ export interface UserInfo {
     departmentName: string,
     pwdExpirationTime: string,
     remindDay: number,
-    hasReminded: boolean
+    hasReminded: boolean,
+    name?: string
+}
+
+export type Department = {
+    id: string,
+    account: string,
+    code: string,
+    email: string,
+    name: string,
+    status: number
+}
+
+export type SearchUser = UserInfo & {
+    avatar: string | null,
+    createTime: string,
+    department: string,
+    departments: Array<Department>,
+    id: string,
+    isHaveJob: number,
+    location: string,
+    login: boolean,
+    parentName: string,
+    realName: string,
+    role: string,
+    sex: string,
+    status: number
 }
