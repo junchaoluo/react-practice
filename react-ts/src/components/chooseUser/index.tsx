@@ -39,12 +39,12 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
         if(!(isExist && isExist.length > 0)) {
             setCheckedList([...checkedList, user])
         }
-    }, [])
+    }, [checkedList])
 
     // 删除选中的
     const DeleteSelect = useCallback((user: SelectProps) => {
         setCheckedList(checkedList.filter(item => item.id !== user.id))
-    }, [])
+    }, [checkedList])
 
     // 部门点击下级
     const onNext = useCallback((dep: DepartmentProps) => {
