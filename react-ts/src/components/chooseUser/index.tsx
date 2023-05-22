@@ -18,10 +18,10 @@ type IProps = {
 }
 
 const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: HTMLElement) => {
-    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData} = props
+    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = []} = props
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked)
-    const [department, setDepartment] = useState(departmentData || [])
+    const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData)
     const [userList, setUserList] = useState<Array<SelectProps>>([])
     const [showUserSelect, setShowUserSelect] = useState(false)
 
