@@ -28,7 +28,7 @@ export type Department = {
     status: number
 }
 
-export type SearchUser = UserInfo & {
+export type SearchUser = UserInfo &  {
     avatar: string | null,
     createTime: string,
     department: string,

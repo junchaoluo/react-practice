@@ -104,3 +104,17 @@ export function findProjectByAdvanceConditionArchive(page: oParams, data: oParam
     method: 'get'
   })
 }
+
+type getUserListByFuzzyKwParams = {
+  pageIndex: number,
+  pageSize: number,
+  departmentId: '',
+  keywords: string
+}
+export function getUserListByFuzzyKw(oParams:getUserListByFuzzyKwParams) {
+  return request({
+    url: BASE_PREFIX + `/user/list/fuzzy/${oParams.pageIndex}/${oParams.pageSize}`,
+    method: 'post',
+    data: oParams
+  })
+}
