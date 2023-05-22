@@ -33,21 +33,21 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
     console.log(department)
 
     // 右上角搜索选中
-    const SelectUser = (user: SelectProps) => {
+    const SelectUser = useCallback((user: SelectProps) => {
         // 查看checked是否有此信息
         const isExist = checkedList?.filter(item => item.id === user.id)
         if(!(isExist && isExist.length > 0)) {
             setCheckedList([...checkedList, user])
         }
-    }
+    }, [])
 
     // 删除选中的
-    const DeleteSelect = (user: SelectProps) => {
+    const DeleteSelect = useCallback((user: SelectProps) => {
         setCheckedList(checkedList.filter(item => item.id !== user.id))
-    }
+    }, [])
 
     // 部门点击下级
-    const onNext = (dep: DepartmentProps) => {
+    const onNext = useCallback((dep: DepartmentProps) => {
         if(!dep.childNode || dep.childNode.length === 0){
             // childNode 无的话就是最后一级，就可以查询人员了
             setShowUserSelect(true)
@@ -57,7 +57,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
             setShowUserSelect(false)
             setDepartment(dep.childNode)
         }
-    }
+    }, [])
 
     const getStaffList = async (id: string, reset: boolean) => {
         const param:UserSearchParam = { departmentId: id, keywords: '', pageIndex: 1, pageSize: 1000 }

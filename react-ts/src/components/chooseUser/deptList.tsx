@@ -12,7 +12,6 @@ type IProps = {
 
 const DeptList: FC<IProps> = (props) => {
     const { options, onNext } = props
-    console.log(options)
 
     return (
         <div className={style.deptSelect}>
