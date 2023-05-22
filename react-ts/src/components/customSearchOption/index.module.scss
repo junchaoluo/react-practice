@@ -7,6 +7,9 @@
     align-items: center;
     height: 48px;
     max-width: 270px;
+    .moduleContent {
+      display: flex;
+    }
     .avatar {
         height: 32px;
         width: 32px;
@@ -23,6 +26,8 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        display: flex;
+        align-items: center;
         .hasChecked {
             margin-left: 8px;
             border: 1px solid #dcdee0;
@@ -50,6 +55,9 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+          }
+          .cancel {
+            
           }
     }
 }

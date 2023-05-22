@@ -20,12 +20,58 @@
 .userManage {
     display: flex;
     height: calc(100% - 58px);
-    .userSelect {
+    .userSelected, .userSelect {
         flex: 1;
+        height: 100%;
+        overflow-y: auto;
+    }
+    .userSelect {
         border-right: 1px solid #e9e9e9;
     }
     .userSelected {
         flex: 1;
         padding: 14px 24px;
+        box-sizing: border-box;
+    }
+}
+
+.deptSelect {
+    .dept {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-right: 30px;
+        padding: 8px 0;
+        padding-left: 24px;
+        align-items: center;
+        cursor: pointer;
+        .deptLeft {
+            display: flex;
+            align-items: center;
+            .departmentIcon {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background-color: rgb(130 225 146);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .name {
+                margin-left: 4px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 140px;
+            }
+        }
+        .nextDept {
+            color: #999ba3;
+            display: flex;
+            align-items: center;
+            .nextLabel {
+                margin-left: 4px;
+            }
+        }
     }
 }

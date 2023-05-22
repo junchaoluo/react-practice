@@ -1,13 +1,14 @@
 import style from './index.module.scss'
 import { Card, Table, Divider, Tooltip  } from 'antd'
-import { useEffect, useState, memo, useRef } from 'react'
+import { useEffect, useState, memo, useRef, useCallback } from 'react'
 import { getProjectRoleList } from '@/api/project'
 import type { ColumnsType } from 'antd/es/table';
 import {
     UsergroupDeleteOutlined,
     HighlightOutlined
   } from '@ant-design/icons';
-  import ChooseUser from '@/components/chooseUser'
+import ChooseUser from '@/components/chooseUser'
+import { getDeptTree } from '@/api/user'
 
 type IProps = {
     type: 0 | 1 | 2 // 新增、编辑、详情
@@ -64,6 +65,7 @@ const ProjectMember = memo((props: IProps) => {
     ]
     const [roleList, setRoleList] = useState<Array<RoleType>>([])
     const [dataSource, setDataSource] = useState<Array<DataType>>([])
+    const [departmentData, setDepartmentData] = useState([])
 
     useEffect(() => {
         // 查询项目人员的岗位
@@ -98,7 +100,9 @@ const ProjectMember = memo((props: IProps) => {
     }
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
     const chooseUserRef = useRef<HTMLElement>()
-    const showChooseUserModal = () => {
+    const showChooseUserModal = async () => {
+        const { result } = await getDeptTree()
+        setDepartmentData(result || [])
         setChooseUserModal(true)
     }
 
@@ -106,7 +110,7 @@ const ProjectMember = memo((props: IProps) => {
         <>
             <Card title='项目人员' size="small">
                 <Table dataSource={dataSource} columns={columns} size="small" pagination={false} />
-                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} closeModal={() => setChooseUserModal(false)}/>
+                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={[]} disabledList={[]} departmentData={departmentData} closeModal={() => setChooseUserModal(false)}/>
             </Card>
         </>
     )

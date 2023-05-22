@@ -1,10 +1,16 @@
-import { memo, forwardRef, useState, useEffect, useCallback } from 'react'
+import { memo, forwardRef, useState, useEffect, useCallback, FC } from 'react'
 import { Modal } from 'antd'
 import style from './index.module.scss'
 import SearchStaffInput from '@/components/searchStaffInput'
 import { SearchUser, Department } from '@/types/user'
+import DeptList from '@/components/chooseUser/deptList'
+import UserList from '@/components/chooseUser/userList'
+import SelectedList from '@/components/chooseUser/selected'
 
-type UserProps = SearchUser
+type UserProps = SearchUser & Department & {
+    isUser?: boolean,
+    checked?: boolean
+}
 type DepartmentProps = Department
 
 type IProps = {
@@ -16,28 +22,26 @@ type IProps = {
     closeModal: () => void
 }
 
-const ChooseUser = memo(forwardRef((props:IProps, ref: HTMLElement) => {
+const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: HTMLElement) => {
     console.log(props, ref)
-    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = []} = props
+    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData} = props
 
-    const [checkedList, setCheckedList] = useState(checked)
-    const [department, setDepartment] = useState(departmentData)
-
-    useEffect(() => {
-        getDepartmentData()
-    }, [visible])
-
-    const getDepartmentData = useCallback(() => {
-        console.log('123')
-    }, [])
+    const [checkedList, setCheckedList] = useState<Array<UserProps>>(checked)
+    const [department, setDepartment] = useState(departmentData || [])
+    const [showUserSelect, setShowUserSelect] = useState(false)
 
     // 右上角搜索选中
-    const SelectUser = (user: SearchUser) => {
+    const SelectUser = (user: UserProps) => {
         // 查看checked是否有此信息
-        const isExist = checked?.filter(item => item.id === user.id)
+        const isExist = checkedList?.filter(item => item.id === user.id)
         if(!(isExist && isExist.length > 0)) {
             setCheckedList([...checkedList, user])
         }
+    }
+
+    // 删除选中的
+    const DeleteSelect = (user: UserProps) => {
+        setCheckedList(checkedList.filter(item => item.id !== user.id))
     }
 
     return (
@@ -49,13 +53,16 @@ const ChooseUser = memo(forwardRef((props:IProps, ref: HTMLElement) => {
                 </div>
             </div>
             <div className={style.userManage}>
-                <div className={style.userSelect}></div>
-                <div className={style.userSelected}>
+                <div className={style.userSelect}>
                     {
-                        checkedList.map((item: SearchUser) => {
-                            return <div key={item.id}>{item.name}</div>
-                        })
+                        showUserSelect?
+                        <UserList checkedList={[]}/>
+                        :
+                        <DeptList options={department}/>
                     }
+                </div>
+                <div className={style.userSelected}>
+                    <SelectedList checkedList={checkedList} DeleteSelect={DeleteSelect}/>
                 </div>
             </div>
         </Modal>

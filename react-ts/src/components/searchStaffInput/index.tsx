@@ -11,7 +11,9 @@ const { Option, OptGroup } = Select
 
 type IProps = {
     placeholder?: string,
-    SelectUser: (user: SearchUser) => void
+    SelectUser: (user: SearchUser & {
+        isUser: boolean
+    }) => void
 }
 
 let timeout: ReturnType<typeof setTimeout> | null
@@ -58,7 +60,7 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
         try {
             data.forEach((item: SearchUser) => {
                 if(item.id === id) {
-                    SelectUser(item)
+                    SelectUser({...item, isUser: true})
                     setValue('')
                     setData([])
                     throw Error()

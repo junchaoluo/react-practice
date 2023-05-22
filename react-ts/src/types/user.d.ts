@@ -21,11 +21,17 @@ export interface UserInfo {
 
 export type Department = {
     id: string,
-    account: string,
-    code: string,
-    email: string,
+    account?: string,
+    code?: string,
+    email?: string,
     name: string,
-    status: number
+    status?: number,
+    childNode?: Array<Department>,
+    leader?: SearchUser,
+    notebookTypeCode?: string,
+    notebookTypeName?: string,
+    parentDepartment?: string,
+    parentId?: string,
 }
 
 export type SearchUser = UserInfo &  {
@@ -41,5 +47,6 @@ export type SearchUser = UserInfo &  {
     realName: string,
     role: string,
     sex: string,
-    status: number
+    status: number,
+    portonDptName?: string
 }
