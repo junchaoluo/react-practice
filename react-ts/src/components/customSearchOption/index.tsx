@@ -1,14 +1,10 @@
 import { FC, memo } from 'react'
-import { SearchUser } from '@/types/user'
 import style from './index.module.scss'
 import { getUserDept } from '@/util/user'
-
-type UserProps = SearchUser & {
-    checked: string
-}
+import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 
 type IProps = {
-    user: UserProps
+    user: SelectProps
 }
 
 const CustomSearchOption: FC<IProps> = memo((props) => {

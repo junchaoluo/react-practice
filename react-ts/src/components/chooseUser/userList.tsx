@@ -1,9 +1,5 @@
 import { FC } from 'react'
-import { SearchUser, Department } from '@/types/user'
-
-type SelectProps = SearchUser & Department & {
-    isUser: boolean
-}
+import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 
 type IProps = {
     checkedList: Array<SelectProps>

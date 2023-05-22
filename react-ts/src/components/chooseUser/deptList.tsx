@@ -1,12 +1,12 @@
 import { FC } from 'react'
-import {Department} from '@/types/user'
+import {DepartmentProps} from '@/types/chooseUser'
 import { Checkbox } from 'antd'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import style from './index.module.scss'
 import { ApartmentOutlined, PartitionOutlined } from '@ant-design/icons'
 
 type IProps = {
-    options: Array<Department>
+    options: Array<DepartmentProps>
 }
 
 const DeptList: FC<IProps> = (props) => {
@@ -16,7 +16,7 @@ const DeptList: FC<IProps> = (props) => {
         <div className={style.deptSelect}>
             <ul>
                 {
-                    options.map((item: Department) => {
+                    options.map((item: DepartmentProps) => {
                         return (
                             <li key={item.id} className={style.dept}>
                                 <div className={style.deptLeft}>

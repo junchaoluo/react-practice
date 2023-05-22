@@ -9,6 +9,7 @@
     max-width: 270px;
     .moduleContent {
       display: flex;
+      align-items: center;
     }
     .avatar {
         height: 32px;
@@ -26,8 +27,6 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        display: flex;
-        align-items: center;
         .hasChecked {
             margin-left: 8px;
             border: 1px solid #dcdee0;

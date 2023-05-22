@@ -3,17 +3,15 @@ import { Select, Input, Spin } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import type { SelectProps } from 'antd'
 import CustomSearchOption from '@/components/customSearchOption'
-import { SearchUser } from '@/types/user'
 import { debounce } from 'lodash'
 import { getUserListByFuzzyKw } from '@/api/project'
+import { SelectProps as SelectUserProps, DepartmentProps } from '@/types/chooseUser'
 
 const { Option, OptGroup } = Select
 
 type IProps = {
     placeholder?: string,
-    SelectUser: (user: SearchUser & {
-        isUser: boolean
-    }) => void
+    SelectUser: (user: SelectUserProps) => void
 }
 
 let timeout: ReturnType<typeof setTimeout> | null
@@ -42,7 +40,7 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
         const tempOptions = newArr.filter(m => !disabledList.includes(m.id))
         tempOptions.forEach(item => {
             item.name = item.realName
-            checkedList.forEach((check: SearchUser) => {
+            checkedList.forEach((check: SelectUserProps) => {
                 if (item.id === check.id) {
                 item.checked = true
                 }
@@ -58,7 +56,7 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
 
     const onChange = (id: string) => {
         try {
-            data.forEach((item: SearchUser) => {
+            data.forEach((item: SelectUserProps) => {
                 if(item.id === id) {
                     SelectUser({...item, isUser: true})
                     setValue('')
@@ -80,7 +78,7 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
                     {/* <div>你可能想找</div> */}
                     <OptGroup label='你可能想找' value={'0'}>
                     {
-                        data.map((user: SearchUser) => {
+                        data.map((user: SelectUserProps) => {
                             return (
                                 <Option key={user.id} label={user.realName || user.name} value={user.id}>
                                     <CustomSearchOption user={user}/>

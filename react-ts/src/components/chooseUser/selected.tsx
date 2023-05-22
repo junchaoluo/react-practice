@@ -1,13 +1,8 @@
 import { FC } from 'react'
-import { SearchUser, Department } from '@/types/user'
 import style from '@/components/customSearchOption/index.module.scss'
 import { getUserDept } from '@/util/user'
 import { CloseOutlined } from '@ant-design/icons'
-
-type SelectProps = SearchUser & Department & {
-    isUser?: boolean,
-    checked?: boolean
-}
+import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 
 type IProps = {
     checkedList?: Array<SelectProps>,
