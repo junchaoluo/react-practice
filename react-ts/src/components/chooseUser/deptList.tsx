@@ -6,11 +6,13 @@ import style from './index.module.scss'
 import { ApartmentOutlined, PartitionOutlined } from '@ant-design/icons'
 
 type IProps = {
-    options: Array<DepartmentProps>
+    options: Array<DepartmentProps>,
+    onNext: (dep: DepartmentProps) => void
 }
 
 const DeptList: FC<IProps> = (props) => {
-    const { options } = props
+    const { options, onNext } = props
+    console.log(options)
 
     return (
         <div className={style.deptSelect}>
@@ -26,7 +28,7 @@ const DeptList: FC<IProps> = (props) => {
                                     </div>
                                     <div className={style.name}>{item.name}</div>
                                 </div>
-                                <div className={style.nextDept}>
+                                <div className={style.nextDept} onClick={() => onNext(item)}>
                                     <PartitionOutlined />
                                     <div className={style.nextLabel}>下级</div>
                                 </div>

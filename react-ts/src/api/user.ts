@@ -16,3 +16,23 @@ export function getUserDepartment(id: string) {
       method: 'get'
     })
 }
+
+// 获取用户列表
+export type UserSearchParam = {
+  departmentId: string,
+  keywords: string,
+  pageIndex: number,
+  pageSize: number,
+  needCheckAll?: boolean,
+  status?: number
+}
+export function getUserList(oParams: UserSearchParam) {
+  if (!oParams.needCheckAll) {
+    oParams.status = 0 // 过滤冻结状态的用户
+  }
+  return request({
+    url: BASE_PREFIX + `/user/list/${oParams.pageIndex}/${oParams.pageSize}`,
+    method: 'post',
+    data: oParams
+  })
+}

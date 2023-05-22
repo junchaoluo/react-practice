@@ -2,7 +2,8 @@ import { FC } from 'react'
 import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 
 type IProps = {
-    checkedList: Array<SelectProps>
+    checkedList: Array<SelectProps>,
+    options: Array<SelectProps>
 }
 
 const UserList: FC<IProps> = (props) => {
