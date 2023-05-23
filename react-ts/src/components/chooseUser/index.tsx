@@ -14,23 +14,28 @@ type IProps = {
     disabledList?: Array<SelectProps>, // 禁用的
     departmentData?: Array<DepartmentProps>, // 部门数据
     title?: string, // title
-    closeModal: () => void
+    closeModal: () => void,
+    isSingle: boolean // 是否单选
 }
 
 const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: HTMLElement) => {
-    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = []} = props
+    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false} = props
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked)
     const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData)
+    const [previousOptions, setPreviousOptions] = useState<Array<SelectProps>>([])
     const [userList, setUserList] = useState<Array<SelectProps>>([])
     const [showUserSelect, setShowUserSelect] = useState(false)
+
+    useEffect(() => {
+        setDepartment(departmentData)
+    }, [departmentData])
 
     const afterOpenChange = useCallback((openVisible: boolean) => {
         if(!openVisible) {
             setCheckedList([])
         }
     }, [visible])
-    console.log(department)
 
     // 右上角搜索选中
     const SelectUser = useCallback((user: SelectProps) => {
@@ -77,16 +82,16 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
             <div className={style.header}>
                 <div className={style.title}>{title}</div>
                 <div className={style.search}>
-                    <SearchStaffInput SelectUser={SelectUser} disabledList={disabledList} checkedList={checkedList}/>
+                    <SearchStaffInput SelectUser={SelectUser} isSingle={isSingle} disabledList={disabledList} checkedList={checkedList}/>
                 </div>
             </div>
             <div className={style.userManage}>
                 <div className={style.userSelect}>
                     {
                         showUserSelect?
-                        <UserList options={userList} checkedList={[]}/>
+                        <UserList isSingle={isSingle} options={userList} checkedList={[]}/>
                         :
-                        <DeptList options={department} onNext={onNext}/>
+                        <DeptList isSingle={isSingle} options={department} onNext={onNext}/>
                     }
                 </div>
                 <div className={style.userSelected}>

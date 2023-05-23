@@ -1,4 +1,4 @@
-import { forwardRef, memo, FC, useState, useCallback } from 'react'
+import { forwardRef, memo, FC, useState, useCallback, useEffect } from 'react'
 import { Select, Input, Spin } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import type { SelectProps } from 'antd'
@@ -11,27 +11,24 @@ const { Option, OptGroup } = Select
 
 type IProps = {
     placeholder?: string,
-    SelectUser: (user: SelectUserProps) => void
+    SelectUser: (user: SelectUserProps) => void,
+    isSingle: boolean // 是否单选
 }
 
 let timeout: ReturnType<typeof setTimeout> | null
 
 const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查询条件', disabledList = [], checkedList = [], SelectUser,  ...rest}: IProps, ref: HTMLElement) => {
-    console.log(rest, ref, placeholder)
+    console.log(rest, ref, placeholder, checkedList)
     const [data, setData] = useState<SelectProps['options']>([]);
     const [value, setValue] = useState('')
-    const param = {
-        pageIndex: 1,
-        pageSize: 10
-    }
     const [loading, setLoading] = useState(false)
 
     const getData = debounce(useCallback(async (newValue: string, reset = false) => {
         if(!newValue) return
         setLoading(true)
         const { result } = await getUserListByFuzzyKw({
-            pageIndex: param.pageIndex,
-            pageSize: param.pageSize,
+            pageIndex: 1,
+            pageSize: 1000,
             departmentId: '',
             keywords: newValue
         })
@@ -42,13 +39,13 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
             item.name = item.realName
             checkedList.forEach((check: SelectUserProps) => {
                 if (item.id === check.id) {
-                item.checked = true
+                    item.checked = true
                 }
             })
         })
         setData(tempOptions)
         setLoading(false)
-    }, []), 500)
+    }, [checkedList, disabledList]), 500)
 
     const onSearch = (value: string) => {
         getData(value, true)
@@ -58,7 +55,7 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
         try {
             data.forEach((item: SelectUserProps) => {
                 if(item.id === id) {
-                    SelectUser({...item, isUser: true})
+                    SelectUser({...item, isUser: true, checked: true})
                     setValue('')
                     setData([])
                     throw Error()
@@ -74,7 +71,8 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
             <div>
                 <Select ref={ref} showSearch style={{minWidth: '300px'}} showArrow={false} filterOption={false} placeholder={placeholder} value={value}
                 onSearch={onSearch}
-                onChange={onChange}>
+                onChange={onChange}
+                onBlur={() => setData([])}>
                     {/* <div>你可能想找</div> */}
                     <OptGroup label='你可能想找' value={'0'}>
                     {

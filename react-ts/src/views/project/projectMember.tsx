@@ -100,11 +100,11 @@ const ProjectMember = memo((props: IProps) => {
     }
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
     const chooseUserRef = useRef<HTMLElement>()
-    const showChooseUserModal = async () => {
+    const showChooseUserModal = useCallback(async () => {
         const { result } = await getDeptTree()
         setDepartmentData(result || [])
         setChooseUserModal(true)
-    }
+    }, [])
 
     return (
         <>

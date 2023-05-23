@@ -25,7 +25,7 @@ const SelectedList: FC<IProps> = (props) => {
                     return (
                         item.isUser?
                         <li key={item.id}>
-                            <div className={style.module} style={{maxWidth: '100%', 'justify-content': 'space-between'}}>
+                            <div className={style.module} style={{maxWidth: '100%', justifyContent: 'space-between'}}>
                                 <div className={style.moduleContent}>
                                     <div className={style.avatar}>{item.name ? item.name.slice(-1) : item.realName.slice(-1)}</div>
                                     <div className={style.userInfo}>
