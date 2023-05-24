@@ -1,8 +1,13 @@
 import { SearchUser, Department } from '@/types/user'
 
-export type SelectProps = SearchUser & Department & {
+export type DepartmentProps = Department & {
     isUser?: boolean,
     checked?: boolean
 }
 
-export type DepartmentProps = Department
+export type SearchUserProps = SearchUser & {
+    isUser?: boolean,
+    checked?: boolean
+}
+
+export type SelectProps = DepartmentProps | SearchUserProps

@@ -77,6 +77,16 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
         setUserList(newArr.filter(m => !disabledList.includes(m.id)) || [])
     }
 
+    const changeCheckDep = (dep: DepartmentProps, checked: boolean) => {
+        if(checked){
+            // 选中
+            dep.checked = true
+            setCheckedList([...checkedList, dep])
+        }else{
+            // 取消选中
+        }
+    }
+
     return (
         <Modal width={800} afterOpenChange={afterOpenChange} ref={ref} open={visible} bodyStyle={{height: '500px', padding: 0}} style={{padding: 0}} title="选择人员" cancelText="取消" okText="确定" destroyOnClose={true} onOk={() => closeModal()} onCancel={() => closeModal()}>
             <div className={style.header}>
@@ -91,7 +101,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
                         showUserSelect?
                         <UserList isSingle={isSingle} options={userList} checkedList={[]}/>
                         :
-                        <DeptList isSingle={isSingle} options={department} onNext={onNext}/>
+                        <DeptList isSingle={isSingle} options={department} onNext={onNext} changeCheckDep={changeCheckDep}/>
                     }
                 </div>
                 <div className={style.userSelected}>

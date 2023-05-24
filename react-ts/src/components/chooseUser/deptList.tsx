@@ -4,19 +4,22 @@ import { Checkbox } from 'antd'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import style from './index.module.scss'
 import { ApartmentOutlined, PartitionOutlined } from '@ant-design/icons'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 type IProps = {
     options: Array<DepartmentProps>,
     onNext: (dep: DepartmentProps) => void,
-    isSingle: boolean // 是否单选
+    isSingle: boolean, // 是否单选
+    changeCheckDep: (dep: DepartmentProps, checekd: boolean) => void
 }
 
 const DeptList: FC<IProps> = (props) => {
-    const { options, onNext } = props
+    const { options, onNext, changeCheckDep } = props
 
-    const changeCheck = useCallback(() => {
-
-    }, [])
+    const changeCheck = (item: DepartmentProps, e: CheckboxChangeEvent) => {
+        const checked = e.target.checked
+        changeCheckDep(item, checked)
+    }
 
     return (
         <div className={style.deptSelect}>
@@ -26,7 +29,7 @@ const DeptList: FC<IProps> = (props) => {
                         return (
                             <li key={item.id} className={style.dept}>
                                 <div className={style.deptLeft}>
-                                    <Checkbox onChange={(value) => changeCheck(item, value)} label={item.id} value={item.id}>{''}</Checkbox>
+                                    <Checkbox onChange={(value: CheckboxChangeEvent) => changeCheck(item, value)} label={item.id} checked={item.checked}>{''}</Checkbox>
                                     <div className={style.departmentIcon}>
                                         <ApartmentOutlined style={{color: 'green'}} />
                                     </div>

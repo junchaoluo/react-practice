@@ -16,7 +16,8 @@ export interface UserInfo {
     pwdExpirationTime: string,
     remindDay: number,
     hasReminded: boolean,
-    name?: string
+    name?: string,
+    realName?: string,
 }
 
 export type Department = {
