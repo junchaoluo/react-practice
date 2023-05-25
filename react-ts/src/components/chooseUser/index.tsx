@@ -21,11 +21,11 @@ type IProps = {
 const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: HTMLElement) => {
     const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false} = props
 
-    const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked)
-    const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData)
-    const [previousOptions, setPreviousOptions] = useState<Array<SelectProps>>([])
-    const [userList, setUserList] = useState<Array<SelectProps>>([])
-    const [showUserSelect, setShowUserSelect] = useState(false)
+    const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked) // 选中的人员
+    const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData) // 部门数据
+    const [previousOptions, setPreviousOptions] = useState<Array<SelectProps>>([]) // 上一步数据
+    const [userList, setUserList] = useState<Array<SelectProps>>([]) // 人员数据
+    const [showUserSelect, setShowUserSelect] = useState(false) // 展示人员还是部门数据
 
     useEffect(() => {
         setDepartment(departmentData)
@@ -53,6 +53,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
 
     // 部门点击下级
     const onNext = useCallback((dep: DepartmentProps) => {
+        setPreviousOptions([...previousOptions, dep])
         if(!dep.childNode || dep.childNode.length === 0){
             // childNode 无的话就是最后一级，就可以查询人员了
             setShowUserSelect(true)
@@ -77,6 +78,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
         setUserList(newArr.filter(m => !disabledList.includes(m.id)) || [])
     }
 
+    // 选中部门数据
     const changeCheckDep = (dep: DepartmentProps, checked: boolean) => {
         if(checked){
             // 选中
@@ -85,6 +87,13 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
         }else{
             // 取消选中
         }
+    }
+
+    // 返回上一级
+    const prevStep = () => {
+        setShowUserSelect(false)
+        const popDepar = previousOptions.pop() as DepartmentProps
+        setDepartment(popDepar)
     }
 
     return (
@@ -101,7 +110,13 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
                         showUserSelect?
                         <UserList isSingle={isSingle} options={userList} checkedList={[]}/>
                         :
-                        <DeptList isSingle={isSingle} options={department} onNext={onNext} changeCheckDep={changeCheckDep}/>
+                        <DeptList
+                            isSingle={isSingle} 
+                            options={department} 
+                            onNext={onNext} 
+                            previousOptions={previousOptions} 
+                            changeCheckDep={changeCheckDep}
+                            prevStep={prevStep}/>
                     }
                 </div>
                 <div className={style.userSelected}>

@@ -48,15 +48,6 @@
         .deptLeft {
             display: flex;
             align-items: center;
-            .departmentIcon {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                background-color: rgb(130 225 146);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
             .name {
                 margin-left: 4px;
                 overflow: hidden;
@@ -73,5 +64,32 @@
                 margin-left: 4px;
             }
         }
+    }
+}
+
+
+.departmentIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgb(130 225 146);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.preStep {
+    height: 32px;
+    color: #999ba3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 8px 0 8px 24px;
+    .preStepLabel {
+        margin-left: 8px;
+    }
+    &:hover {
+        cursor: pointer;
     }
 }

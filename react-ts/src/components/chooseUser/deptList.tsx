@@ -1,20 +1,22 @@
 import { FC, useCallback } from 'react'
-import {DepartmentProps} from '@/types/chooseUser'
+import {DepartmentProps, SelectProps} from '@/types/chooseUser'
 import { Checkbox } from 'antd'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import style from './index.module.scss'
-import { ApartmentOutlined, PartitionOutlined } from '@ant-design/icons'
+import { ApartmentOutlined, PartitionOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 type IProps = {
     options: Array<DepartmentProps>,
     onNext: (dep: DepartmentProps) => void,
     isSingle: boolean, // 是否单选
-    changeCheckDep: (dep: DepartmentProps, checekd: boolean) => void
+    changeCheckDep: (dep: DepartmentProps, checekd: boolean) => void,
+    previousOptions: Array<SelectProps>,
+    prevStep: () => void
 }
 
 const DeptList: FC<IProps> = (props) => {
-    const { options, onNext, changeCheckDep } = props
+    const { options, onNext, changeCheckDep, previousOptions = [], prevStep } = props
 
     const changeCheck = (item: DepartmentProps, e: CheckboxChangeEvent) => {
         const checked = e.target.checked
@@ -24,6 +26,15 @@ const DeptList: FC<IProps> = (props) => {
     return (
         <div className={style.deptSelect}>
             <ul>
+                {
+                    previousOptions && previousOptions.length > 0 ?
+                    <li className={style.preStep} onClick={() => prevStep()}>
+                        <ArrowLeftOutlined />
+                        <span className={style.preStepLabel}>返回上一级</span>
+                    </li>
+                    :
+                    ''
+                }
                 {
                     options.map((item: DepartmentProps) => {
                         return (

@@ -10,4 +10,4 @@ export type SearchUserProps = SearchUser & {
     checked?: boolean
 }
 
-export type SelectProps = DepartmentProps | SearchUserProps
+export type SelectProps = SearchUserProps | DepartmentProps
