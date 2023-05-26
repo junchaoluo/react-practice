@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext } from 'react'
+import { FC, useCallback, useContext,useState, useEffect } from 'react'
 import {DepartmentProps, SelectProps} from '@/types/chooseUser'
 import { Checkbox } from 'antd'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
@@ -17,6 +17,12 @@ const DeptList: FC<IProps> = (props) => {
     const ctx = useContext(ChooseUseContext)
     const { onNext, changeCheckDep, prevStep } = props
     const { department = [], previousOptions = [] } = ctx
+    const [isParentDep, setIsParentDep] = useState(false)
+
+    useEffect(() => {
+        const parent = department.every((item: DepartmentProps) => item.parentId == 0)
+        setIsParentDep(!!parent)
+    }, [department])
 
     const changeCheck = (item: DepartmentProps, e: CheckboxChangeEvent) => {
         const checked = e.target.checked
@@ -27,13 +33,13 @@ const DeptList: FC<IProps> = (props) => {
         <div className={style.deptSelect}>
             <ul>
                 {
-                    previousOptions && previousOptions.length > 0 ?
+                    isParentDep ?
+                    ''
+                    :
                     <li className={style.preStep} onClick={() => prevStep()}>
                         <ArrowLeftOutlined />
                         <span className={style.preStepLabel}>返回上一级</span>
                     </li>
-                    :
-                    ''
                 }
                 {
                     department.map((item: DepartmentProps) => {

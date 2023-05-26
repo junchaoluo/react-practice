@@ -68,7 +68,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
 
     // 部门点击下级
     const onNext = useCallback(async (dep: DepartmentProps) => {
-        setPreviousOptions([...previousOptions, dep])
+        setPreviousOptions([...previousOptions, ...department])
         if(!dep.childNode || dep.childNode.length === 0){
             // childNode 无的话就是最后一级，就可以查询人员了
             setShowUserSelect(true)
@@ -79,7 +79,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
             setShowUserSelect(false)
             setDepartment(dep.childNode)
         }
-    }, [previousOptions, checkedList, userList, disabledList])
+    }, [checkedList, userList, disabledList, department, previousOptions])
 
     // 选中部门数据
     const changeCheckDep = useCallback((dep: DepartmentProps, checked: boolean) => {

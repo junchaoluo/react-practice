@@ -32,7 +32,7 @@ export type Department = {
     notebookTypeCode?: string,
     notebookTypeName?: string,
     parentDepartment?: string,
-    parentId?: string,
+    parentId?: number | string,
 }
 
 export type SearchUser = UserInfo &  {
