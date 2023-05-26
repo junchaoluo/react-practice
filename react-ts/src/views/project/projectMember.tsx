@@ -9,6 +9,7 @@ import {
   } from '@ant-design/icons';
 import ChooseUser from '@/components/chooseUser'
 import { getDeptTree } from '@/api/user'
+import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 
 type IProps = {
     type: 0 | 1 | 2 // 新增、编辑、详情
@@ -106,11 +107,15 @@ const ProjectMember = memo((props: IProps) => {
         setChooseUserModal(true)
     }, [])
 
+    const confirm = useCallback((select: Array<SelectProps>) => {
+        console.log(select)
+    }, [chooseUserModal])
+
     return (
         <>
             <Card title='项目人员' size="small">
                 <Table dataSource={dataSource} columns={columns} size="small" pagination={false} />
-                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={[]} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)}/>
+                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={[]} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)} confirm={confirm}/>
             </Card>
         </>
     )

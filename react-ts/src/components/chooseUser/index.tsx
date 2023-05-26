@@ -16,6 +16,7 @@ type IProps = {
     departmentData?: Array<DepartmentProps>, // 部门数据
     title?: string, // title
     closeModal: () => void,
+    confirm: (select: Array<SelectProps> | SelectProps) => void,
     isSingle: boolean, // 是否单选
     isDepartmentCheck?: boolean, // 是否可以选择部门
     isUserCheck?: boolean, // 是否可以选择人员
@@ -36,7 +37,7 @@ const getStaffList = async (id: string, reset: boolean, checkedList: Array<Selec
 }
 
 const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: HTMLElement) => {
-    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false, isDepartmentCheck = true, isUserCheck = true} = props
+    const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false, isDepartmentCheck = true, isUserCheck = true, confirm} = props
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked) // 选中的人员
     const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData) // 部门数据
@@ -120,7 +121,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
     }, [checkedList])
 
     return (
-        <Modal width={800} afterOpenChange={afterOpenChange} ref={ref} open={visible} bodyStyle={{height: '500px', padding: 0}} style={{padding: 0}} title="选择人员" cancelText="取消" okText="确定" destroyOnClose={true} onOk={() => closeModal()} onCancel={() => closeModal()}>
+        <Modal width={800} afterOpenChange={afterOpenChange} ref={ref} open={visible} bodyStyle={{height: '500px', padding: 0}} style={{padding: 0}} title="选择人员" cancelText="取消" okText="确定" destroyOnClose={true} onOk={() => confirm(checkedList)} onCancel={() => closeModal()}>
             <ChooseUserContext.Provider value={{checkedList: checkedList, disabledList: disabledList, department: department, previousOptions: previousOptions, userList: userList, isSingle: isSingle, isDepartmentCheck: isDepartmentCheck, isUserCheck: isUserCheck}}>
                 <div className={style.header}>
                     <div className={style.title}>{title}</div>
