@@ -26,6 +26,30 @@ type DataType = RoleType & {
     user: Array<never>, // 人员配置
 }
 
+
+
+const getRoleList = async (setRoleList: any, setDataSource: any) => {
+    const res = await getProjectRoleList()
+    setRoleList(res.result || [])
+    let arr: DataType[] = []
+    arr = res.result.map((item: RoleType) => {
+        const obj: DataType = {
+            id: '',
+            isCheck: 0,
+            name: '',
+            type: 0,
+            user: []
+        }
+        obj.id = item.id
+        obj.isCheck = item.isCheck
+        obj.name = item.name
+        obj.type = item.type
+        obj.user = []
+        return obj
+    })
+    setDataSource(arr || [])
+}
+
 const ProjectMember = memo((props: IProps) => {
     const columns: ColumnsType<DataType> = [
         {
@@ -72,34 +96,9 @@ const ProjectMember = memo((props: IProps) => {
     useEffect(() => {
         // 查询项目人员的岗位
         if(props.type === 0) {
-            getRoleList()
+            getRoleList(setRoleList, setDataSource)
         }
-    }, [])
-
-    const getRoleList = () => {
-        getProjectRoleList().then((res: {
-            result: Array<never>
-        }) => {
-            setRoleList(res.result || [])
-            let arr: DataType[] = []
-            arr = res.result.map((item: RoleType) => {
-                const obj: DataType = {
-                    id: '',
-                    isCheck: 0,
-                    name: '',
-                    type: 0,
-                    user: []
-                }
-                obj.id = item.id
-                obj.isCheck = item.isCheck
-                obj.name = item.name
-                obj.type = item.type
-                obj.user = []
-                return obj
-            })
-            setDataSource(arr || [])
-        })
-    }
+    }, [props.type])
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
     const chooseUserRef = useRef<HTMLElement>()
     const showChooseUserModal = useCallback(async (index: number) => {
