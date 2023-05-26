@@ -18,7 +18,6 @@ type IProps = {
 let timeout: ReturnType<typeof setTimeout> | null
 
 const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查询条件', disabledList = [], checkedList = [], SelectUser,  ...rest}: IProps, ref: HTMLElement) => {
-    console.log(rest, ref, placeholder, checkedList)
     const [data, setData] = useState<SelectProps['options']>([]);
     const [value, setValue] = useState('')
     const [loading, setLoading] = useState(false)

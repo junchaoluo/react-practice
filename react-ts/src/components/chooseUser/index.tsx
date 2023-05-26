@@ -18,6 +18,20 @@ type IProps = {
     isSingle: boolean // 是否单选
 }
 
+const getStaffList = async (id: string, reset: boolean, checkedList: Array<SelectProps>, userList: Array<SelectProps>, disabledList: Array<SelectProps>) => {
+    const param:UserSearchParam = { departmentId: id, keywords: '', pageIndex: 1, pageSize: 1000 }
+    const { result } = await getUserList(param)
+    const { list } = result
+    const options = reset ? [...list] : [...userList, ...list]
+    const newArr = options.map(r => {
+        r.name = r.realName
+        r.checked = checkedList.findIndex(o => o.id === r.id) > -1
+        return r
+    })
+    const arr: Array<SelectProps> = newArr.filter(m => !disabledList.includes(m.id)) || []
+    return arr
+}
+
 const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: HTMLElement) => {
     const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false} = props
 
@@ -52,34 +66,22 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
     }, [checkedList])
 
     // 部门点击下级
-    const onNext = useCallback((dep: DepartmentProps) => {
+    const onNext = useCallback(async (dep: DepartmentProps) => {
         setPreviousOptions([...previousOptions, dep])
         if(!dep.childNode || dep.childNode.length === 0){
             // childNode 无的话就是最后一级，就可以查询人员了
             setShowUserSelect(true)
-            getStaffList(dep.id, true)
+            const arr: Array<SelectProps> = await getStaffList(dep.id, true, checkedList, userList, disabledList)
+            setUserList(arr)
         }else{
             // 否则显示下一级部门列表
             setShowUserSelect(false)
             setDepartment(dep.childNode)
         }
-    }, [])
-
-    const getStaffList = async (id: string, reset: boolean) => {
-        const param:UserSearchParam = { departmentId: id, keywords: '', pageIndex: 1, pageSize: 1000 }
-        const { result } = await getUserList(param)
-        const { list } = result
-        const options = reset ? [...list] : [...userList, ...list]
-        const newArr = options.map(r => {
-            r.name = r.realName
-            r.checked = checkedList.findIndex(o => o.id === r.id) > -1
-            return r
-        })
-        setUserList(newArr.filter(m => !disabledList.includes(m.id)) || [])
-    }
+    }, [previousOptions, checkedList, userList, disabledList])
 
     // 选中部门数据
-    const changeCheckDep = (dep: DepartmentProps, checked: boolean) => {
+    const changeCheckDep = useCallback((dep: DepartmentProps, checked: boolean) => {
         if(checked){
             // 选中
             dep.checked = true
@@ -87,14 +89,14 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
         }else{
             // 取消选中
         }
-    }
+    }, [checkedList])
 
     // 返回上一级
-    const prevStep = () => {
+    const prevStep = useCallback(() => {
         setShowUserSelect(false)
         const popDepar = previousOptions.pop() as DepartmentProps
-        setDepartment(popDepar)
-    }
+        setDepartment([popDepar])
+    }, [previousOptions])
 
     return (
         <Modal width={800} afterOpenChange={afterOpenChange} ref={ref} open={visible} bodyStyle={{height: '500px', padding: 0}} style={{padding: 0}} title="选择人员" cancelText="取消" okText="确定" destroyOnClose={true} onOk={() => closeModal()} onCancel={() => closeModal()}>
