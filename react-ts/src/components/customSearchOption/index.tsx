@@ -1,7 +1,8 @@
-import { FC, memo } from 'react'
+import { FC, memo, useContext } from 'react'
 import style from './index.module.scss'
 import { getUserDept } from '@/util/user'
-import { SelectProps, DepartmentProps } from '@/types/chooseUser'
+import { SelectProps, DepartmentProps, SearchUserProps } from '@/types/chooseUser'
+import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
 
 type IProps = {
     user: SelectProps
@@ -11,10 +12,10 @@ const CustomSearchOption: FC<IProps> = memo((props) => {
     const { user } = props
     return (
         <div className={style.module}>
-            <div className={style.avatar}>{user.name ? user.name.slice(-1) : user.realName.slice(-1)}</div>
+            <div className={style.avatar}>{user.name ? user.name.slice(-1) : (user as SearchUserProps).realName.slice(-1)}</div>
             <div className={style.userInfo}>
                 <div className={style.account}>
-                    <span>{ user.name || user.realName }</span>
+                    <span>{ user.name || (user as SearchUserProps).realName }</span>
                     <span className={style.accountText}>{ `(${user.account})` }</span>
                     {
                         user.checked?

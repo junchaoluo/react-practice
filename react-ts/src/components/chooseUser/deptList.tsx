@@ -1,22 +1,22 @@
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useContext } from 'react'
 import {DepartmentProps, SelectProps} from '@/types/chooseUser'
 import { Checkbox } from 'antd'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import style from './index.module.scss'
 import { ApartmentOutlined, PartitionOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
 
 type IProps = {
-    options: Array<DepartmentProps>,
     onNext: (dep: DepartmentProps) => void,
-    isSingle: boolean, // 是否单选
     changeCheckDep: (dep: DepartmentProps, checekd: boolean) => void,
-    previousOptions: Array<SelectProps>,
     prevStep: () => void
 }
 
 const DeptList: FC<IProps> = (props) => {
-    const { options, onNext, changeCheckDep, previousOptions = [], prevStep } = props
+    const ctx = useContext(ChooseUseContext)
+    const { onNext, changeCheckDep, prevStep } = props
+    const { department = [], previousOptions = [] } = ctx
 
     const changeCheck = (item: DepartmentProps, e: CheckboxChangeEvent) => {
         const checked = e.target.checked
@@ -36,7 +36,7 @@ const DeptList: FC<IProps> = (props) => {
                     ''
                 }
                 {
-                    options.map((item: DepartmentProps) => {
+                    department.map((item: DepartmentProps) => {
                         return (
                             <li key={item.id} className={style.dept}>
                                 <div className={style.deptLeft}>

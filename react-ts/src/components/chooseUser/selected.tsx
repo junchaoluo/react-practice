@@ -1,19 +1,20 @@
-import { FC } from 'react'
+import { FC, useContext } from 'react'
 import style from '@/components/customSearchOption/index.module.scss'
 import depStyle from './index.module.scss'
 import { getUserDept } from '@/util/user'
 import { CloseOutlined, ApartmentOutlined } from '@ant-design/icons'
 import { SelectProps, SearchUserProps } from '@/types/chooseUser'
+import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
 
 type IProps = {
-    checkedList?: Array<SelectProps>,
     title?: string,
     DeleteSelect: (user: SelectProps) => void
 }
 
 const SelectedList: FC<IProps> = (props) => {
-    
-    const { checkedList = [], title='已选人员', DeleteSelect } = props
+    const ctx = useContext(ChooseUseContext)
+    const { DeleteSelect, title='已选人员' } = props
+    const { checkedList = [] } = ctx
     const deleteSelected = (user: SelectProps) => {
         DeleteSelect(user)
     }

@@ -49,5 +49,6 @@ export type SearchUser = UserInfo &  {
     role: string,
     sex: string,
     status: number,
-    portonDptName?: string
+    portonDptName?: string,
+    realName?: string,
 }

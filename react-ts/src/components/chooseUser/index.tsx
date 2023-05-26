@@ -7,6 +7,7 @@ import UserList from '@/components/chooseUser/userList'
 import SelectedList from '@/components/chooseUser/selected'
 import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 import { getUserList, UserSearchParam } from '@/api/user'
+import ChooseUserContext from './chooseUserContext'
 
 type IProps = {
     visible: boolean, // 弹窗是否显示
@@ -37,7 +38,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked) // 选中的人员
     const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData) // 部门数据
-    const [previousOptions, setPreviousOptions] = useState<Array<SelectProps>>([]) // 上一步数据
+    const [previousOptions, setPreviousOptions] = useState<Array<DepartmentProps>>([]) // 上一步数据
     const [userList, setUserList] = useState<Array<SelectProps>>([]) // 人员数据
     const [showUserSelect, setShowUserSelect] = useState(false) // 展示人员还是部门数据
 
@@ -100,31 +101,30 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
 
     return (
         <Modal width={800} afterOpenChange={afterOpenChange} ref={ref} open={visible} bodyStyle={{height: '500px', padding: 0}} style={{padding: 0}} title="选择人员" cancelText="取消" okText="确定" destroyOnClose={true} onOk={() => closeModal()} onCancel={() => closeModal()}>
-            <div className={style.header}>
-                <div className={style.title}>{title}</div>
-                <div className={style.search}>
-                    <SearchStaffInput SelectUser={SelectUser} isSingle={isSingle} disabledList={disabledList} checkedList={checkedList}/>
+            <ChooseUserContext.Provider value={{checkedList: checkedList, disabledList: disabledList, department: department, previousOptions: previousOptions, userList: userList, isSingle: isSingle}}>
+                <div className={style.header}>
+                    <div className={style.title}>{title}</div>
+                    <div className={style.search}>
+                        <SearchStaffInput SelectUser={SelectUser}/>
+                    </div>
                 </div>
-            </div>
-            <div className={style.userManage}>
-                <div className={style.userSelect}>
-                    {
-                        showUserSelect?
-                        <UserList isSingle={isSingle} options={userList} checkedList={[]}/>
-                        :
-                        <DeptList
-                            isSingle={isSingle} 
-                            options={department} 
-                            onNext={onNext} 
-                            previousOptions={previousOptions} 
-                            changeCheckDep={changeCheckDep}
-                            prevStep={prevStep}/>
-                    }
+                <div className={style.userManage}>
+                    <div className={style.userSelect}>
+                        {
+                            showUserSelect?
+                            <UserList/>
+                            :
+                            <DeptList
+                                onNext={onNext} 
+                                changeCheckDep={changeCheckDep}
+                                prevStep={prevStep}/>
+                        }
+                    </div>
+                    <div className={style.userSelected}>
+                        <SelectedList DeleteSelect={DeleteSelect}/>
+                    </div>
                 </div>
-                <div className={style.userSelected}>
-                    <SelectedList checkedList={checkedList} DeleteSelect={DeleteSelect}/>
-                </div>
-            </div>
+            </ChooseUserContext.Provider>
         </Modal>
     )
 }))

@@ -1,14 +1,15 @@
-import { FC } from 'react'
+import { FC, useContext } from 'react'
 import { SelectProps, DepartmentProps } from '@/types/chooseUser'
+import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
 
 type IProps = {
-    checkedList: Array<SelectProps>,
-    options: Array<SelectProps>,
-    isSingle: boolean // 是否单选
 }
 
 const UserList: FC<IProps> = (props) => {
-    console.log(props)
+    const ctx = useContext(ChooseUseContext)
+    const { userList = [], checkedList = [], isSingle = false} = ctx
+
+    console.log(props, userList, checkedList, isSingle)
     return (
         <div>UserList</div>
     )

@@ -1,4 +1,4 @@
-import { forwardRef, memo, FC, useState, useCallback, useEffect } from 'react'
+import { forwardRef, memo, FC, useState, useCallback, useEffect, useContext } from 'react'
 import { Select, Input, Spin } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import type { SelectProps } from 'antd'
@@ -6,21 +6,23 @@ import CustomSearchOption from '@/components/customSearchOption'
 import { debounce } from 'lodash'
 import { getUserListByFuzzyKw } from '@/api/project'
 import { SelectProps as SelectUserProps, DepartmentProps } from '@/types/chooseUser'
+import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
 
 const { Option, OptGroup } = Select
 
 type IProps = {
     placeholder?: string,
-    SelectUser: (user: SelectUserProps) => void,
-    isSingle: boolean // 是否单选
+    SelectUser: (user: SelectUserProps) => void
 }
 
-let timeout: ReturnType<typeof setTimeout> | null
+const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder = '请输入搜索', SelectUser,  ...rest}: IProps, ref: HTMLElement) => {
+    const ctx = useContext(ChooseUseContext)
+    const { disabledList = [], checkedList = []} = ctx
 
-const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查询条件', disabledList = [], checkedList = [], SelectUser,  ...rest}: IProps, ref: HTMLElement) => {
     const [data, setData] = useState<SelectProps['options']>([]);
     const [value, setValue] = useState('')
     const [loading, setLoading] = useState(false)
+
 
     const getData = debounce(useCallback(async (newValue: string, reset = false) => {
         if(!newValue) return
