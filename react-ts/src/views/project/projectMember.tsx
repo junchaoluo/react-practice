@@ -53,7 +53,7 @@ const ProjectMember = memo((props: IProps) => {
                 return (
                     <div className={style.action}>
                         <Tooltip title="选择人员">
-                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal()}/>
+                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal(index)}/>
                         </Tooltip>
                         <Divider type="vertical"/>
                         <Tooltip title="清除全部">
@@ -67,6 +67,7 @@ const ProjectMember = memo((props: IProps) => {
     const [roleList, setRoleList] = useState<Array<RoleType>>([])
     const [dataSource, setDataSource] = useState<Array<DataType>>([])
     const [departmentData, setDepartmentData] = useState([])
+    const [selectIndex, setSelectIndex] = useState<number>(0) // 选择的哪一行
 
     useEffect(() => {
         // 查询项目人员的岗位
@@ -101,15 +102,17 @@ const ProjectMember = memo((props: IProps) => {
     }
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
     const chooseUserRef = useRef<HTMLElement>()
-    const showChooseUserModal = useCallback(async () => {
+    const showChooseUserModal = useCallback(async (index: number) => {
         const { result } = await getDeptTree()
+        setSelectIndex(index)
         setDepartmentData(result || [])
         setChooseUserModal(true)
     }, [])
 
     const confirm = useCallback((select: Array<SelectProps>) => {
-        console.log(select)
-    }, [chooseUserModal])
+        console.log(select, selectIndex)
+        setChooseUserModal(false)
+    }, [setChooseUserModal, selectIndex])
 
     return (
         <>
