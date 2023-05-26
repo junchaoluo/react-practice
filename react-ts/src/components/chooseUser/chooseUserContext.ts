@@ -6,7 +6,7 @@ type contextProps = {
     disabledList?: Array<SelectProps>, // 禁用的
     userList?: Array<SelectProps>, // 禁用的
     department?: Array<DepartmentProps>, // 部门数据
-    previousOptions?: Array<DepartmentProps>, // 部门数据
+    previousOptions?: Array<Array<DepartmentProps>>, // 部门数据
     isSingle: boolean // 是否单选
 }
 

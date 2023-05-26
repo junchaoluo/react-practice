@@ -38,7 +38,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked) // 选中的人员
     const [department, setDepartment] = useState<Array<DepartmentProps>>(departmentData) // 部门数据
-    const [previousOptions, setPreviousOptions] = useState<Array<DepartmentProps>>([]) // 上一步数据
+    const [previousOptions, setPreviousOptions] = useState<Array<Array<DepartmentProps>>>([[]]) // 上一步数据
     const [userList, setUserList] = useState<Array<SelectProps>>([]) // 人员数据
     const [showUserSelect, setShowUserSelect] = useState(false) // 展示人员还是部门数据
 
@@ -68,7 +68,9 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
 
     // 部门点击下级
     const onNext = useCallback(async (dep: DepartmentProps) => {
-        setPreviousOptions([...previousOptions, ...department])
+        const arr1 = [...previousOptions]
+        arr1.push(department)
+        setPreviousOptions(arr1)
         if(!dep.childNode || dep.childNode.length === 0){
             // childNode 无的话就是最后一级，就可以查询人员了
             setShowUserSelect(true)
@@ -80,6 +82,12 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
             setDepartment(dep.childNode)
         }
     }, [checkedList, userList, disabledList, department, previousOptions])
+    // 返回上一级
+    const prevStep = useCallback(() => {
+        setShowUserSelect(false)
+        const popDepar = previousOptions.pop() as Array<DepartmentProps>
+        setDepartment(popDepar)
+    }, [previousOptions])
 
     // 选中部门数据
     const changeCheckDep = useCallback((dep: DepartmentProps, checked: boolean) => {
@@ -91,13 +99,6 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
             // 取消选中
         }
     }, [checkedList])
-
-    // 返回上一级
-    const prevStep = useCallback(() => {
-        setShowUserSelect(false)
-        const popDepar = previousOptions.pop() as DepartmentProps
-        setDepartment([popDepar])
-    }, [previousOptions])
 
     return (
         <Modal width={800} afterOpenChange={afterOpenChange} ref={ref} open={visible} bodyStyle={{height: '500px', padding: 0}} style={{padding: 0}} title="选择人员" cancelText="取消" okText="确定" destroyOnClose={true} onOk={() => closeModal()} onCancel={() => closeModal()}>
