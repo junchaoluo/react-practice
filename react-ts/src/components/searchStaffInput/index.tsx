@@ -44,7 +44,7 @@ const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder='请输入查�
         })
         setData(tempOptions)
         setLoading(false)
-    }, [checkedList, disabledList]), 500)
+    }, [checkedList, disabledList, data]), 500)
 
     const onSearch = (value: string) => {
         getData(value, true)
