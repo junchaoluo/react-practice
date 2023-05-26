@@ -14,7 +14,7 @@ type IProps = {
 
 const UserList: FC<IProps> = (props) => {
     const ctx = useContext(ChooseUseContext)
-    const { userList = [], checkedList = [], isSingle = false} = ctx
+    const { userList = [], checkedList = [], isSingle = false, isUserCheck} = ctx
     const { prevStep, changeCheckItem } = props
 
     const changeCheck = (item: SelectProps, e: CheckboxChangeEvent) => {
@@ -35,7 +35,12 @@ const UserList: FC<IProps> = (props) => {
                         return (
                             <li key={item.id} className={style.module}>
                                 <div className={style.moduleContent}>
-                                    <Checkbox onChange={(value: CheckboxChangeEvent) => changeCheck(item, value)} label={item.id} checked={item.checked}>{''}</Checkbox>
+                                    {
+                                        isUserCheck?
+                                        <Checkbox onChange={(value: CheckboxChangeEvent) => changeCheck(item, value)} label={item.id} checked={item.checked}>{''}</Checkbox>
+                                        :
+                                        ''
+                                    }
                                     <div className={style.avatar}>{item.name ? item.name.slice(-1) : (item as SearchUserProps).realName.slice(-1)}</div><div className={style.userInfo}>
                                         <div className={style.account}>
                                             <span>{item.name || (item as SearchUserProps).realName}</span>

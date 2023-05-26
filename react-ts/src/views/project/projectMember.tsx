@@ -110,7 +110,7 @@ const ProjectMember = memo((props: IProps) => {
         <>
             <Card title='项目人员' size="small">
                 <Table dataSource={dataSource} columns={columns} size="small" pagination={false} />
-                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={[]} disabledList={[]} departmentData={departmentData} closeModal={() => setChooseUserModal(false)}/>
+                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={[]} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)}/>
             </Card>
         </>
     )

@@ -16,7 +16,7 @@ type IProps = {
 const DeptList: FC<IProps> = (props) => {
     const ctx = useContext(ChooseUseContext)
     const { onNext, changeCheckItem, prevStep } = props
-    const { department = [], previousOptions = [] } = ctx
+    const { department = [], previousOptions = [], isDepartmentCheck } = ctx
     const [isParentDep, setIsParentDep] = useState(false)
 
     useEffect(() => {
@@ -46,7 +46,12 @@ const DeptList: FC<IProps> = (props) => {
                         return (
                             <li key={item.id} className={style.dept}>
                                 <div className={style.deptLeft}>
-                                    <Checkbox onChange={(value: CheckboxChangeEvent) => changeCheck(item, value)} label={item.id} checked={item.checked}>{''}</Checkbox>
+                                    {
+                                        isDepartmentCheck?
+                                        <Checkbox onChange={(value: CheckboxChangeEvent) => changeCheck(item, value)} label={item.id} checked={item.checked}>{''}</Checkbox>
+                                        :
+                                        ''
+                                    }
                                     <div className={style.departmentIcon}>
                                         <ApartmentOutlined style={{color: 'green'}} />
                                     </div>
