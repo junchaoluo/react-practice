@@ -64,7 +64,22 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
     // 删除选中的
     const DeleteSelect = useCallback((user: SelectProps) => {
         setCheckedList(checkedList.filter(item => item.id !== user.id))
-    }, [checkedList])
+        // userList和departmentList的check值改变
+        const userArr = userList.map(item =>{
+            if(item.id === user.id) {
+                item.checked = false
+            }
+            return item
+        })
+        setUserList(userArr)
+        const departmentArr = department.map(item =>{
+            if(item.id === user.id) {
+                item.checked = false
+            }
+            return item
+        })
+        setDepartment(departmentArr)
+    }, [checkedList, userList, department])
 
     // 部门点击下级
     const onNext = useCallback(async (dep: DepartmentProps) => {
@@ -82,6 +97,7 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
             setDepartment(dep.childNode)
         }
     }, [checkedList, userList, disabledList, department, previousOptions])
+    
     // 返回上一级
     const prevStep = useCallback(() => {
         setShowUserSelect(false)
@@ -89,14 +105,15 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
         setDepartment(popDepar)
     }, [previousOptions])
 
-    // 选中部门数据
-    const changeCheckDep = useCallback((dep: DepartmentProps, checked: boolean) => {
+    // 选中部门/人员数据 type = 0 部门 1 人员
+    const changeCheckItem = useCallback((item: SelectProps, checked: boolean, type: number) => {
+        item.checked = checked
         if(checked){
             // 选中
-            dep.checked = true
-            setCheckedList([...checkedList, dep])
+            setCheckedList([...checkedList, item])
         }else{
             // 取消选中
+            setCheckedList(checkedList.filter(i => i.id !== item.id))
         }
     }, [checkedList])
 
@@ -113,11 +130,11 @@ const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref:
                     <div className={style.userSelect}>
                         {
                             showUserSelect?
-                            <UserList/>
+                            <UserList changeCheckItem={changeCheckItem} prevStep={prevStep}/>
                             :
                             <DeptList
                                 onNext={onNext} 
-                                changeCheckDep={changeCheckDep}
+                                changeCheckItem={changeCheckItem}
                                 prevStep={prevStep}/>
                         }
                     </div>

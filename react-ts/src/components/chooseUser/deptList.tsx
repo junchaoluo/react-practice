@@ -9,13 +9,13 @@ import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
 
 type IProps = {
     onNext: (dep: DepartmentProps) => void,
-    changeCheckDep: (dep: DepartmentProps, checekd: boolean) => void,
+    changeCheckItem: (item: SelectProps, checekd: boolean, type: number) => void,
     prevStep: () => void
 }
 
 const DeptList: FC<IProps> = (props) => {
     const ctx = useContext(ChooseUseContext)
-    const { onNext, changeCheckDep, prevStep } = props
+    const { onNext, changeCheckItem, prevStep } = props
     const { department = [], previousOptions = [] } = ctx
     const [isParentDep, setIsParentDep] = useState(false)
 
@@ -26,7 +26,7 @@ const DeptList: FC<IProps> = (props) => {
 
     const changeCheck = (item: DepartmentProps, e: CheckboxChangeEvent) => {
         const checked = e.target.checked
-        changeCheckDep(item, checked)
+        changeCheckItem(item, checked, 0)
     }
 
     return (
