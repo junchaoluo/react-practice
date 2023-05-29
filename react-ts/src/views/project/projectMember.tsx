@@ -1,6 +1,6 @@
 import style from './index.module.scss'
 import { Card, Table, Divider, Tooltip  } from 'antd'
-import { useEffect, useState, memo, useRef, useCallback, ForwardedRef } from 'react'
+import { useEffect, useState, memo, useRef, useCallback, ForwardedRef, forwardRef, useImperativeHandle } from 'react'
 import { getProjectRoleList } from '@/api/project'
 import type { ColumnsType } from 'antd/es/table';
 import {
@@ -48,19 +48,34 @@ const getRoleList = async (setRoleList: any, setDataSource: any) => {
     setDataSource(arr || [])
 }
 
-const ProjectMember = memo((props: IProps) => {
+const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
     const columns: ColumnsType<DataType> = [
         {
             title: '岗位',
             dataIndex: 'name',
             width: 250,
-            key: 'name'
+            key: 'name',
+            render: (text: string, record: DataType, index: number) => {
+                return (
+                    <>
+                        {
+                            record.isCheck?
+                            <div>
+                                <span style={{color: red}}>*</span>
+                                <span>{text}</span>
+                            </div>
+                            :
+                            <span>{text}</span>
+                        }
+                    </>
+                )
+            }
         },
         {
             title: '人员设置',
             dataIndex: 'user',
             key: 'user',
-            render: (text: string, record: any, index: number) => {
+            render: (text: string, record: DataType, index: number) => {
                 return (
                     <div>
                         <ul>
@@ -103,6 +118,10 @@ const ProjectMember = memo((props: IProps) => {
     const [dataSource, setDataSource] = useState<Array<DataType>>([])
     const [departmentData, setDepartmentData] = useState([])
     const [selectIndex, setSelectIndex] = useState<number>(0) // 选择的哪一行
+
+    useImperativeHandle(ref, () => ({
+        dataSource
+    }))
 
     useEffect(() => {
         // 查询项目人员的岗位
@@ -171,6 +190,6 @@ const ProjectMember = memo((props: IProps) => {
             </Card>
         </>
     )
-})
+}))
 
 export default ProjectMember

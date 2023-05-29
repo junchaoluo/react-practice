@@ -3,7 +3,7 @@ import BasicInfo from "./basicInfo"
 import ProjectMember from "./projectMember"
 import style from './index.module.scss'
 import { getUserDepartment } from '@/api/user'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import store from '@/store/index'
 import { useSelector } from 'react-redux'
 
@@ -15,7 +15,8 @@ const AddProject = () => {
         departmentId: '',
         departmentName: ''
     })
-    const basicInfoRef = useRef()
+    const basicInfoRef = useRef<ForwardedRef>()
+    const projectMember = useRef<ForwardedRef>()
 
     // 查询项目信息
     useEffect(() => {
@@ -33,15 +34,16 @@ const AddProject = () => {
         })
     }, [])
 
-    const save = () => {
+    const save = useCallback(() => {
         console.log(basicInfoRef.current.getFieldsValue())
-    }
+        console.log(projectMember.current)
+    }, [])
 
     return (
         <div className={style.backGround}>
             <Space direction="vertical" style={{width: '100%'}}>
                 <BasicInfo type={0} projectInfo={project} ref={basicInfoRef}></BasicInfo>
-                <ProjectMember type={0}></ProjectMember>
+                <ProjectMember type={0} ref={projectMember}></ProjectMember>
                 <Card size="small">
                     <div className={style.footer}>
                         <Button>取消</Button>

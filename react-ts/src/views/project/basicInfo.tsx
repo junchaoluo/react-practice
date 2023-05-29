@@ -1,6 +1,6 @@
 import style from './index.module.scss'
 import { Card, Form, Row, Col,  Select, Input, AutoComplete, DatePicker, Cascader } from 'antd'
-import { useEffect, useState } from 'react'
+import { ForwardedRef, useEffect, useState } from 'react'
 import { getProducts } from '@/api/project'
 import { getDeptTree } from '@/api/user'
 import { memo, useCallback, forwardRef } from 'react'
@@ -25,7 +25,7 @@ type IProps = {
     }
 }
 
-const BasicInfo = memo(forwardRef((props: IProps, ref: any) => {
+const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
     
     const projectTypeList: Array<{
         value: string
