@@ -81,3 +81,20 @@
         }
     }
 }
+
+.projectMemberUser {
+    background: #f0f3ff;
+    border-radius: 4px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
+    display: inline-block;
+    margin: 3px 8px 5px 0;
+    color: #859dff;
+    &:hover {
+        cursor: pointer;
+    }
+    .anticon-close {
+        font-size: 14px;
+    }
+}

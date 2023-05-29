@@ -5,9 +5,10 @@ import style from './index.module.scss'
 import { getUserDepartment } from '@/api/user'
 import { useState, useEffect, useRef } from 'react'
 import store from '@/store/index'
+import { useSelector } from 'react-redux'
 
 const AddProject = () => {
-    const userInfo = store.getState().handleUser.userInfo
+    const { userInfo } = useSelector((store) => store.user)
 
     const [project, setProject] = useState({
         departments: [],

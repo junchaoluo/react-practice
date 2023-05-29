@@ -4,7 +4,7 @@ import style from './index.module.scss'
 import { getUserDept } from '@/util/user'
 import { CloseOutlined, ApartmentOutlined } from '@ant-design/icons'
 import { SelectProps, SearchUserProps } from '@/types/chooseUser'
-import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
+import ChooseUseContext from '@/components/chooseUser/context/chooseUserContext'
 
 type IProps = {
     title?: string,

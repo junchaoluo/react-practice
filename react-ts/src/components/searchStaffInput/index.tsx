@@ -6,7 +6,7 @@ import CustomSearchOption from '@/components/customSearchOption'
 import { debounce } from 'lodash'
 import { getUserListByFuzzyKw } from '@/api/project'
 import { SelectProps as SelectUserProps, DepartmentProps } from '@/types/chooseUser'
-import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
+import ChooseUseContext from '@/components/chooseUser/context/chooseUserContext'
 
 const { Option, OptGroup } = Select
 

@@ -5,7 +5,7 @@ import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import style from './index.module.scss'
 import { ApartmentOutlined, PartitionOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
+import ChooseUseContext from '@/components/chooseUser/context/chooseUserContext'
 
 type IProps = {
     onNext: (dep: DepartmentProps) => void,

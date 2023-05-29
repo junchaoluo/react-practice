@@ -1,16 +1,16 @@
 import style from './index.module.scss'
 import { Card, Table, Divider, Tooltip  } from 'antd'
-import { useEffect, useState, memo, useRef, useCallback } from 'react'
+import { useEffect, useState, memo, useRef, useCallback, ForwardedRef } from 'react'
 import { getProjectRoleList } from '@/api/project'
 import type { ColumnsType } from 'antd/es/table';
 import {
     UsergroupDeleteOutlined,
-    HighlightOutlined
+    HighlightOutlined,
+    CloseOutlined
   } from '@ant-design/icons';
 import ChooseUser from '@/components/chooseUser'
 import { getDeptTree } from '@/api/user'
 import { SelectProps, DepartmentProps } from '@/types/chooseUser'
-
 type IProps = {
     type: 0 | 1 | 2 // 新增、编辑、详情
 }
@@ -23,10 +23,8 @@ type RoleType = {
 }
 
 type DataType = RoleType & {
-    user: Array<never>, // 人员配置
+    user: Array<SelectProps>, // 人员配置
 }
-
-
 
 const getRoleList = async (setRoleList: any, setDataSource: any) => {
     const res = await getProjectRoleList()
@@ -64,7 +62,20 @@ const ProjectMember = memo((props: IProps) => {
             key: 'user',
             render: (text: string, record: any, index: number) => {
                 return (
-                    <div>123</div>
+                    <div>
+                        <ul>
+                            {
+                                record.user.map((item: SelectProps, i: number) => {
+                                    return (
+                                        <li className={style.projectMemberUser} key={i}>
+                                            <span>{item.name}</span>
+                                            <CloseOutlined onClick={() => deleteRowUser(index, item)}/>
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
+                    </div>
                 )
             }
         },
@@ -77,11 +88,11 @@ const ProjectMember = memo((props: IProps) => {
                 return (
                     <div className={style.action}>
                         <Tooltip title="选择人员">
-                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal(index)}/>
+                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal(index, record)}/>
                         </Tooltip>
                         <Divider type="vertical"/>
                         <Tooltip title="清除全部">
-                            <HighlightOutlined style={{fontSize: '20px', color: '#999ba3'}} />
+                            <HighlightOutlined onClick={() => deleteRowUser(index, {}, true)} style={{fontSize: '20px', color: '#999ba3'}} />
                         </Tooltip>
                     </div>
                 )
@@ -100,24 +111,63 @@ const ProjectMember = memo((props: IProps) => {
         }
     }, [props.type])
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
-    const chooseUserRef = useRef<HTMLElement>()
-    const showChooseUserModal = useCallback(async (index: number) => {
+    const chooseUserRef = useRef<ForwardedRef>()
+    const [checked, setChecked] = useState<Array<SelectProps>>([]) // 选中那一行的已选人员
+    const showChooseUserModal = useCallback(async (index: number, record: {
+        user: Array<SelectProps>
+    }) => {
         const { result } = await getDeptTree()
+        setChecked(record.user)
         setSelectIndex(index)
         setDepartmentData(result || [])
         setChooseUserModal(true)
-    }, [])
+    }, [dataSource])
 
+    // 选择人员弹窗点击确定按钮
     const confirm = useCallback((select: Array<SelectProps>) => {
-        console.log(select, selectIndex)
+        const arr = dataSource.map((item, index) => {
+            if(index === selectIndex) {
+                item.user = select
+            }
+            return item
+        })
+        setDataSource(arr)
         setChooseUserModal(false)
-    }, [setChooseUserModal, selectIndex])
+    }, [setChooseUserModal, selectIndex, dataSource])
+
+    /**
+     * index: 删除的index
+     * item: 删除的人员
+     * isAll: 是否清楚行数据全部
+     */
+    const deleteRowUser = useCallback((index: number, item: SelectProps, isAll = false) => {
+        const arr = dataSource.filter((data, dataIndex) => {
+            if(dataIndex === index) {
+                if(isAll) {
+                    data.user = []
+                }else{
+                    data.user = data.user.filter((user) => {
+                        if(user.id !== item.id){
+                            return user
+                        }
+                    })
+                }
+            }
+            return data
+        })
+        setDataSource(arr)
+    }, [dataSource])
 
     return (
         <>
             <Card title='项目人员' size="small">
                 <Table dataSource={dataSource} columns={columns} size="small" pagination={false} />
-                <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={[]} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)} confirm={confirm}/>
+                {
+                    chooseUserModal?
+                    <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={checked} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)} confirm={confirm}/>
+                    :
+                    ''
+                }
             </Card>
         </>
     )

@@ -2,7 +2,7 @@ import { FC, memo, useContext } from 'react'
 import style from '@/components/chooseUser/index.module.scss'
 import { getUserDept } from '@/util/user'
 import { SelectProps, DepartmentProps, SearchUserProps } from '@/types/chooseUser'
-import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
+import ChooseUseContext from '@/components/chooseUser/context/chooseUserContext'
 
 type IProps = {
     user: SelectProps

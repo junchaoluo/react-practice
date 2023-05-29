@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect } from 'react'
 import { SelectProps, DepartmentProps, SearchUserProps } from '@/types/chooseUser'
-import ChooseUseContext from '@/components/chooseUser/chooseUserContext'
+import ChooseUseContext from '@/components/chooseUser/context/chooseUserContext'
 import style from './index.module.scss'
 import { Checkbox } from 'antd'
 import { ApartmentOutlined, PartitionOutlined, ArrowLeftOutlined } from '@ant-design/icons'
