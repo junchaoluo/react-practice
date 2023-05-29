@@ -8,7 +8,9 @@ import Util from '@/util/util.js'
 import { fingerpring } from '@/util/device.js'
 import { useNavigate } from 'react-router-dom'
 import { UserInfo } from '@/types/user'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUserInfo, handleJumpTo, loginUser } from '@/store/features/userSlice'
+import { baseUlr } from '@/request'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -39,7 +41,7 @@ const Login = () => {
     const [passwordValidateStatus, setPasswordValidateStatus] = useState("")
     const [errorMsg, setErrorMsg] = useState("")
 
-    const onFinish = (obj: any) => {
+    const onFinish = async (obj: any) => {
         console.log(obj)
         if(!obj.username || !obj.password){
             if(!obj.password){
@@ -64,7 +66,7 @@ const Login = () => {
             if (obj.userrole == 0) {
 				password = Crypto.encrypt(obj.password, secretKey, secretKey)
 			}
-            login({
+            const params = {
                 account: obj.username,
                 password: password,
                 adLogin: obj.uaerrole,
@@ -77,45 +79,8 @@ const Login = () => {
                 kaptcha: '',
                 // 短信码
                 verificationCode: ''
-            }).then(async res => {
-                if(res.code === 0){
-                    const r = res.result
-                    const userInfo:UserInfo = {
-						id: r.id,
-						admin: obj.username === 'admin' ? true : false,
-						sysAdmin: r.sysAdmin,
-						token: r.token,
-						account: r.account,
-						avator: r.avatar,
-						status: r.status,
-						nickname: r.realName,
-						logintime: new Date().getTime(),
-						uuid: 'uuid' + (await fingerpring()),
-						researchRooms: r.researchRooms,
-						location: r.location ? r.location : '',
-						departmentList: r.department,
-						departmentName: r.departmentName,
-						pwdExpirationTime: r.pwdExpirationTime,
-						remindDay: r.remindDay,
-						hasReminded: false
-					}
-                    dispatch({type: 'setUserInfo', val: userInfo})
-					const arr = JSON.parse(localStorage.getItem('historyUserName')) || []
-					if (!arr.includes(userInfo.account)) {
-						arr.push(userInfo.account)
-					}
-
-					localStorage.setItem('historyUserName', JSON.stringify(arr))
-					const redirectURL = sessionStorage.getItem('redirectURL')
-					Util.setCookie('adLogin', obj.userrole)
-					if (redirectURL) {
-                        dispatch({type: 'setUserInfo', val: redirectURL})
-					} else {
-						// 登录成功默认到首页
-                        navigate('/home')
-					}
-                }
-            })
+            }
+            await dispatch(loginUser(params))
         }
     }
 

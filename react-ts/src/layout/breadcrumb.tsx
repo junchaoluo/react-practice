@@ -3,6 +3,12 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Menus } from '@/router/index'
 
+// 关闭控制台警告
+
+Breadcrumb.Item.__ANT_BREADCRUMB_ITEM = true;
+
+Breadcrumb.Separator.__ANT_BREADCRUMB_SEPARATOR = true;
+
 interface BreadcrumbProps {
     name: string,
     path: string,

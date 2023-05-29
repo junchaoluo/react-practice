@@ -374,7 +374,7 @@ const Project = () => {
                 </div>
             </div>
             <div className={style.contentModule}>
-                <Table dataSource={dataSource} columns={tableColumns}  scroll={scroll} pagination={false}></Table>
+                <Table dataSource={dataSource} columns={tableColumns} rowKey={(record: any) => record.id} scroll={scroll} pagination={false}></Table>
                 <div className={style.pagination}>
                     <Pagination
                         total={total}

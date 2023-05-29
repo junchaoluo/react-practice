@@ -56,9 +56,9 @@ const LayoutApp: FC =  () => {
     const [selectedKeys, setSelectedKeys] = useState(['/template'])
     const items: MenuItem[] = changeRouterToMenu(Menus)
     const navigate = useNavigate()
-    const handleClickMenuItem = ({ item, key, keyPath, domEvent }: MenuItem) => {
-        setSelectedKeys([key])
-        navigate(key)
+    const handleClickMenuItem = (e: MenuItem) => {
+        setSelectedKeys([e.key])
+        navigate(e.key)
     }
 
     useEffect(() => {

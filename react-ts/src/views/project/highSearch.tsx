@@ -104,7 +104,7 @@ const HighSearch = memo((props: IProps) => {
                         <div className={style.timetagList}>
                             {
                                 timeTagList.map((item: TimeTag) => {
-                                    return <Tag color="blue" bordered={false} onClick={() => timeQuickChange(item)}>{item.label}</Tag>
+                                    return <Tag key={item.label} color="blue" bordered={false} onClick={() => timeQuickChange(item)}>{item.label}</Tag>
                                 })
                             }
                         </div>
