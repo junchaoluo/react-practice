@@ -120,7 +120,8 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
     const [selectIndex, setSelectIndex] = useState<number>(0) // 选择的哪一行
 
     useImperativeHandle(ref, () => ({
-        dataSource
+        dataSource,
+        doValidate: doValidate()
     }))
 
     useEffect(() => {
@@ -175,6 +176,13 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
             return data
         })
         setDataSource(arr)
+    }, [dataSource])
+
+    // 验证校验必填
+    const doValidate = useCallback(() => {
+        let flag = true
+        flag = !dataSource.some(item => item.isCheck === 1 && item.user.length === 0)
+        return flag
     }, [dataSource])
 
     return (

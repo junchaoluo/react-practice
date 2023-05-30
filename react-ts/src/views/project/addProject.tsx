@@ -1,14 +1,18 @@
-import { Space, Button, Card } from 'antd'
+import { Space, Button, Card, message } from 'antd'
 import BasicInfo from "./basicInfo"
 import ProjectMember from "./projectMember"
 import style from './index.module.scss'
 import { getUserDepartment } from '@/api/user'
+import { createProject } from '@/api/project'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import store from '@/store/index'
 import { useSelector } from 'react-redux'
+import moment from 'moment'
+import { useNavigate } from 'react-router'
 
 const AddProject = () => {
     const { userInfo } = useSelector((store) => store.user)
+    const navigate = useNavigate()
 
     const [project, setProject] = useState({
         departments: [],
@@ -35,8 +39,44 @@ const AddProject = () => {
     }, [])
 
     const save = useCallback(() => {
-        console.log(basicInfoRef.current.getFieldsValue())
-        console.log(projectMember.current)
+        // 验证基本信息必填
+        let basicForm = basicInfoRef.current.basicForm
+        basicInfoRef.current.form.validateFields().then(async form => {
+            basicForm = {...basicForm, ...form, departmentId: basicForm.departmentId}
+            // 验证人员必填
+            if(projectMember.current.doValidate) {
+                // 必填项已经填写
+                const params = {
+                    id: basicForm.id,
+                    name: basicForm.name,
+                    code: basicForm.code,
+                    productId: basicForm.productId,
+                    productCode: basicForm.productCode,
+                    departmentId: basicForm.departmentId,
+                    departmentName: basicForm.departmentName,
+                    startTime: moment((basicForm.cycle && basicForm.cycle[0])).format('YYYY-MM-DD') || '',
+                    endTime: moment((basicForm.cycle && basicForm.cycle[1])).format('YYYY-MM-DD') || '',
+                    description: basicForm.description,
+                    projectType: basicForm.projectType,
+                    user: []
+                }
+                const data = projectMember.current.dataSource
+                params.user = data
+                params.user.forEach(item => {
+                    item.roleId = item.id
+                    item.roleName = item.name
+                })
+                const { code, description } = await createProject(params)
+                if(code === 0) {
+                    message.success('新增项目成功！')
+                    navigate('/project')
+                }else{
+                    message.error(description)
+                }
+            }
+        }).catch(v => {
+            console.log(v)
+        })
     }, [])
 
     return (

@@ -1,6 +1,6 @@
 import style from './index.module.scss'
 import { Card, Form, Row, Col,  Select, Input, AutoComplete, DatePicker, Cascader } from 'antd'
-import { ForwardedRef, useEffect, useState } from 'react'
+import { ForwardedRef, useEffect, useState, useImperativeHandle } from 'react'
 import { getProducts } from '@/api/project'
 import { getDeptTree } from '@/api/user'
 import { memo, useCallback, forwardRef } from 'react'
@@ -25,8 +25,26 @@ type IProps = {
     }
 }
 
+type BasicFormProps = {
+    id: string,
+    name: string,
+    code: string,
+    productId: string,
+    productCode: string,
+    departmentId: string,
+    departmentName: string,
+    startTime: string,
+    endTime: string,
+    description: string,
+    projectType: string
+}
+
 const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
-    
+    useImperativeHandle(ref, () => ({
+        basicForm: basicForm,
+        form
+    }))
+
     const projectTypeList: Array<{
         value: string
     }> = [
@@ -36,13 +54,29 @@ const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         { value: 'FTE类' },
         { value: 'C类' }
     ] // 项目类型
-    const [productOptions, setProductOptions] = useState([]) // 产品数据
+    const [productOptions, setProductOptions] = useState<Array<{
+        pdNo: string,
+        id: string
+    }>>([]) // 产品数据
     const [loadMoreProductPageNum, setLoadMoreProductPageNum] = useState(1) // 下拉产品数据
     const [departmentOptions, setDepartmentOptions] = useState([]) // 部门
     
     const[form] = Form.useForm()
+    const [basicForm, setBasicForm] = useState<BasicFormProps>({
+        id: '',
+        name: '',
+        code: '',
+        productId: '',
+        productCode: '',
+        departmentId: '',
+        departmentName: '',
+        startTime: '',
+        endTime: '',
+        description: '',
+        projectType: ''
+    })
     const [initialValues, setInitialValues] = useState({
-        departmentIds: []
+        departmentId: []
     })
 
     // 进入页面进行渲染
@@ -54,11 +88,13 @@ const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
 
     useEffect(() => {
         // 默认的部门
-        const departmentIds: string[] = Array.from(props.projectInfo.departments, item => item.id)
+        const departmentId: string[] = Array.from(props.projectInfo.departments, item => item.id)
+        const departmentName: string = props.projectInfo.departments.map(item => item.name)[props.projectInfo.departments.length - 1]
         setInitialValues(Object.assign({}, initialValues, {
-            departmentIds: departmentIds
+            departmentId: departmentId
         }))
-        form.setFieldValue('departmentIds', departmentIds)
+        form.setFieldValue('departmentId', departmentId)
+        setBasicForm({...basicForm, departmentName: departmentName, departmentId: departmentId[departmentId.length - 1]})
     }, [props.projectInfo.departments])
 
     // 产品下拉框
@@ -91,13 +127,45 @@ const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         })
     },[])
 
+    // 有值改变
+    const onValuesChange = (changedValues, allValues) => {
+        const fields = Object.keys(changedValues)?Object.keys(changedValues)[0]:''
+        if(fields) {
+            switch(fields) {
+                case 'productId':
+                    {
+                        const product: Array<{
+                            pdNo: string,
+                            id: string
+                        }> = productOptions.filter((item: {
+                            pdNo: string,
+                            id: string
+                        }) => item.id === changedValues[fields])
+                        if(product && product.length > 0){
+                            setBasicForm({...basicForm, productCode: product[0].pdNo})
+                        }
+                    }
+                    break;
+                default: break;
+            }
+        }
+    }
+
+    const changeDepartmentIds = useCallback((value: Array<string>, selectedOptions) => {
+        setBasicForm({
+            ...basicForm, 
+            departmentName: selectedOptions.map(item => item.name)[selectedOptions.length - 1],
+            departmentId: value[value.length - 1]
+        })
+    }, [basicForm])
+
     return (
         <>
             <Card title="基础信息" size="small">
-                <Form form={form} initialValues={initialValues} ref={ref}>
+                <Form form={form} initialValues={initialValues} onValuesChange={onValuesChange}>
                     <Row gutter={20}>
                         <Col span={8}>
-                            <Form.Item {...layout} label="产品号" name="productId">
+                            <Form.Item {...layout} label="产品号" name="productId" rules={[{ required: true,message: '请选择产品号' }]}>
                                 <Select showSearch placeholder="请选择产品号" allowClear showArrow={false} filterOption={(inputValue: string, option: any) => option.label.includes(inputValue)}>
                                     {
                                         productOptions.map((item: {
@@ -111,7 +179,7 @@ const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item {...layout} label="项目编号" name="code">
+                            <Form.Item {...layout} label="项目编号" name="code" rules={[{ required: true,message: '请选择项目编号' }]}>
                                 <Input placeholder="请输入项目编号"/>
                             </Form.Item>
                         </Col>
@@ -128,13 +196,13 @@ const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
                     </Row>
                     <Row gutter={20}>
                         <Col span={8}>
-                            <Form.Item {...layout} label="项目周期" name="cycle">
-                                <RangePicker format="YYYY/MM/DD" placeholder={['开始日期', '结束日期']} />
+                            <Form.Item {...layout} label="项目周期" name="cycle" rules={[{ required: true,message: '请选择项目周期' }]}>
+                                <RangePicker format="YYYY-MM-DD" placeholder={['开始日期', '结束日期']} />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item {...layout} label="所属部门" name="departmentIds">
-                                <Cascader options={departmentOptions} placeholder="请选择" fieldNames={{label: 'name', value: 'id', children: 'childNode'}}></Cascader>
+                            <Form.Item {...layout} label="所属部门" name="departmentId">
+                                <Cascader onChange={changeDepartmentIds} options={departmentOptions} placeholder="请选择" fieldNames={{label: 'name', value: 'id', children: 'childNode'}}></Cascader>
                             </Form.Item>
                         </Col>
                     </Row>
