@@ -15,7 +15,8 @@ type IProps = {
     SelectUser: (user: SelectUserProps) => void
 }
 
-const searchStaffInput:FC<IProps> = memo(forwardRef(({placeholder = '请输入搜索', SelectUser,  ...rest}: IProps, ref: HTMLElement) => {
+const searchStaffInput = memo(forwardRef<HTMLElement, IProps>((props, ref) => {
+    const { placeholder = '请输入搜索', SelectUser, ...rest} = props
     const ctx = useContext(ChooseUseContext)
     const { disabledList = [], checkedList = []} = ctx
 

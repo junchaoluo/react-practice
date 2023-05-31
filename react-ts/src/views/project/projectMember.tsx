@@ -131,7 +131,6 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         }
     }, [props.type])
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
-    const chooseUserRef = useRef<ForwardedRef>()
     const [checked, setChecked] = useState<Array<SelectProps>>([]) // 选中那一行的已选人员
     const showChooseUserModal = useCallback(async (index: number, record: {
         user: Array<SelectProps>
@@ -188,10 +187,10 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
     return (
         <>
             <Card title='项目人员' size="small">
-                <Table dataSource={dataSource} columns={columns} size="small" pagination={false} />
+                <Table dataSource={dataSource} rowKey={(record: any) => record.id} columns={columns} size="small" pagination={false} />
                 {
                     chooseUserModal?
-                    <ChooseUser ref={chooseUserRef} visible={chooseUserModal} checked={checked} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)} confirm={confirm}/>
+                    <ChooseUser visible={chooseUserModal} checked={checked} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)} confirm={confirm}/>
                     :
                     ''
                 }

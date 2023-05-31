@@ -1,4 +1,4 @@
-import { memo, forwardRef, useState, useEffect, useCallback, FC, useImperativeHandle, ForwardedRef } from 'react'
+import { memo, forwardRef, useState, useEffect, useCallback, FC, useImperativeHandle, ForwardedRef, ForwardRefRenderFunction, MemoExoticComponent } from 'react'
 import { Modal } from 'antd'
 import style from './index.module.scss'
 import SearchStaffInput from '@/components/searchStaffInput'
@@ -36,7 +36,7 @@ const getStaffList = async (id: string, reset: boolean, checkedList: Array<Selec
     return arr
 }
 
-const ChooseUser: FC<IProps & HTMLElement> = memo(forwardRef((props:IProps, ref: ForwardedRef) => {
+const ChooseUser = memo(forwardRef< HTMLElement, IProps>((props, ref) => {
     const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false, isDepartmentCheck = true, isUserCheck = true, confirm} = props
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked) // 选中的人员
