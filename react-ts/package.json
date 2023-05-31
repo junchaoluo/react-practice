@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@fingerprintjs/fingerprintjs": "^3.4.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.4.5",
     "axios": "^1.3.6",
     "crypto-js": "^4.1.1",
