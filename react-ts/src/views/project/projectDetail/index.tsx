@@ -4,8 +4,8 @@ import { getProjectDetailById } from '@/api/project'
 import style from './index.module.scss'
 import { Tag, Tabs } from 'antd'
 import type { TabsProps } from 'antd'
-import ProjectExpriments from './projectExpriments'
-import ProjectInfo from './projectInfo'
+import ProjectExpriments from './components/projectExpriments'
+import ProjectInfo from './components/projectInfo'
 
 export type ProjectProps = {
   id?: string,
@@ -15,6 +15,7 @@ export type ProjectProps = {
   startTime?: '',
   endTime?: '',
   projectUser?: '',
+  projectCode: '',
   [propName: string]: unknown
 }
 
@@ -52,6 +53,7 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
       setProject({
         ...result,
         type: searchParams.get('type'),
+        projectCode: searchParams.get('projectCode')
       })
     }
     fetchData()

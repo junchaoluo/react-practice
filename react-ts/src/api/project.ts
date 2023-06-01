@@ -143,3 +143,17 @@ export function getUserListByFuzzyKw(oParams:getUserListByFuzzyKwParams) {
     method: 'get'
   })
 }
+
+/**
+ * 高级筛选 当前登录人有权限的实验记录列表
+ * */
+ export function getExperimentByConditionAndAuthV2(page: {
+  pageIndex: number,
+  pageSize: number
+ }, data:any) {
+  return request({
+    url: ELN_PREFIX + `/notebook/findExperiment/${page.pageIndex}/${page.pageSize}`,
+    method: 'post',
+    data
+  })
+}

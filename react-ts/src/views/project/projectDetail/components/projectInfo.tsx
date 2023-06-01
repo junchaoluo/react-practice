@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import type { FC, ReactNode } from 'react'
-import { ProjectProps } from './index'
+import { ProjectProps } from '../index'
 
 interface IProps {
     project: ProjectProps,

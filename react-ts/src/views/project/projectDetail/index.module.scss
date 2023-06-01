@@ -35,5 +35,11 @@
         margin-top: 16px;
         height: calc(100% - 145px);
         overflow-y: auto;
+        .table {
+            .search {
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
     }
 }
