@@ -131,3 +131,15 @@ export function getUserListByFuzzyKw(oParams:getUserListByFuzzyKwParams) {
     data: oParams
   })
 }
+
+/**
+ * 通过项目id获取项目详情
+ * @param {String} sProjectId 项目id
+ * @return {Promise}
+ */
+ export function getProjectDetailById(sProjectId: string) {
+  return request({
+    url: ELN_PREFIX + `/project/${sProjectId}`,
+    method: 'get'
+  })
+}

@@ -1,9 +1,8 @@
 import { Drawer, Form, Space, Input, Button, DatePicker, Tag } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { memo, useState } from 'react'
-import { formToJSON } from 'node_modules/axios/index'
 import dayjs from 'dayjs'
-import style from './index.module.scss'
+import style from '../index.module.scss'
 
 const { RangePicker } = DatePicker
 

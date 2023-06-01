@@ -5,7 +5,7 @@ import { useCallback, useState, useEffect } from 'react'
 import { Divider, Button, Input, Table, Pagination, Popconfirm, message } from 'antd'
 import { PlusOutlined, SearchOutlined, VideoCameraAddOutlined, SettingOutlined } from '@ant-design/icons'
 import { getProjectListByPage, getArchiveProjectListByPage, getProjectByAdvanceCondition, findProjectByAdvanceConditionArchive, archiveAndProject, renewAndProject } from '@/api/project'
-import HighSearch from './highSearch'
+import HighSearch from './components/highSearch'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 
@@ -150,11 +150,10 @@ const Project = () => {
 
     const handleTableRow = (record: any, type: number) => {
         switch(type) {
-            case 0:
-                // 查看
-                break;
+            case 0:// 查看
             case 1: 
                 // 编辑
+                navigate(`/project/detail?projectId=${record.id}&type=${type}&projectCode=${record.code}`)
                 break;
             case 2:
                 // 结束

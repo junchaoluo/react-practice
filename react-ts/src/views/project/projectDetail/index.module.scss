@@ -1,0 +1,39 @@
+.container {
+    height: 100%;
+    background-color: #f2f3f7;
+    .header {
+        background-color: #fff;
+        padding: 16px 16px 0;
+        border-radius: 5px;
+        .headerTitle {
+            display: flex;
+            align-items: center;
+            .code {
+                font-size: 16px;
+                font-weight: 600;
+                color: #191b27;
+            }
+            .status {
+                margin-left: 8px;
+            }
+        }
+        .headerInfo {
+            margin-top: 8px;
+            font-weight: 400;
+            line-height: 20px;
+            font-size: 12px;
+            display: flex;
+            .projectManager {
+                margin-left: 8px;
+            }
+        }
+    }
+    .content {
+        background-color: #fff;
+        padding: 16px;
+        border-radius: 5px;
+        margin-top: 16px;
+        height: calc(100% - 145px);
+        overflow-y: auto;
+    }
+}

@@ -21,7 +21,8 @@ const Home = lazy(() => import('@/views/home'))
 const Login = lazy(() => import('@/views/login'))
 const NoPage = lazy(() => import('@/views/nopage'))
 const Project = lazy(() => import('@/views/project'))
-const AddProject = lazy(() => import('@/views/project/addProject'))
+const ProjectDetail = lazy(() => import('@/views/project/projectDetail'))
+const AddProject = lazy(() => import('@/views/project/addProject/addProject'))
 const Template = lazy(() => import('@/views/template'))
 const Type = lazy(() => import('@/views/type'))
 
@@ -37,6 +38,12 @@ const Menus: RouteType[] = [
         path: '/project/add',
         name: '新增项目',
         element: <AddProject/>,
+        isMenu: false
+    },
+    {
+        path: '/project/detail',
+        name: '项目详情',
+        element: <ProjectDetail/>,
         isMenu: false
     },
     {
