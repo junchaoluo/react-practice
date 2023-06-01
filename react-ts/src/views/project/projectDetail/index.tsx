@@ -84,9 +84,9 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
           <div className={style.content}>
             {
               activeKey === '0'?
-              <ProjectExpriments/>
+              <ProjectExpriments project={project}/>
               :
-              <ProjectInfo/>
+              <ProjectInfo project={project}/>
             }
           </div>
         </div>
