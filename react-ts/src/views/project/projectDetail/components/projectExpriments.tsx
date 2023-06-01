@@ -1,8 +1,8 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react'
 import { ProjectProps } from '../index'
 import style from '../index.module.scss'
-import { Input, Table, Page, Tooltip, Button } from 'antd'
+import { Input, Table, Pagination, Tooltip, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
 import {getExperimentByConditionAndAuthV2} from '@/api/project'
@@ -26,6 +26,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
     const navigate = useNavigate()
     const [keywords, setKeywords] = useState('')
     const [tableData, setTableData] = useState([])
+    const [total, setTotal] = useState(0)
     const [pageForm, setPageForm] = useState({
         pageIndex: 1,
         pageSize: 20
@@ -37,9 +38,10 @@ const ProjectExpriments: FC<IProps> = (props) => {
             dataIndex: 'code',
             key: 'code',
             ellipsis: true,
-            render: (record) => {
+            width: 130,
+            render: (text, record) => {
                 return (
-                    <Button type="link" onClick={viewExpriment(record.id)}>
+                    <Button type="link" onClick={() => viewExpriment(record.id)}>
                         {record.code}
                     </Button>
                 )
@@ -77,6 +79,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
         },
         {
             title: '最后修改时间',
+            width: 130,
             dataIndex: 'updateTime',
             ellipsis: true,
             key: 'updateTime'
@@ -101,26 +104,51 @@ const ProjectExpriments: FC<IProps> = (props) => {
         },
     ]
 
+    useEffect(() => {
+        search()
+    }, [project.id])
+
     const viewExpriment = useCallback((id: string) => {
         navigate('/aaa')
     }, [])
 
     // 点击搜索按钮
     const search = useCallback(async () => {
-        fetchData(pageForm, {
+        console.log(pageForm)
+        const result = await fetchData({
+            pageIndex: pageForm.pageIndex,
+            pageSize: pageForm.pageSize
+        }, {
             code: keywords,
             projectCode: project.projectCode,
-            projectId: project.projectId
+            projectId: project.id
         })
-    }, [project.id, keywords, pageForm])
+        setTableData(result?.list || [])
+        setTotal(Number(result?.total))
+    }, [project.projectCode, project.id, keywords, pageForm.pageIndex, pageForm.pageSize])
+
+    const changePage = useCallback((pageIndex:number, pageSize:number) => {
+        setPageForm({...pageForm, pageIndex: pageIndex, pageSize: pageSize})
+        search()
+    }, [pageForm, search])
 
     return (
         <div className={style.table}>
             <div className={style.search}>
-                <Input value={keywords} onChange={(e: Event) => setKeywords(e?.target?.value)}/>
+                <Input style={{width: '25%'}} value={keywords} onChange={(e: Event) => setKeywords(e?.target?.value)}/>
+                <Button style={{marginLeft: '16px'}} onClick={search} type="primary">搜索</Button>
             </div>
             <div>
-                <Table dataSource={tableData} columns={columns}/>
+                <Table scroll={{y: '100%'}} pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>
+                <Pagination
+                    total={total}
+                    current={pageForm.pageIndex}
+                    pageSize={pageForm.pageSize}
+                    showSizeChanger
+                    showQuickJumper
+                    onChange={changePage}
+                    showTotal={(total) => `总共 ${total} 条`}
+                />
             </div>
         </div>
     )
