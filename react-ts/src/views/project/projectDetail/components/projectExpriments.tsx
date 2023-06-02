@@ -9,6 +9,7 @@ import {getExperimentByConditionAndAuthV2} from '@/api/project'
 
 interface IProps {
     project: ProjectProps,
+    returnTotal: (total: number) => void
     children?: ReactNode
 }
 
@@ -22,7 +23,7 @@ const fetchData = async (page: {
 }
 
 const ProjectExpriments: FC<IProps> = (props) => {
-    const { project } = props
+    const { project, returnTotal } = props
     const navigate = useNavigate()
     const [keywords, setKeywords] = useState('')
     const [tableData, setTableData] = useState([])
@@ -114,7 +115,6 @@ const ProjectExpriments: FC<IProps> = (props) => {
 
     // 点击搜索按钮
     const search = useCallback(async () => {
-        console.log(pageForm)
         const result = await fetchData({
             pageIndex: pageForm.pageIndex,
             pageSize: pageForm.pageSize
@@ -125,6 +125,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
         })
         setTableData(result?.list || [])
         setTotal(Number(result?.total))
+        returnTotal(result?.total)
     }, [project.projectCode, project.id, keywords, pageForm.pageIndex, pageForm.pageSize])
 
     const changePage = useCallback((pageIndex:number, pageSize:number) => {
@@ -133,7 +134,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
     }, [pageForm, search])
 
     return (
-        <div className={style.table}>
+        <div className="`${style.table} ${style.contentContainer}`">
             <div className={style.search}>
                 <Input style={{width: '25%'}} value={keywords} onChange={(e: Event) => setKeywords(e?.target?.value)}/>
                 <Button style={{marginLeft: '16px'}} onClick={search} type="primary">搜索</Button>

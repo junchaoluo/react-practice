@@ -29,13 +29,14 @@
         }
     }
     .content {
-        background-color: #fff;
-        padding: 16px;
-        border-radius: 5px;
-        margin-top: 16px;
-        height: calc(100% - 145px);
-        overflow-y: auto;
+        // background-color: #fff;
+        // padding: 16px;
+        // border-radius: 5px;
+        // margin-top: 16px;
+        // height: calc(100% - 145px);
+        // overflow-y: auto;
         .table {
+            height: calc(100% - 145px);
             .search {
                 display: flex;
                 justify-content: flex-end;
@@ -43,4 +44,12 @@
             }
         }
     }
+}
+
+.contentContainer {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 5px;
+    margin-top: 16px;
+    overflow-y: auto;
 }

@@ -6,6 +6,7 @@ import { Tag, Tabs } from 'antd'
 import type { TabsProps } from 'antd'
 import ProjectExpriments from './components/projectExpriments'
 import ProjectInfo from './components/projectInfo'
+import BasicInfo from './components/basicInfo'
 
 export type ProjectProps = {
   id?: string,
@@ -28,11 +29,10 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [project, setProject] = useState<ProjectProps>({})
   const [activeKey, setActiveKey] = useState('0')
-  const [total, setTotal] = useState(0)
   const [items, setItems] = useState<TabsProps>([
     {
       key: '0',
-      label: `实验记录(${total})`
+      label: `实验记录(0)`
     },
     {
       key: '1',
@@ -64,6 +64,17 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
     setActiveKey(key)
   }, [])
 
+  // 获取实验记录数据总数
+  const getTotal = useCallback((total: number) => {
+    const tempItems: Array<TabsProps> = items.map((item: TabsProps) => {
+      if(item.key === '0'){
+        item.label = `实验记录(${total})`
+      }
+      return item
+    })
+    setItems(tempItems)
+  }, [items])
+
 
   return (
     <>
@@ -88,9 +99,11 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
               project.id?
               (
                 activeKey === '0'?
-                <ProjectExpriments project={project}/>
+                <ProjectExpriments project={project} returnTotal={getTotal}/>
                 :
-                <ProjectInfo project={project}/>
+                <>
+                <BasicInfo project={project}/>
+                </>
               )
               :
               ''

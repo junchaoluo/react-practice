@@ -7,9 +7,8 @@ interface IProps {
     children?: ReactNode
 }
 
-const ProjectInfo: FC<IProps> = (props) => {
-    console.log(props)
-    return <div>ProjectInfo</div>
+const BasicInfo = (props: IProps) => {
+       return <div>Template</div>
 }
 
-export default memo(ProjectInfo)
+export default memo(BasicInfo)
