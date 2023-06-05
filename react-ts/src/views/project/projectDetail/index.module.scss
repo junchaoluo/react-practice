@@ -42,6 +42,9 @@
                 justify-content: flex-end;
                 margin-bottom: 16px;
             }
+            .ant-pagination {
+                margin-top: 16px;
+            }
         }
     }
 }
@@ -52,4 +55,11 @@
     border-radius: 5px;
     margin-top: 16px;
     overflow-y: auto;
+}
+
+.basicInfo {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 5px;
+    margin-top: 16px;
 }

@@ -105,13 +105,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
         },
     ]
 
-    useEffect(() => {
-        search()
-    }, [project.id])
-
-    const viewExpriment = useCallback((id: string) => {
-        navigate('/aaa')
-    }, [])
+    
 
     // 点击搜索按钮
     const search = useCallback(async () => {
@@ -126,21 +120,29 @@ const ProjectExpriments: FC<IProps> = (props) => {
         setTableData(result?.list || [])
         setTotal(Number(result?.total))
         returnTotal(result?.total)
-    }, [project.projectCode, project.id, keywords, pageForm.pageIndex, pageForm.pageSize])
+    }, [project.projectCode, project.id, keywords, pageForm])
+
+    useEffect(() => {
+        search()
+    }, [project.id, search])
+
+    const viewExpriment = useCallback((id: string) => {
+        navigate('/aaa')
+    }, [])
 
     const changePage = useCallback((pageIndex:number, pageSize:number) => {
-        setPageForm({...pageForm, pageIndex: pageIndex, pageSize: pageSize})
-        search()
+        const newP = {...pageForm, pageIndex: pageIndex, pageSize: pageSize}
+        setPageForm(newP)
     }, [pageForm, search])
 
     return (
-        <div className="`${style.table} ${style.contentContainer}`">
+        <div className={`${style.table} ${style.contentContainer}`}>
             <div className={style.search}>
                 <Input style={{width: '25%'}} value={keywords} onChange={(e: Event) => setKeywords(e?.target?.value)}/>
                 <Button style={{marginLeft: '16px'}} onClick={search} type="primary">搜索</Button>
             </div>
             <div>
-                <Table scroll={{y: '100%'}} pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>
+                <Table scroll={{y: '350px'}} pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>
                 <Pagination
                     total={total}
                     current={pageForm.pageIndex}

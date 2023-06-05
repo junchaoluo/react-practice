@@ -7,6 +7,7 @@ import type { TabsProps } from 'antd'
 import ProjectExpriments from './components/projectExpriments'
 import ProjectInfo from './components/projectInfo'
 import BasicInfo from './components/basicInfo'
+import dayjs from 'dayjs'
 
 export type ProjectProps = {
   id?: string,
@@ -19,6 +20,8 @@ export type ProjectProps = {
   projectCode: '',
   [propName: string]: unknown
 }
+
+const dateFormat = 'YYYY-MM-DD';
 
 const getProjectDetail = async (id: string) => {
   const { result } = await getProjectDetailById(id)
@@ -52,6 +55,8 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
       result.projectUser = projectUser
       setProject({
         ...result,
+        departmentIds: result.departments.map(item => item.id) || [],
+        cycle: [dayjs(result.startTime, dateFormat), dayjs(result.endTime, dateFormat)],
         type: searchParams.get('type'),
         projectCode: searchParams.get('projectCode')
       })
@@ -102,7 +107,7 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
                 <ProjectExpriments project={project} returnTotal={getTotal}/>
                 :
                 <>
-                <BasicInfo project={project}/>
+                  <BasicInfo project={project}/>
                 </>
               )
               :
