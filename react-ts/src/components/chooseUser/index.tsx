@@ -36,7 +36,7 @@ const getStaffList = async (id: string, reset: boolean, checkedList: Array<Selec
     return arr
 }
 
-const ChooseUser = memo(forwardRef< HTMLElement, IProps>((props, ref) => {
+const ChooseUser = memo(forwardRef<HTMLElement, IProps>((props, ref) => {
     const { visible, title = '重庆博腾制药科技股份有限公司', closeModal, disabledList = [], checked = [], departmentData = [], isSingle = false, isDepartmentCheck = true, isUserCheck = true, confirm} = props
 
     const [checkedList, setCheckedList] = useState<Array<SelectProps>>(checked) // 选中的人员

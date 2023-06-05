@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useCallback, useEffect, useState } from 'react';
+import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams, useParams, useLocation } from 'react-router-dom'
 import { getProjectDetailById } from '@/api/project'
 import style from './index.module.scss'
@@ -42,6 +42,8 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
       label: `项目概况`
     }
   ])
+  const basicRef = useRef()
+  const ProjectMemberRef = useRef()
 
   useEffect(() => {
     // 是页面，所以进来之后直接执行就可以
@@ -107,7 +109,7 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
                 <ProjectExpriments project={project} returnTotal={getTotal}/>
                 :
                 <>
-                  <BasicInfo project={project}/>
+                  <BasicInfo project={project} ref={basicRef}/>
                 </>
               )
               :

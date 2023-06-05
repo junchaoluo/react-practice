@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback, useEffect } from 'react';
+import React, { memo, useState, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import type { FC, ReactNode } from 'react'
 import { ProjectProps } from '../index'
 import { Descriptions, DatePicker, Cascader, Input } from 'antd'
@@ -12,9 +12,12 @@ interface IProps {
     children?: ReactNode
 }
 
-const BasicInfo = (props: IProps) => {
+const BasicInfo = forwardRef((props: IProps, ref: ForwardedRef) => {
     const { project } = props
-    console.log(project)
+    useImperativeHandle(ref, () => ({
+        project
+    }))
+
     // 进入页面进行渲染
     useEffect(() => {
         // 查询下拉框数据 部门下拉框
@@ -73,6 +76,6 @@ const BasicInfo = (props: IProps) => {
             </div>
        </div>
     )
-}
+})
 
 export default memo(BasicInfo)
