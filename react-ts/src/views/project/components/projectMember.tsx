@@ -69,7 +69,7 @@ const getProjectDetail = async (projectId:string, requiredIds: Array<string>, se
 
 const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
     const {type, projectId = ''} = props
-    const columns: ColumnsType<DataType> = [
+    const [columns, setColumns] = useState<ColumnsType<DataType>>([
         {
             title: '岗位',
             dataIndex: 'name',
@@ -114,26 +114,7 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
                 )
             }
         },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            width: 100,
-            render: (text: string, record: any, index: number) => {
-                return (
-                    <div className={style.action}>
-                        <Tooltip title="选择人员">
-                            <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal(index, record)}/>
-                        </Tooltip>
-                        <Divider type="vertical"/>
-                        <Tooltip title="清除全部">
-                            <HighlightOutlined onClick={() => deleteRowUser(index, {}, true)} style={{fontSize: '20px', color: '#999ba3'}} />
-                        </Tooltip>
-                    </div>
-                )
-            },
-        }
-    ]
+    ])
     const [roleList, setRoleList] = useState<Array<RoleType>>([])
     const [dataSource, setDataSource] = useState<Array<DataType>>([])
     const [departmentData, setDepartmentData] = useState([])
@@ -154,6 +135,28 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         if(type !== 0) {
             // 根据projectId获取岗位列表
             getProjectDetail(projectId, requiredIds, setRoleList, setDataSource)
+        }
+        if(type !== 2) {
+            console.log(type)
+            setColumns([...columns, {
+                title: '操作',
+                dataIndex: 'action',
+                key: 'action',
+                width: 100,
+                render: (text: string, record: any, index: number) => {
+                    return (
+                        <div className={style.action}>
+                            <Tooltip title="选择人员">
+                                <UsergroupDeleteOutlined style={{fontSize: '20px', color: '#999ba3'}} onClick={() => showChooseUserModal(index, record)}/>
+                            </Tooltip>
+                            <Divider type="vertical"/>
+                            <Tooltip title="清除全部">
+                                <HighlightOutlined onClick={() => deleteRowUser(index, {}, true)} style={{fontSize: '20px', color: '#999ba3'}} />
+                            </Tooltip>
+                        </div>
+                    )
+                },
+            }])
         }
     }, [type, projectId])
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗

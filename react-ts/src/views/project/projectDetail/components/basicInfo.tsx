@@ -48,7 +48,7 @@ const BasicInfo: FC<HTMLElement, IProps> = forwardRef((props, ref) => {
                     </Descriptions.Item>
                     <Descriptions.Item label="项目周期">
                         {
-                            project.type === "1"?
+                            project.type == "2"?
                             `${project.startTime}~${project.endTime}`
                             :
                             <RangePicker format="YYYY-MM-DD" placeholder={['开始日期', '结束日期']} value={project.cycle} />
@@ -57,7 +57,7 @@ const BasicInfo: FC<HTMLElement, IProps> = forwardRef((props, ref) => {
                     <Descriptions.Item label="项目编号">{project.code || '-'}</Descriptions.Item>
                     <Descriptions.Item label="所属部门">
                     {
-                            project.type === "1"?
+                            project.type == "2"?
                             `${project.departments.map(item => item.name)?.join('/')}`
                             :
                             <Cascader options={departmentOptions} placeholder="请选择" value={project.departmentIds} fieldNames={{label: 'name', value: 'id', children: 'childNode'}}></Cascader>
@@ -66,7 +66,7 @@ const BasicInfo: FC<HTMLElement, IProps> = forwardRef((props, ref) => {
                     <Descriptions.Item label="项目类型" span={2}>{project.projectType || '-'}</Descriptions.Item>
                     <Descriptions.Item label="项目描述" span={2}>
                         {
-                            project.type === "1"?
+                            project.type == "2"?
                             `${project.description || '-'}`
                             :
                             <TextArea value={project.description} rows={3} placeholder="请输入项目描述"/>
