@@ -1,7 +1,7 @@
 import { Space, Button, Card, message } from 'antd'
 import BasicInfo from "../components/basicInfo"
 import ProjectMember from "../components/projectMember"
-import style from './index.module.scss'
+import style from '../index.module.scss'
 import { getUserDepartment } from '@/api/user'
 import { createProject } from '@/api/project'
 import { useState, useEffect, useRef, useCallback } from 'react'

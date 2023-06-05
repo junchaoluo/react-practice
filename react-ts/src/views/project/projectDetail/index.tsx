@@ -5,13 +5,13 @@ import style from './index.module.scss'
 import { Tag, Tabs } from 'antd'
 import type { TabsProps } from 'antd'
 import ProjectExpriments from './components/projectExpriments'
-import ProjectInfo from './components/projectInfo'
 import BasicInfo from './components/basicInfo'
+import ProjectMember from '@/views/project/components/projectMember'
 import dayjs from 'dayjs'
 
 export type ProjectProps = {
   id?: string,
-  type?: 0 | 1,
+  type?: 1 | 2, // 0 1 2新增编辑详情
   code?: string,
   isArchive?: 0 | 1,
   startTime?: '',
@@ -34,7 +34,7 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
   const [activeKey, setActiveKey] = useState('0')
   const [items, setItems] = useState<TabsProps>([
     {
-      key: '0',
+      key: '2',
       label: `实验记录(0)`
     },
     {
@@ -105,11 +105,12 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
             {
               project.id?
               (
-                activeKey === '0'?
+                activeKey === '2'?
                 <ProjectExpriments project={project} returnTotal={getTotal}/>
                 :
                 <>
                   <BasicInfo project={project} ref={basicRef}/>
+                  <ProjectMember projectId={project.id} type={Number(project.type)} ref={ProjectMemberRef}/>
                 </>
               )
               :

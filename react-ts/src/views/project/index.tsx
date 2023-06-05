@@ -150,13 +150,7 @@ const Project = () => {
 
     const handleTableRow = (record: any, type: number) => {
         switch(type) {
-            case 0:// 查看
-            case 1: 
-                // 编辑
-                navigate(`/project/detail?projectId=${record.id}&type=${type}&projectCode=${record.code}`)
-                break;
-            case 2:
-                // 结束
+            case 0:// 结束
                 archiveAndProject([
                     {
                         id: record.id
@@ -178,6 +172,12 @@ const Project = () => {
                         });
                     }
                 })
+                break;
+            case 1: 
+            case 2:
+                // 查看
+                // 编辑
+                navigate(`/project/detail?projectId=${record.id}&type=${type}&projectCode=${record.code}`)
                 break;
             case 3:
                 // 恢复
@@ -210,14 +210,14 @@ const Project = () => {
     const operationRender = useCallback((record: any) => {
         return (
             <>
-                <Button type="link" onClick={() => handleTableRow(record, 0)}>查看</Button>
+                <Button type="link" onClick={() => handleTableRow(record, 2)}>查看</Button>
                 {
                     status === 0 
                     && (record.canArchive?
                         (
                         <>
                             <Button type="link" disabled={!record.canEdit} onClick={() => handleTableRow(record, 1)}>编辑</Button>
-                            <Popconfirm title={`请确认是否将项目${record.code}完结`} description="项目完结后请进入「已完成」项目列表中查看" okText="确定" cancelText="取消" onConfirm={() => handleTableRow(record, 2)}>
+                            <Popconfirm title={`请确认是否将项目${record.code}完结`} description="项目完结后请进入「已完成」项目列表中查看" okText="确定" cancelText="取消" onConfirm={() => handleTableRow(record, 0)}>
                                 <Button type="link">结束</Button>
                             </Popconfirm>
                         </>

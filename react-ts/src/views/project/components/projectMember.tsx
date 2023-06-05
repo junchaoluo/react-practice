@@ -1,7 +1,7 @@
-import style from './index.module.scss'
+import style from '../index.module.scss'
 import { Card, Table, Divider, Tooltip  } from 'antd'
 import { useEffect, useState, memo, useRef, useCallback, ForwardedRef, forwardRef, useImperativeHandle } from 'react'
-import { getProjectRoleList } from '@/api/project'
+import { getProjectDetailById, getProjectRoleList, getProjectRoleUserListById } from '@/api/project'
 import type { ColumnsType } from 'antd/es/table';
 import {
     UsergroupDeleteOutlined,
@@ -12,6 +12,7 @@ import ChooseUser from '@/components/chooseUser'
 import { getDeptTree } from '@/api/user'
 import { SelectProps, DepartmentProps } from '@/types/chooseUser'
 type IProps = {
+    projectId?: string,
     type: 0 | 1 | 2 // 新增、编辑、详情
 }
 
@@ -46,9 +47,28 @@ const getRoleList = async (setRoleList: any, setDataSource: any) => {
         return obj
     })
     setDataSource(arr || [])
+    // 必填的角色id
+    const requiredIds = res.result.map(r => r.isCheck === '1' && r.id)
+    return requiredIds || []
+}
+
+const getProjectDetail = async (projectId:string, requiredIds: Array<string>, setRoleList: Function, setDataSource: Function) => {
+    const {result} = await getProjectRoleUserListById(projectId)
+    const roleist = result.map(r => {
+        r.isCheck = requiredIds.indexOf(r.roleId) > -1 ? 1 : 0
+        r.name = r.roleName
+        r.user = r.user || []
+        r.user.map(u => {
+            return (u.realName = u.name)
+        })
+        return r
+    })
+    setRoleList(roleist)
+    setDataSource(roleist)
 }
 
 const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
+    const {type, projectId = ''} = props
     const columns: ColumnsType<DataType> = [
         {
             title: '岗位',
@@ -126,10 +146,16 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
 
     useEffect(() => {
         // 查询项目人员的岗位
-        if(props.type === 0) {
-            getRoleList(setRoleList, setDataSource)
+        let requiredIds: Array<string> = []
+        async function getRole() {
+            requiredIds = await getRoleList(setRoleList, setDataSource)
         }
-    }, [props.type])
+        getRole()
+        if(type !== 0) {
+            // 根据projectId获取岗位列表
+            getProjectDetail(projectId, requiredIds, setRoleList, setDataSource)
+        }
+    }, [type, projectId])
     const [chooseUserModal, setChooseUserModal] = useState(false) // 选择人员弹窗
     const [checked, setChecked] = useState<Array<SelectProps>>([]) // 选中那一行的已选人员
     const showChooseUserModal = useCallback(async (index: number, record: {

@@ -157,3 +157,15 @@ export function getUserListByFuzzyKw(oParams:getUserListByFuzzyKwParams) {
     data
   })
 }
+
+/**
+ * 通过项目id获取项目成员（以角色为维度）
+ * @param {String} sProject 项目id
+ * @return {Promise}
+ */
+ export function getProjectRoleUserListById(sProjectId: string) {
+  return request({
+    url: ELN_PREFIX + `/project/member/${sProjectId}`,
+    method: 'get'
+  })
+}
