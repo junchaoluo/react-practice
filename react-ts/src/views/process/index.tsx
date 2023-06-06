@@ -40,4 +40,4 @@ const Process: FC<PropsWithChildren> = () => {
     )
 }
 
-export default memo(Process)
+export default Process
