@@ -29,7 +29,7 @@ const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((p
         if(type === 1) {
             form.setFieldsValue({...record, recordDimensionform:record.recordDimension})
         }
-    }, [type, record,])
+    }, [type, record])
 
     useEffect(() => {
         form.validateFields({validateOnly: true}).then(

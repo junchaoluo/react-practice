@@ -1,8 +1,9 @@
-const Process = () => {
-    return (
-        <div>Process页面
-        </div>
-    )
+import { memo, PropsWithChildren, FC } from 'react';
+
+const Process: FC<PropsWithChildren> = () => {
+       return (
+        <div>Process</div>
+       )
 }
 
-export default Process;
+export default memo(Process)
