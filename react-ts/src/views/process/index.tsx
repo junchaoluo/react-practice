@@ -1,8 +1,9 @@
 import { memo, PropsWithChildren, FC } from 'react';
+import style from './index.module.scss'
 
 const Process: FC<PropsWithChildren> = () => {
        return (
-        <div>Process</div>
+        <div className={style.module}>Process</div>
        )
 }
 
