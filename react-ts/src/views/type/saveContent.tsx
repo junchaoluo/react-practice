@@ -24,10 +24,14 @@ const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((p
     const [submitDisable, setSubmitDisable] = useState(false)
     const values = Form.useWatch([], form)
 
+
     useEffect(() => {
         if(type === 1) {
-            form.setFieldsValue(record)
+            form.setFieldsValue({...record, recordDimensionform:record.recordDimension})
         }
+    }, [type, record,])
+
+    useEffect(() => {
         form.validateFields({validateOnly: true}).then(
             () => {
                 setSubmitDisable(false)
@@ -36,7 +40,7 @@ const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((p
                 setSubmitDisable(true)
             }
         )
-    }, [values, type, record, form])
+    }, [values])
 
     const handleOk = useCallback(async () => {
         // 点击确定按钮
@@ -79,7 +83,7 @@ const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((p
                 <Form
                     layout="vertical"
                     form={form}
-                    initialValues={{recordDimensionform: 'project', ...record}}
+                    initialValues={{recordDimensionform:'project'}}
                     >
                         <Form.Item
                             name="name"
@@ -121,7 +125,7 @@ const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((p
                                         <Radio value="product">产品</Radio>
                                         <Radio value="taskNo">任务</Radio>
                                         <Radio value="productAndProject">产品+项目</Radio>
-                                        <Radio value="productAndProjectAndTaskNo">产品+项目</Radio>
+                                        <Radio value="productAndProjectAndTaskNo">产品+项目+任务</Radio>
                                     </Radio.Group>
                                 </Form.Item>
                                 <div style={{color: '#999BA3', fontSize: '12px', lineHeight: '20px'}}>记录维度表示在做该类型实验的时候，实验记录与哪个维度关联</div>

@@ -112,6 +112,7 @@ const Type: FC<PropsWithChildren> = () => {
 
     const addType = useCallback(() => {
         setType(0)
+        setEditRecord({})
         setVisible(true)
     }, [])
 
