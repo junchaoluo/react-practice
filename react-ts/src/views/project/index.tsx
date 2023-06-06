@@ -175,8 +175,8 @@ const Project = () => {
                 break;
             case 1: 
             case 2:
-                // 查看
                 // 编辑
+                // 查看
                 navigate(`/project/detail?projectId=${record.id}&type=${type}&projectCode=${record.code}`)
                 break;
             case 3:

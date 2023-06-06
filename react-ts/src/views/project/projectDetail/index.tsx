@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 
 import { useSearchParams, useParams, useLocation } from 'react-router-dom'
 import { getProjectDetailById } from '@/api/project'
 import style from './index.module.scss'
-import { Tag, Tabs } from 'antd'
+import { Tag, Tabs, Button } from 'antd'
 import type { TabsProps } from 'antd'
 import ProjectExpriments from './components/projectExpriments'
 import BasicInfo from './components/basicInfo'
@@ -118,6 +118,15 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
             }
           </div>
         </div>
+        {
+          project.type == '1'?
+          <div className={style.saveModule}>
+            <Button>取消</Button>
+            <Button type="primary">保存</Button>
+          </div>
+          :
+          ''
+        }
     </>
   )
 }
