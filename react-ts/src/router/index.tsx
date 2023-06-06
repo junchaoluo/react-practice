@@ -23,7 +23,7 @@ const NoPage = lazy(() => import('@/views/nopage'))
 const Project = lazy(() => import('@/views/project'))
 const ProjectDetail = lazy(() => import('@/views/project/projectDetail'))
 const AddProject = lazy(() => import('@/views/project/addProject/addProject'))
-const Template = lazy(() => import('@/views/template'))
+const Process = lazy(() => import('@/views/process'))
 const Type = lazy(() => import('@/views/type'))
 
 const Menus: RouteType[] = [
@@ -55,10 +55,10 @@ const Menus: RouteType[] = [
         element: <Outlet/>,
         children: [
             {
-                path: '/set/template',
-                name: '实验模板',
+                path: '/set/process',
+                name: '工序设置',
                 isMenu: true,
-                element: <Template/>,
+                element: <Process/>,
             },
             {
                 path: '/set/type',
