@@ -74,7 +74,7 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
   // 获取实验记录数据总数
   const getTotal = useCallback((total: number) => {
     const tempItems: Array<TabsProps> = items.map((item: TabsProps) => {
-      if(item.key === '0'){
+      if(item.key === '2'){
         item.label = `实验记录(${total})`
       }
       return item

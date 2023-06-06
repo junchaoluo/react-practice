@@ -108,7 +108,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
     
 
     // 点击搜索按钮
-    const search = useCallback(async () => {
+    const search = useCallback(async (keywords) => {
         const result = await fetchData({
             pageIndex: pageForm.pageIndex,
             pageSize: pageForm.pageSize
@@ -120,10 +120,10 @@ const ProjectExpriments: FC<IProps> = (props) => {
         setTableData(result?.list || [])
         setTotal(Number(result?.total))
         returnTotal(result?.total)
-    }, [project.projectCode, project.id, keywords, pageForm])
+    }, [project.projectCode, project.id, pageForm])
 
     useEffect(() => {
-        search()
+        search('')
     }, [project.id, search])
 
     const viewExpriment = useCallback((id: string) => {
@@ -139,7 +139,7 @@ const ProjectExpriments: FC<IProps> = (props) => {
         <div className={`${style.table} ${style.contentContainer}`}>
             <div className={style.search}>
                 <Input style={{width: '25%'}} value={keywords} onChange={(e: Event) => setKeywords(e?.target?.value)}/>
-                <Button style={{marginLeft: '16px'}} onClick={search} type="primary">搜索</Button>
+                <Button style={{marginLeft: '16px'}} onClick={() => search(keywords)} type="primary">搜索</Button>
             </div>
             <div>
                 <Table scroll={{y: '350px'}} pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>

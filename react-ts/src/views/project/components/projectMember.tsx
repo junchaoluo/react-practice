@@ -96,22 +96,30 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
             dataIndex: 'user',
             key: 'user',
             render: (text: string, record: DataType, index: number) => {
-                return (
-                    <div>
-                        <ul>
-                            {
-                                record.user.map((item: SelectProps, i: number) => {
-                                    return (
-                                        <li className={style.projectMemberUser} key={i}>
-                                            <span>{item.name}</span>
-                                            <CloseOutlined onClick={() => deleteRowUser(index, item)}/>
-                                        </li>
-                                    )
-                                })
-                            }
-                        </ul>
-                    </div>
-                )
+                if(type !== 2) {
+                    return (
+                        <div>
+                            <ul>
+                                {
+                                    record.user.map((item: SelectProps, i: number) => {
+                                        return (
+                                            <li className={style.projectMemberUser} key={i}>
+                                                <span>{item.name}</span>
+                                                <CloseOutlined onClick={() => deleteRowUser(index, item)}/>
+                                            </li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    )
+                }else{
+                    return (
+                        <div>
+                            {record.user.map(item => item.name).join('，')}
+                        </div>
+                    )
+                }
             }
         },
     ])
