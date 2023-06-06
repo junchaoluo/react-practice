@@ -71,6 +71,7 @@ const HighSearch = memo((props: IProps) => {
 
     const reset = () => {
         form.resetFields()
+        setTime([])
         onOk()
     }
 

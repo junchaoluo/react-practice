@@ -118,15 +118,6 @@ const ProjectDetail: FC<PropsWithChildren> = () => {
             }
           </div>
         </div>
-        {
-          project.type == '1'?
-          <div className={style.saveModule}>
-            <Button>取消</Button>
-            <Button type="primary">保存</Button>
-          </div>
-          :
-          ''
-        }
     </>
   )
 }
