@@ -1,4 +1,12 @@
 .module {
     padding: 16px;
     border-radius: 5px;
+
+    .operate {
+        display: flex;
+        justify-content: space-between;
+        .search {
+            
+        }
+    }
 }
