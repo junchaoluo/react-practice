@@ -1,10 +1,10 @@
 import { memo, PropsWithChildren, FC, useState, useCallback, useEffect } from 'react'
-import { Button, Tabs, Input, Table, Pagination, Tag } from 'antd'
+import { Button, Tabs, Input, Table, Pagination, Tag, Popconfirm, message } from 'antd'
 import type { TabProps } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import style from './index.module.scss'
-import { getProcessList } from '@/api/process'
+import { getProcessList, publishProcess, invalidProcess, recoverProcess, deleteProcess } from '@/api/process'
 
 const items: TabProps['items'] = [
     {
@@ -32,6 +32,17 @@ type Params = {
     keyWords: string
 }
 
+type OperateType = 0|1|2|3|4
+
+enum OperateEnum {
+    '发布',
+    '恢复',
+    '编辑',
+    '作废',
+    '删除',
+}
+
+// 查询数据
 const fetchData = async (pageForm: PageType, params: Params, setDataSource: CallableFunction, setTotal: CallableFunction) => {
     let param = {}
     if(!params.keyWords) {
@@ -45,6 +56,16 @@ const fetchData = async (pageForm: PageType, params: Params, setDataSource: Call
     const { result } = await getProcessList(pageForm, param)
     setDataSource(result && result.list || [])
     setTotal(result && +result.total)
+}
+
+// 发布/恢复/删除工序
+const operateProcess = async (id: string, type: OperateType, operateFunciton: any) => {
+    const {code, description} = await operateFunciton(id)
+    if(code === 0) {
+        message.success(`${OperateEnum[type]}成功！`)
+    }else{
+        message.error(description)
+    }
 }
 
 const Process: FC<PropsWithChildren> = () => {
@@ -140,18 +161,51 @@ const Process: FC<PropsWithChildren> = () => {
                     <>
                         {
                             activeKey === '0' ?
-                            <Button type="link">发布</Button>
+                            <Popconfirm
+                            placement="top"
+                            title="是否确认发布该版本？"
+                            onConfirm={() => handleOperate(record.id, 0)}
+                            okText="发布"
+                            cancelText="取消"
+                            >
+                                <Button type="link">发布</Button>
+                            </Popconfirm>
                             :
-                            <Button type="link">恢复</Button>
+                            <Popconfirm
+                            placement="top"
+                            title="是否确认恢复该版本？"
+                            onConfirm={() => handleOperate(record.id, 1)}
+                            okText="恢复"
+                            cancelText="取消"
+                            >
+                                <Button type="link">恢复</Button>
+                            </Popconfirm>
                         }
-                        <Button type="link">编辑</Button>
+                        <Button type="link" onClick={() => handleOperate(record.id, 2)}>编辑</Button>
                         {
                             activeKey === '0' ?
-                            <Button type="link">作废</Button>
+                            <Popconfirm
+                            placement="top"
+                            title="确定要作废吗？"
+                            onConfirm={() => handleOperate(record.id, 3)}
+                            okText="作废"
+                            cancelText="取消"
+                            >
+                                <Button type="link">作废</Button>
+                            </Popconfirm>
                             :
                             ''
                         }
-                        <Button type="link">删除</Button>
+                        <Popconfirm
+                            placement="top"
+                            icon={<CloseCircleOutlined />}
+                            title="工序删除后不可恢复，确定要删除吗？"
+                            onConfirm={() => handleOperate(record.id, 4)}
+                            okText="删除"
+                            cancelText="取消"
+                            >
+                                <Button type="link">删除</Button>
+                            </Popconfirm>
                     </>
                 )
             }
@@ -178,7 +232,7 @@ const Process: FC<PropsWithChildren> = () => {
         }, setDataSource, setTotal)
     }, [pageForm, activeKey])
 
-    const search = useCallback(async (keywords: string) => {
+    const search = useCallback(async (keywords = '') => {
         setPageForm({...pageForm, pageNum: 1})
         getData(keywords)
     }, [pageForm, getData])
@@ -189,6 +243,7 @@ const Process: FC<PropsWithChildren> = () => {
         }else{
             setTableColumns(columns.filter((item: ColumnsType) => !item.hidden))
         }
+        search()
     }, [activeKey])
 
     const onChangeTab = useCallback((value: string) => {
@@ -201,6 +256,32 @@ const Process: FC<PropsWithChildren> = () => {
     const onChangePage = useCallback((pageNum: number, pageSize: number) => {
         setPageForm({...pageForm, pageNum, pageSize})
     }, [pageForm, getData])
+
+    /**
+     * id: 主键
+     * type 0 发布 1 恢复 2 编辑 3 作废 4 删除
+     */
+    const handleOperate = useCallback((id: string, type: OperateType) => {
+        switch(type) {
+            case 0:
+                operateProcess(id, type, publishProcess)
+                break;
+            case 1:
+                operateProcess(id, type, recoverProcess)
+                break;
+            case 2:
+                // 编辑跳转页面
+                break;
+            case 3:
+                operateProcess(id, type, invalidProcess)
+                break;
+            case 4:
+                operateProcess(id, type, deleteProcess)
+                break;
+            default: break;
+        }
+        search()
+    }, [])
 
     return (
         <div className={style.module}>

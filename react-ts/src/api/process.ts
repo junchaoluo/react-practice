@@ -15,3 +15,53 @@ import { ELN_PREFIX, CHEM_PREFIX, BASE_PREFIX } from './constant'
       noLoading: true
     })
 }
+
+/**
+ * 发布工艺
+ */
+export function publishProcess(id: string) {
+  return request({
+    url: ELN_PREFIX + `/processSetting/release`,
+    method: 'put',
+    data: {
+      id: id
+    }
+  })
+}
+
+/**
+ * 作废工艺
+ */
+export function invalidProcess(aParams: Array<string>) {
+  return request({
+    url: ELN_PREFIX + `/processSetting/toVoid`,
+    method: 'put',
+    data: {
+      list: aParams
+    }
+  })
+}
+
+/**
+ * 恢复工艺
+ */
+export function recoverProcess(aParams: Array<string>) {
+  return request({
+    url: ELN_PREFIX + `/processSetting/recover`,
+    method: 'put',
+    data: aParams
+  })
+}
+
+/**
+ * 删除工艺
+ */
+export function deleteProcess(id: string) {
+  return request({
+    url: ELN_PREFIX + `/processSetting/delete`,
+    method: 'delete',
+    data: {
+      list: [id]
+    }
+  })
+}

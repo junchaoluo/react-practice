@@ -20,9 +20,9 @@ request.interceptors.request.use((config: {
     },
     [propName: string]: unknown
 })  => {
-    const userInfo = store.getState('user').user.userInfo
-    // config.headers['Authorization'] = sessionStorage.getItem('token')
-    config.headers['Authorization'] = userInfo?.token || ''
+    // const userInfo = store.getState('user').user.userInfo
+    config.headers['Authorization'] = sessionStorage.getItem('token') || ''
+    // config.headers['Authorization'] = userInfo?.token || ''
     return config
 }, (error: unknown) => {
     return Promise.reject(error)
