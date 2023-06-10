@@ -5,6 +5,7 @@ import { ColumnsType } from 'antd/es/table'
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import style from './index.module.scss'
 import { getProcessList, publishProcess, invalidProcess, recoverProcess, deleteProcess } from '@/api/process'
+import { useNavigate } from 'react-router-dom'
 
 const items: TabProps['items'] = [
     {
@@ -69,6 +70,8 @@ const operateProcess = async (id: string, type: OperateType, operateFunciton: an
 }
 
 const Process: FC<PropsWithChildren> = () => {
+    const navigate = useNavigate()
+
     const columns:ColumnsType<DataType> = [
         {
             title: '工序名称',
@@ -270,6 +273,7 @@ const Process: FC<PropsWithChildren> = () => {
                 operateProcess(id, type, recoverProcess)
                 break;
             case 2:
+                navigate(`edit?id=${id}&&type=1`)
                 // 编辑跳转页面
                 break;
             case 3:

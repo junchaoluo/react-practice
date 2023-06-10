@@ -24,6 +24,7 @@ const Project = lazy(() => import('@/views/project'))
 const ProjectDetail = lazy(() => import('@/views/project/projectDetail'))
 const AddProject = lazy(() => import('@/views/project/addProject/addProject'))
 const Process = lazy(() => import('@/views/process'))
+const EditProcess = lazy(() => import('@/views/process/editProcess'))
 const Type = lazy(() => import('@/views/type'))
 
 const Menus: RouteType[] = [
@@ -59,6 +60,12 @@ const Menus: RouteType[] = [
                 name: '工序设置',
                 isMenu: true,
                 element: <Process/>,
+            },
+            {
+                path: '/set/process/edit',
+                name: '编辑工序',
+                isMenu: false,
+                element: <EditProcess/>,
             },
             {
                 path: '/set/type',

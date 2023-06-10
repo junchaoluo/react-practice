@@ -1,0 +1,25 @@
+{
+    "react function": {
+        "prefix": "=rfc",
+        "body": [
+            "/**",
+            "* @file ${2: $TM_FILENAME_BASE}",
+            "* @date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+            "*/",
+            "$0",
+            "",
+            "import React from 'react';",
+            "import PropTypes from 'prop-types';",
+            "",
+            "const ${1} = () => {",
+            "return <div></div>",
+            "};",
+            "",
+            "${1}.propTypes = {};",
+            "",
+            "export default ${1};",
+            "",
+        ],
+        "description": "react funcitional component"
+    }
+}
