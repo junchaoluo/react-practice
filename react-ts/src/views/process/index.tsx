@@ -164,15 +164,18 @@ const Process: FC<PropsWithChildren> = () => {
                     <>
                         {
                             activeKey === '0' ?
-                            <Popconfirm
-                            placement="top"
-                            title="是否确认发布该版本？"
-                            onConfirm={() => handleOperate(record.id, 0)}
-                            okText="发布"
-                            cancelText="取消"
-                            >
-                                <Button type="link">发布</Button>
-                            </Popconfirm>
+                                record.status === 0?
+                                <Popconfirm
+                                placement="top"
+                                title="是否确认发布该版本？"
+                                onConfirm={() => handleOperate(record.id, 0)}
+                                okText="发布"
+                                cancelText="取消"
+                                >
+                                    <Button type="link">发布</Button>
+                                </Popconfirm>
+                                :
+                                ''
                             :
                             <Popconfirm
                             placement="top"
@@ -287,11 +290,16 @@ const Process: FC<PropsWithChildren> = () => {
         search()
     }, [])
 
+    // 新增工序
+    const addProcess = useCallback(() => {
+        navigate(`edit?type=0`)
+    }, [])
+
     return (
         <div className={style.module}>
             <Tabs activeKey={activeKey} items={items} onChange={onChangeTab} />
             <div className={style.operate}>
-                <Button icon={<PlusOutlined />} type="primary">新增工序</Button>
+                <Button icon={<PlusOutlined />} type="primary" onClick={addProcess}>新增工序</Button>
                 <div className={style.search}>
                     <Input value={keywords} onChange={(e: Event) => setKeywords(e.target.value)}/>
                     <Button onClick={() => search(keywords)} type="primary">搜索</Button>
