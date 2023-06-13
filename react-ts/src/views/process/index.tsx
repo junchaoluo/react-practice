@@ -187,7 +187,7 @@ const Process: FC<PropsWithChildren> = () => {
                                 <Button type="link">恢复</Button>
                             </Popconfirm>
                         }
-                        <Button type="link" onClick={() => handleOperate(record.id, 2)}>编辑</Button>
+                        <Button type="link" onClick={() => handleOperate(record.id, 2, record)}>编辑</Button>
                         {
                             activeKey === '0' ?
                             <Popconfirm
@@ -256,18 +256,17 @@ const Process: FC<PropsWithChildren> = () => {
         setKeywords('')
         setPageForm({...pageForm, pageNum: 1})
         setActiveKey(value)
-        search()
     }, [pageForm])
 
     const onChangePage = useCallback((pageNum: number, pageSize: number) => {
         setPageForm({...pageForm, pageNum, pageSize})
-    }, [pageForm, getData])
+    }, [pageForm])
 
     /**
      * id: 主键
      * type 0 发布 1 恢复 2 编辑 3 作废 4 删除
      */
-    const handleOperate = useCallback((id: string, type: OperateType) => {
+    const handleOperate = useCallback((id: string, type: OperateType, record: DataType) => {
         switch(type) {
             case 0:
                 operateProcess(id, type, publishProcess)
@@ -276,7 +275,11 @@ const Process: FC<PropsWithChildren> = () => {
                 operateProcess(id, type, recoverProcess)
                 break;
             case 2:
-                navigate(`edit?id=${id}&&type=1`)
+                navigate(`edit?id=${id}&&type=1`, {
+                    state: {
+                        ...record
+                    }
+                })
                 // 编辑跳转页面
                 break;
             case 3:

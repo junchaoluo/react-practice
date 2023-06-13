@@ -65,3 +65,25 @@ export function deleteProcess(id: string) {
     }
   })
 }
+
+/**
+ * 新增工艺
+ */
+ export function addProcess(oData:any) {
+  return request({
+    url: ELN_PREFIX + '/processSetting/add',
+    method: 'post',
+    data: oData
+  })
+}
+
+/**
+ * 编辑工艺
+ */
+ export function editProcess(oData:any) {
+  return request({
+    url: ELN_PREFIX + '/processSetting/modify',
+    method: 'put',
+    data: oData
+  })
+}

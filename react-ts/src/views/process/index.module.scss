@@ -21,4 +21,26 @@
             justify-content: flex-end;
         }
     }
+
+    .editProcess {
+        .tableAddRow {
+            width: 100%;
+            height: 40px;
+            padding-left: 12px;
+            border: 1px solid #dcdee0;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            font-size: 14px;
+            line-height: 40px;
+            color: #2f54eb;
+            user-select: none;
+        }
+    }
+    .footer {
+        display: flex;
+        justify-content: end;
+        position: absolute;
+        bottom: 32px;
+        right: 32px;
+    }
 }
