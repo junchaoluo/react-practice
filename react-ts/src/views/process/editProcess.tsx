@@ -7,11 +7,12 @@
 import {memo, PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import type { FC } from 'react';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom'
-import { Form, Input, Radio, Table, Button, Select } from 'antd'
+import { Form, Input, Radio, Table, Button, Select, message } from 'antd'
 import type { RadioChangeEvent } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { PlusOutlined } from '@ant-design/icons'
 import style from './index.module.scss'
+import { addProcess, editProcess } from '@/api/process'
 
 interface DataType {
     id?: string,
@@ -19,7 +20,8 @@ interface DataType {
     params?: string,
     name?: string,
     type?: number,
-    unit?: string
+    unit?: string,
+    selectOption?: selectOption,
 }
 
 const dataTypeList = [
@@ -33,7 +35,13 @@ const dataTypeList = [
     }
 ]
 
-const options = [
+type selectOption = {
+    label: string,
+    value: number,
+    type: string
+}
+
+const options: Array<selectOption> = [
     {
       label: '文本',
       value: 0,
@@ -85,8 +93,8 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
             dataIndex: 'name',
             render: (text: string, record: DataType, index: number) => {
                 return (
-                    <Form.Item name="name" rules={[{required: true, message: '请输入参数名'}]}>
-                        <Input value={record.name} placeholder="请输入参数名称"/>
+                    <Form.Item key={record.id+'name'} name={`params.${record.id}.name`} rules={[{required: true, message: '请输入参数名'}]}>
+                        <Input value={record.name} placeholder="请输入参数名称" onChange={(e) => changeTableData('name', e.target.value, index)}/>
                     </Form.Item>
                 )
             }
@@ -96,7 +104,9 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
             dataIndex: 'type',
             render: (text: string, record: DataType, index: number) => {
                 return (
-                    <Select value={record.type} options={options}></Select>
+                    <Form.Item key={record.id+'type'} name={`params.${record.id}.type`}>
+                        <Select value={record.type} options={options} onChange={(e) => changeTableData('type', e, index)}></Select>
+                    </Form.Item>
                 )
             }
         },
@@ -105,7 +115,9 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
             dataIndex: 'unit',
             render: (text: string, record: DataType, index: number) => {
                 return (
-                    <Input value={record.unit} placeholder="请输入单位名称,使用英文逗号进行分割"/>
+                    <Form.Item key={record.id+'unit'} name={`params.${record.id}.unit`}>
+                        <Input value={record.unit} onChange={(e) => changeTableData('unit', e.target.value, index)} placeholder="请输入单位名称,使用英文逗号进行分割"/>
+                    </Form.Item>
                 )
             }
         },
@@ -129,6 +141,7 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
         if(searchParams.get('type') == 1) {
             //编辑 查看详情
             setData(location.state)
+            form.setFieldsValue(location.state)
             setTableData(JSON.parse(location.state.params))
         }
     }, [searchParams, location.state])
@@ -139,9 +152,7 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
 
     // 删除
     const deleteData = useCallback((record:DataType) => {
-        console.log(tableData)
         const tempData = tableData.filter((item: DataType) => item.id !== record.id)
-        console.log(tempData)
         setTableData(tempData)
     }, [tableData])
 
@@ -153,15 +164,41 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
         }])
     }, [tableData])
 
+    // 改变
+    const changeTableData = (field:string, value: string | number, index:number) => {
+        tableData[index][field] = value
+        setTableData(tableData)
+    }
+
     // 保存
     const save = () => {
         // 校验必填
-        form.validateFields().then(values => {
-            console.log(values)
+        form.validateFields().then(async values => {
+            if(form.getFieldValue('dataType') == 0) {
+                // 如果是参数
+                const paramArr = tableData.map((item: DataType) => {
+                    delete item.id
+                    item.selectOption = options[Number(item.type)]
+                    return item
+                })
+                form.setFieldValue('params', JSON.stringify(paramArr))
+            }
+            const param = {
+                dataType: form.getFieldValue('dataType'),
+                name: form.getFieldValue('name'),
+                params: form.getFieldValue('params'),
+                version: searchParams.get('type') == 0?1:data.version,
+            }
+            const func = searchParams.get('type') == 0 ? addProcess:editProcess
+            const { code, description } = await func(param)
+            if(code === 0) {
+                message.success('操作成功！')
+                handleCancel()
+            }else{
+                message.error(description)
+            }
         }).catch((errorInfo) => {
-            console.log(errorInfo)
         })
-        // handleCancel()
     }
 
     // 取消
