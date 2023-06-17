@@ -4,9 +4,9 @@ import { addExperimentClassification, reviseExperimentClassification } from '@/a
 
 type IProps = {
     title?: string,
-    visible: boolean,
-    type: number, // 0 新增 1 编辑
-    record: any,
+    visible?: boolean,
+    type?: number, // 0 新增 1 编辑
+    record?: any,
     closeModal: () => void
 } & PropsWithChildren
 
@@ -32,7 +32,7 @@ const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((p
     }, [type, record])
 
     useEffect(() => {
-        form.validateFields({validateOnly: true}).then(
+        form.validateFields().then(
             () => {
                 setSubmitDisable(false)
             },

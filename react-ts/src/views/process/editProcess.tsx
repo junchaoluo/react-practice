@@ -140,9 +140,21 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
     useEffect(() => {
         if(searchParams.get('type') == 1) {
             //编辑 查看详情
-            setData(location.state)
-            form.setFieldsValue(location.state)
-            setTableData(JSON.parse(location.state.params))
+            const formData = location.state
+            setData(formData)
+            form.setFieldsValue(formData)
+            // 处理参数的逻辑
+            if(formData.dataType == 0) {
+                // 如果是参数
+                const arr = JSON.parse(formData.params).map((item: DataType) => {
+                    item.id = getUuid()
+                    form.setFieldValue(`params.${item.id}.name`, item.name)
+                    form.setFieldValue(`params.${item.id}.type`, item.type)
+                    form.setFieldValue(`params.${item.id}.unit`, item.unit)
+                    return item
+                })
+                setTableData(arr)
+            }
         }
     }, [searchParams, location.state])
 
@@ -183,13 +195,16 @@ const EditProcess: FC<PropsWithChildren> = (props) => {
                 })
                 form.setFieldValue('params', JSON.stringify(paramArr))
             }
-            const param = {
+            let param = {
                 dataType: form.getFieldValue('dataType'),
                 name: form.getFieldValue('name'),
                 params: form.getFieldValue('params'),
                 version: searchParams.get('type') == 0?1:data.version,
             }
             const func = searchParams.get('type') == 0 ? addProcess:editProcess
+            if(searchParams.get('type') == 1) {
+                param = {...data, ...param}
+            }
             const { code, description } = await func(param)
             if(code === 0) {
                 message.success('操作成功！')

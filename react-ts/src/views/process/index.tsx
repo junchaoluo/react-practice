@@ -60,7 +60,9 @@ const fetchData = async (pageForm: PageType, params: Params, setDataSource: Call
 }
 
 // 发布/恢复/删除工序
-const operateProcess = async (id: string, type: OperateType, operateFunciton: any) => {
+const operateProcess = async (id: string | Array<string> | {
+    list: Array<string>
+}, type: OperateType, operateFunciton: any) => {
     const {code, description} = await operateFunciton(id)
     if(code === 0) {
         message.success(`${OperateEnum[type]}成功！`)
@@ -97,7 +99,7 @@ const Process: FC<PropsWithChildren> = () => {
                     p.name && params.push(p.name)
                   })
                 }
-                return params.length > 0 ? <span>{params.join(',')}</span> : <div domPropsInnerHTML={record.params}></div>
+                return params.length > 0 ? <span>{params.join(',')}</span> : <div dangerouslySetInnerHTML={{__html: record.params}}></div>
             }
         },
         {
@@ -272,7 +274,9 @@ const Process: FC<PropsWithChildren> = () => {
                 operateProcess(id, type, publishProcess)
                 break;
             case 1:
-                operateProcess(id, type, recoverProcess)
+                operateProcess({
+                    list: [id]
+                }, type, recoverProcess)
                 break;
             case 2:
                 navigate(`edit?id=${id}&&type=1`, {
@@ -283,7 +287,7 @@ const Process: FC<PropsWithChildren> = () => {
                 // 编辑跳转页面
                 break;
             case 3:
-                operateProcess(id, type, invalidProcess)
+                operateProcess([id], type, invalidProcess)
                 break;
             case 4:
                 operateProcess(id, type, deleteProcess)
