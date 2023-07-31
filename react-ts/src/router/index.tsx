@@ -26,6 +26,7 @@ const AddProject = lazy(() => import('@/views/project/addProject/addProject'))
 const Process = lazy(() => import('@/views/process'))
 const EditProcess = lazy(() => import('@/views/process/editProcess'))
 const Type = lazy(() => import('@/views/type'))
+const SamplePool = lazy(() => import('@/views/samplePool'))
 
 const Menus: RouteType[] = [
     {
@@ -74,6 +75,13 @@ const Menus: RouteType[] = [
                 element: <Type/>,
             }
         ]
+    },
+    {
+        path: '/sample-pool',
+        name: '样品池',
+        icon: <FundProjectionScreenOutlined />,
+        element: <SamplePool/>,
+        isMenu: true
     },
 
 ]
