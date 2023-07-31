@@ -145,7 +145,7 @@ const Project = () => {
     const [tableColumns, setTableColumns] = useState([])
     const [scroll, setScroll] = useState({
         x: 1000,
-        y: 450
+        y: 'calc(100vh - 370px)'
     })
 
     const handleTableRow = (record: any, type: number) => {

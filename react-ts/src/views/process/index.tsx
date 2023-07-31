@@ -221,7 +221,7 @@ const Process: FC<PropsWithChildren> = () => {
     ]
     const [scroll, setScroll] = useState({
         x: 1000,
-        y: 480
+        y: 'calc(100vh - 350px)'
     })
     const [tableColumns, setTableColumns] = useState(columns)
     const [activeKey, setActiveKey] = useState('0')

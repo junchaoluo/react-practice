@@ -140,7 +140,7 @@ const Type: FC<PropsWithChildren> = () => {
             </div>
             <div className={style.content}>
                 <div className={style.table}>
-                    <Table pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>
+                    <Table pagination={false} rowKey={(record: any) => record.id} scroll={{y: 'calc(100vh - 280px)'}} dataSource={tableData} columns={columns}/>
                 </div>
                 <div className={style.page}>
                     <Pagination

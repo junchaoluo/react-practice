@@ -133,6 +133,7 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         doValidate: doValidate()
     }))
 
+    const[scrollY, setScrollY] = useState('')
     useEffect(() => {
         // 查询项目人员的岗位
         let requiredIds: Array<string> = []
@@ -143,6 +144,9 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         if(type !== 0) {
             // 根据projectId获取岗位列表
             getProjectDetail(projectId, requiredIds, setRoleList, setDataSource)
+            setScrollY('calc(100vh - 790px)')
+        }else{
+            setScrollY('calc(100vh - 540px)')
         }
         if(type !== 2) {
             console.log(type)
@@ -224,7 +228,7 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
     return (
         <>
             <Card title='项目人员' size="small">
-                <Table dataSource={dataSource} rowKey={(record: any) => record.id} columns={columns} size="small" pagination={false} />
+                <Table dataSource={dataSource} rowKey={(record: any) => record.id} columns={columns} size="small" scroll={{y: scrollY}} pagination={false} />
                 {
                     chooseUserModal?
                     <ChooseUser visible={chooseUserModal} checked={checked} disabledList={[]} departmentData={departmentData} isDepartmentCheck={false} closeModal={() => setChooseUserModal(false)} confirm={confirm}/>
