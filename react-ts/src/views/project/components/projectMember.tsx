@@ -144,7 +144,7 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
         if(type !== 0) {
             // 根据projectId获取岗位列表
             getProjectDetail(projectId, requiredIds, setRoleList, setDataSource)
-            setScrollY('calc(100vh - 790px)')
+            setScrollY('calc(100vh - 700px)')
         }else{
             setScrollY('calc(100vh - 540px)')
         }

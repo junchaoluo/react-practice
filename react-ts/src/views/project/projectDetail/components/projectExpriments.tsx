@@ -136,13 +136,13 @@ const ProjectExpriments: FC<IProps> = (props) => {
     }, [pageForm, search])
 
     return (
-        <div className={`${style.table} ${style.contentContainer}`}>
+        <div className={`${style.table} ${style.contentContainer}`} style={{height: 'calc(100% - 32px)'}}>
             <div className={style.search}>
                 <Input style={{width: '25%'}} value={keywords} onChange={(e: Event) => setKeywords(e?.target?.value)}/>
                 <Button style={{marginLeft: '16px'}} onClick={() => search(keywords)} type="primary">搜索</Button>
             </div>
             <div style={{textAlign: 'right'}}>
-                <Table scroll={{y: `400px`}} pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>
+                <Table scroll={{y: `calc(100vh - 420px)`}} pagination={false} rowKey={(record: any) => record.id} dataSource={tableData} columns={columns}/>
                 <Pagination
                     total={total}
                     current={pageForm.pageIndex}
