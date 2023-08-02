@@ -27,6 +27,7 @@ const Process = lazy(() => import('@/views/process'))
 const EditProcess = lazy(() => import('@/views/process/editProcess'))
 const Type = lazy(() => import('@/views/type'))
 const SamplePool = lazy(() => import('@/views/samplePool'))
+const EditSample = lazy(() => import('@/views/samplePool/editSample'))
 
 const Menus: RouteType[] = [
     {
@@ -83,7 +84,12 @@ const Menus: RouteType[] = [
         element: <SamplePool/>,
         isMenu: true
     },
-
+    {
+        path: '/sample-pool/edit-sample',
+        name: '编辑送样',
+        element: <EditSample/>,
+        isMenu: false
+    },
 ]
 
 const Routes: RouteType[] = [
