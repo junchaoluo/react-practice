@@ -1,5 +1,5 @@
 import { memo, PropsWithChildren, FC, useState, Fragment } from 'react';
-import style from './index.module.scss'
+import style from '../index.module.scss'
 import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover } from 'antd'
 
 const dateFormat = 'YYYY/MM/DD'

@@ -1,7 +1,7 @@
 import { memo, PropsWithChildren, FC, useState, Fragment } from 'react';
 import style from './index.module.scss'
 import BasicInfo from '@/views/samplePool/editSample/components/basicInfo';
-import detectionInfo from '@/views/samplePool/editSample/components/detectionInfo';
+import DetectionInfo from '@/views/samplePool/editSample/components/detectionInfo';
 
 const Template: FC<PropsWithChildren> = () => {
           return (
@@ -10,7 +10,7 @@ const Template: FC<PropsWithChildren> = () => {
                 <BasicInfo/>
             </div>
             <div className={style.detection}>
-                <detectionInfo/>
+                <DetectionInfo/>
             </div>
         </div>
        )
