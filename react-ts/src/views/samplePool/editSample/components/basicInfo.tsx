@@ -1,4 +1,4 @@
-import { memo, PropsWithChildren, FC, useState, Fragment } from 'react';
+import { memo, PropsWithChildren, FC, useState, forwardRef, ForwardedRef } from 'react';
 import style from '../index.module.scss'
 import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover } from 'antd'
 
@@ -21,7 +21,7 @@ type Dictionaries = {
 const concentrationUnitList = ['%', 'g/mL', 'mol/L']
 const formItemLayout = { labelCol: { span: 22 }, wrapperCol: { span: 22 } };
 
-const DetectionInfo: FC<PropsWithChildren> = () => {
+const DetectionInfo = forwardRef((props: IProps, ref: ForwardedRef) => {
     const [form] = Form.useForm()
 
     const [lastCompound, setLastCompound] = useState<Array<Compound>>([]) // 上次选择的化合物
