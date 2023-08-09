@@ -1,3 +1,14 @@
 .content {
     padding: 16px;
+    .compoundImg {
+
+    }
+    .basicForm {
+        .ant-form-item{
+            .ant-input-number,
+            .ant-picker {
+                width: 100%;
+            }
+        }
+    }
 }
