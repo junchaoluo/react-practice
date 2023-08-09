@@ -1,6 +1,6 @@
-import { memo, PropsWithChildren, FC, useState } from 'react';
+import { memo, PropsWithChildren, FC, useState, Fragment } from 'react';
 import style from './index.module.scss'
-import { Form, Select, Input, Row, Col, DatePicker, InputNumber } from 'antd'
+import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover } from 'antd'
 
 const dateFormat = 'YYYY/MM/DD'
 const { Option } = Select
@@ -22,6 +22,8 @@ const concentrationUnitList = ['%', 'g/mL', 'mol/L']
 const formItemLayout = { labelCol: { span: 22 }, wrapperCol: { span: 22 } };
 
 const Template: FC<PropsWithChildren> = () => {
+    const [form] = Form.useForm()
+
     const [lastCompound, setLastCompound] = useState<Array<Compound>>([]) // 上次选择的化合物
     const [compoundList, setCompoundList] = useState<Array<Compound>>([]) // 反应物和产物
     // 清除化合物
@@ -137,7 +139,14 @@ const Template: FC<PropsWithChildren> = () => {
                         </Col>
                         <Col span={4}>
                             <div className={style.compoundImg}>
-                                123
+                                {
+                                    form.getFieldValue('materialId')?
+                                    ''
+                                    :
+                                    ''
+                                }
+                            <Popover placement="leftTop" title="" content="" trigger="click">
+                            </Popover>
                             </div>
                         </Col>
                     </Row>
