@@ -67,7 +67,7 @@ const getProjectDetail = async (projectId:string, requiredIds: Array<string>, se
     setDataSource(roleist)
 }
 
-const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
+const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef<unknown>) => {
     const {type, projectId = ''} = props
     const [columns, setColumns] = useState<ColumnsType<DataType>>([
         {

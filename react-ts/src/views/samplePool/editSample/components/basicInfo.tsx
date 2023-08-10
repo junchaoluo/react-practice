@@ -1,6 +1,7 @@
 import { memo, PropsWithChildren, FC, useState, forwardRef, ForwardedRef } from 'react';
 import style from '../index.module.scss'
 import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover } from 'antd'
+import CompoundImg from './compoundImg';
 
 const dateFormat = 'YYYY/MM/DD'
 const { Option } = Select
@@ -21,13 +22,14 @@ type Dictionaries = {
 const concentrationUnitList = ['%', 'g/mL', 'mol/L']
 const formItemLayout = { labelCol: { span: 22 }, wrapperCol: { span: 22 } };
 
-const DetectionInfo = forwardRef((props: IProps, ref: ForwardedRef) => {
+const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((props, ref) => {
     const [form] = Form.useForm()
 
     const [lastCompound, setLastCompound] = useState<Array<Compound>>([]) // 上次选择的化合物
     const [compoundList, setCompoundList] = useState<Array<Compound>>([]) // 反应物和产物
     // 清除化合物
     const clearMaterialId = () => {
+        console.log(props, ref)
     }
 
     // 样品类型
@@ -141,18 +143,18 @@ const DetectionInfo = forwardRef((props: IProps, ref: ForwardedRef) => {
                         <div className={style.compoundImg}>
                             {
                                 form.getFieldValue('materialId')?
-                                ''
+                                <Popover placement="leftTop" title="" content="" trigger="click">
+                                    <CompoundImg/>
+                                </Popover>
                                 :
-                                ''
+                                <CompoundImg/>
                             }
-                        <Popover placement="leftTop" title="" content="" trigger="click">
-                        </Popover>
                         </div>
                     </Col>
                 </Row>
             </Form>
         </>
        )
-}
+})
 
 export default memo(DetectionInfo)

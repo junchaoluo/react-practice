@@ -39,7 +39,7 @@ type BasicFormProps = {
     projectType: string
 }
 
-const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef) => {
+const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef<unknown>) => {
     useImperativeHandle(ref, () => ({
         basicForm: basicForm,
         form

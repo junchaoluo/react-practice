@@ -1,4 +1,4 @@
-import { Space, Button, Card, message } from 'antd'
+import { Space, Button, Card, message, ForwardedRef } from 'antd'
 import BasicInfo from "../components/basicInfo"
 import ProjectMember from "../components/projectMember"
 import style from '../index.module.scss'
