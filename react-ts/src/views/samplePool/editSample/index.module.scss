@@ -2,6 +2,20 @@
     padding: 16px;
     .compoundImg {
         height: 150px;
+        .info {
+            background: rgba(25, 27, 39, 0.4);
+            border-radius: 0px 0px 4px 4px;
+            color: #fff;
+            padding: 0 12px;
+            height: 36px;
+            line-height: 36px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
     }
     .basicForm {
         .ant-form-item{
