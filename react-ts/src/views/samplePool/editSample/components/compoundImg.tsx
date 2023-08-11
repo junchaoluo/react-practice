@@ -1,18 +1,20 @@
-import { memo, PropsWithChildren, FC } from 'react';
+import { memo, PropsWithChildren, FC, useState, useEffect } from 'react';
 import style from'../index.module.scss'
 import { Image } from 'antd'
+import { Compound, setImg } from '../components/basicInfo'
 
-type IProps = PropsWithChildren<{
-    name: string
-}>
+type IProps = PropsWithChildren<Compound>
+
+// 失败图片地址
+import fallbackSrc from '@/assets/images/login-left.png';
 
 const Template: FC<IProps> = (props) => {
-    const { name } = props
+    const { recordId, name, structureImgPath } = props
 
        return (
         <div className={style.compoundImg}>
             <div className={style.image}>
-                <Image/>
+                <Image height={114} preview={false} src={setImg(structureImgPath)} fallback={fallbackSrc} />
             </div>
             <div className={style.info}>
                 { name ? name : '化合物预览' }

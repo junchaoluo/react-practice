@@ -6,8 +6,10 @@ import store from '@/store'
 
 let isResrLogin = true
 
+export const baseURL = 'https://test.pharmaoryx.tech:9000'
+
 const request = axios.create({
-    baseURL:'https://test.pharmaoryx.tech:9000',
+    baseURL: baseURL,
     timeout: 60000
 })
 

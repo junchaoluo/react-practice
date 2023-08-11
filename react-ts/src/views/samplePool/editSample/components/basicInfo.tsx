@@ -1,15 +1,29 @@
 import { memo, PropsWithChildren, FC, useState, forwardRef, ForwardedRef } from 'react';
 import style from '../index.module.scss'
-import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover } from 'antd'
+import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover, Image } from 'antd'
 import CompoundImg from './compoundImg';
+import { baseURL } from '@/request'
+import { FILE_PREFIX } from '@/api/constant'
+// 失败图片地址
+import fallbackSrc from '@/assets/images/login-left.png';
 
+const fileSource = `${baseURL}/${FILE_PREFIX}`
 const dateFormat = 'YYYY/MM/DD'
 const { Option } = Select
 
+export const setImg = (filePath?:string) => {
+    return `${fileSource}/file/unencryptedImage?fileName=${filePath}&filePath=${filePath}`
+}
+
 // 化合物
-type Compound = {
-    recordId: string,
-    name: string
+export type Compound = {
+    recordId?: string,
+    structureImgPath?: string,
+    name?: string,
+    itemNameCn?: string,
+    itemNameEn?: string,
+    mf?: string,
+    mw?: string
 }
 
 // 字典
@@ -27,6 +41,7 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
 
     const [lastCompound, setLastCompound] = useState<Array<Compound>>([]) // 上次选择的化合物
     const [compoundList, setCompoundList] = useState<Array<Compound>>([]) // 反应物和产物
+    const [compoundItem, setCompoundItem] = useState<Compound>({}) // 化合物
     // 清除化合物
     const clearMaterialId = () => {
         console.log(props, ref)
@@ -142,12 +157,30 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
                     <Col span={4}>
                         <div className={style.compoundImg}>
                             {
-                                form.getFieldValue('materialId')?
-                                <Popover placement="leftTop" title="" content="" trigger="click">
-                                    <CompoundImg/>
+                                true?
+                                <Popover placement="leftTop" title="" content={
+                                    <div className={style.pop}>
+                                        <div className={style.title}>化合物预览</div>
+                                        <div className={style.content}>
+                                            <div className={style.contentImg}>
+                                                <Image height={114} src={setImg(compoundItem.structureImgPath)} fallback={fallbackSrc} />
+                                            </div>
+                                            <ul className={style.contentInfo}>
+                                                <li>名称(英文):{compoundItem.name || compoundItem.itemNameCn || compoundItem.itemNameEn}</li>
+                                                <li>MF(分子式):{compoundItem.mf}</li>
+                                                <li>MW(分子量):{compoundItem.mw}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                } trigger="click">
+                                    <>
+                                        <CompoundImg/>
+                                    </>
                                 </Popover>
                                 :
-                                <CompoundImg/>
+                                <>
+                                    <CompoundImg/>
+                                </>
                             }
                         </div>
                     </Col>

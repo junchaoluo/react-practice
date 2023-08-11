@@ -2,6 +2,68 @@
     padding: 16px;
     .compoundImg {
         height: 150px;
+        position: relative;
+        cursor: pointer;
+        .pop {
+            min-height: 328px;
+            max-height: 558px;
+            background-color: #4a80fd;
+            border-radius: 4px;
+            padding: 0;
+            background-image: url(data:image/png;base64,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);
+            background-repeat: no-repeat;
+            background-position-y: 8px;
+            background-position-x: 212px;
+            margin-right: 12px;
+            .title {
+                height: 48px;
+                color: #fff;
+                font-size: 16px;
+                margin-left: 16px;
+                display: flex;
+                align-items: center;
+            }
+            .content {
+                border-radius: 4px 4px 4px 4px;
+                margin: 0 8px 8px 8px;
+                background: #ffffff;
+                .contentImg {
+                    width: 304px;
+                    height: 176px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .contentInfo {
+                    padding-top: 12px;
+                    padding-bottom: 8px;
+                    margin-left: 8px;
+                    margin-right: 8px;
+                    border-top: 1px solid #dcdee0;
+                    overflow-y: auto;
+                    max-height: 328px;
+                    li {
+                        margin-bottom: 4px;
+                        font-size: 14px;
+                        font-weight: 400;
+                        color: #191b27;
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+                    }
+                }
+            }
+        }
+        .image {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            border: 1px solid #dcdee0;
+            border-radius: 4px;
+            .ant-image {
+                height: 104px;
+            }
+        }
         .info {
             background: rgba(25, 27, 39, 0.4);
             border-radius: 0px 0px 4px 4px;
