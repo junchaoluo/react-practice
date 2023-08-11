@@ -38,7 +38,8 @@ const formItemLayout = { labelCol: { span: 22 }, wrapperCol: { span: 22 } };
 
 const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((props, ref) => {
     const [form] = Form.useForm()
-
+    
+    const [showMore, setShowMore] = useState<boolean>(false) // 是否查看更多
     const [lastCompound, setLastCompound] = useState<Array<Compound>>([]) // 上次选择的化合物
     const [compoundList, setCompoundList] = useState<Array<Compound>>([]) // 反应物和产物
     const [compoundItem, setCompoundItem] = useState<Compound>({}) // 化合物
@@ -57,7 +58,7 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
 
        return (
         <>
-            <Form name="basic" {...formItemLayout} layout="vertical">
+            <Form name="basic" form={form} {...formItemLayout} layout="vertical">
                 <Row gutter={20}>
                     <Col span={20}>
                         <Row gutter={20}>
@@ -153,17 +154,31 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
                                 </Form.Item>
                             </Col>
                         </Row>
+                        {
+                            !showMore?
+                            <>
+                                <Row>
+                                    <Col span={6}>
+                                        <Form.Item>
+                                            <div className={style.addMoreInfo}>填写更多信息（可选）</div>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </>
+                            :
+                            <></>
+                        }
                     </Col>
                     <Col span={4}>
                         <div className={style.compoundImg}>
                             {
-                                true?
-                                <Popover placement="leftTop" title="" content={
+                                compoundItem.recordId?
+                                <Popover overlayInnerStyle={{ padding: 0 }} overlayClassName={style.popCompound} color='#4a80fd' arrow={false} placement="leftTop" title="" content={
                                     <div className={style.pop}>
                                         <div className={style.title}>化合物预览</div>
-                                        <div className={style.content}>
+                                        <div className={style.popContent}>
                                             <div className={style.contentImg}>
-                                                <Image height={114} src={setImg(compoundItem.structureImgPath)} fallback={fallbackSrc} />
+                                                <Image height={176} preview={false} src={setImg(compoundItem.structureImgPath)} fallback={fallbackSrc} />
                                             </div>
                                             <ul className={style.contentInfo}>
                                                 <li>名称(英文):{compoundItem.name || compoundItem.itemNameCn || compoundItem.itemNameEn}</li>
