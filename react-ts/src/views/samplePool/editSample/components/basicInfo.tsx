@@ -1,9 +1,10 @@
-import { memo, PropsWithChildren, FC, useState, forwardRef, ForwardedRef } from 'react';
+import { memo, PropsWithChildren, FC, useState, forwardRef, ForwardedRef, useEffect } from 'react';
 import style from '../index.module.scss'
 import { Form, Select, Input, Row, Col, DatePicker, InputNumber, Popover, Image } from 'antd'
 import CompoundImg from './compoundImg';
 import { baseURL } from '@/request'
 import { FILE_PREFIX } from '@/api/constant'
+import { findByParentCodeList } from '@/api/user'
 // 失败图片地址
 import fallbackSrc from '@/assets/images/login-left.png';
 
@@ -36,13 +37,26 @@ type Dictionaries = {
 const concentrationUnitList = ['%', 'g/mL', 'mol/L']
 const formItemLayout = { labelCol: { span: 22 }, wrapperCol: { span: 22 } };
 
+const gloablecodeList = ['stability', 'hazard', 'exterior', 'sampleSendRemark', 'samplePhysicalStatus', 'waterSolubility']
+
+// 查询下拉框数据
+const getSelectList = async () => {
+    const { result } = await findByParentCodeList({
+        gloablecodeList: gloablecodeList.join(',')
+    })
+    return result
+}
+
 const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((props, ref) => {
     const [form] = Form.useForm()
-    
-    const [showMore, setShowMore] = useState<boolean>(false) // 是否查看更多
-    const [lastCompound, setLastCompound] = useState<Array<Compound>>([]) // 上次选择的化合物
-    const [compoundList, setCompoundList] = useState<Array<Compound>>([]) // 反应物和产物
-    const [compoundItem, setCompoundItem] = useState<Compound>({}) // 化合物
+     // 是否查看更多
+    const [showMore, setShowMore] = useState<boolean>(false)
+     // 上次选择的化合物
+    const [lastCompound, setLastCompound] = useState<Array<Compound>>([])
+     // 反应物和产物
+    const [compoundList, setCompoundList] = useState<Array<Compound>>([])
+     // 化合物
+    const [compoundItem, setCompoundItem] = useState<Compound>({})
     // 清除化合物
     const clearMaterialId = () => {
         console.log(props, ref)
@@ -50,18 +64,65 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
 
     // 样品类型
     const [samplesTypeList, setSamplesTypeList] = useState<Array<Dictionaries>>([])
-    // 外观形态
-    const [exteriorList, setExteriorList] = useState<Array<Dictionaries>>([])
-    // 样品状态
-    const [samplePhysicalStatusList, setSamplePhysicalStatusList] = useState<Array<Dictionaries>>([])
+    // 字典的值
+    // 获取下拉框数据
+    // 稳定性：stability；
+    // 危害性：hazard；
+    // 外观形态：exterior；
+    // 样备注：sampleSendRemark
+    // 样品状态：samplePhysicalStatus
+    // 水溶解性：waterSolubility
+    const [dictionaries, setDictionaries] = useState({
+            stability: {
+                key: 'stabilityList',
+                stabilityList: []
+            },
+            hazard: {
+                key: 'dangerousList',
+                dangerousList: []
+            },
+            exterior: {
+                key: 'exteriorList',
+                exteriorList: []
+            },
+            sampleSendRemark: {
+                key: 'remarkList',
+                remarkList: []
+            },
+            samplePhysicalStatus: {
+                key: 'samplePhysicalStatusList',
+                samplePhysicalStatusList: []
+            },
+            waterSolubility: {
+                key: 'waterSolubilityList',
+                waterSolubilityList: []
+            }
+        })
+    // 溶剂
+    const [solventList, setSolventList] = useState([])
 
+    // 进来查询下拉框数据
+    // useEffect(() => {
+    //     const result = getSelectList()
+    //     if (result) {
+    //         for(let [objKey, item] of Object.entries(dictionaries)){
+    //             setDictionaries(Object.assign(
+    //                 {},
+    //                 dictionaries,
+    //                 `${objKey}`: {
+
+    //                 }
+    //             ))
+    //         }
+    //     }
+    // }, [])
 
        return (
         <>
             <Form name="basic" form={form} {...formItemLayout} layout="vertical">
-                <Row gutter={20}>
+                <Row>
                     <Col span={20}>
-                        <Row gutter={20}>
+                        <Row>
                             <Col span={6}>
                                 <Form.Item name="batchNo" label="样品批号" rules={[{required: true, message: '请输入样品批号'}]}>
                                     <Input placeholder="请输入样品批号"/>
@@ -117,7 +178,7 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
                                 <Form.Item label="外观形态" name="exterior">
                                     <Select placeholder="请选择外观形态" allowClear>
                                         {
-                                            exteriorList.map((item: Dictionaries) => {
+                                            dictionaries['exterior']['exteriorList'].map((item: Dictionaries) => {
                                                 return <Option key={item.value} label={item.label} value={item.value}></Option>
                                             })
                                         }
@@ -134,7 +195,7 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
                                             <Select placeholder="请选择浓度单位" allowClear defaultValue="%">
                                                 {
                                                     concentrationUnitList.map((item: string) => {
-                                                        return <Option key={item} label={item} value={item}></Option>
+                                                        return <Option key={item} label={item} value={item}>{item}</Option>
                                                     })
                                                 }
                                             </Select>
@@ -143,11 +204,11 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
-                            <Form.Item label="样品状态" name="samplePhysicalStatus">
+                                <Form.Item label="样品状态" name="samplePhysicalStatus">
                                     <Select placeholder="请选择样品状态" allowClear>
                                         {
-                                            samplePhysicalStatusList.map((item: Dictionaries) => {
-                                                return <Option key={item.value} label={item.label} value={item.value}></Option>
+                                            dictionaries['samplePhysicalStatus']['samplePhysicalStatusList'].map((item: Dictionaries) => {
+                                                return <Option key={item.value} label={item.label} value={item.value}>{item.label}</Option>
                                             })
                                         }
                                     </Select>
@@ -160,13 +221,89 @@ const DetectionInfo = forwardRef<ForwardedRef<unknown>, PropsWithChildren>((prop
                                 <Row>
                                     <Col span={6}>
                                         <Form.Item>
-                                            <div className={style.addMoreInfo}>填写更多信息（可选）</div>
+                                            <div onClick={() => setShowMore(!showMore)} className={style.addMoreInfo}>填写更多信息（可选）</div>
                                         </Form.Item>
                                     </Col>
                                 </Row>
                             </>
                             :
-                            <></>
+                            <>
+                                <Row>
+                                    <Col span={6}>
+                                        <Form.Item label="危害性" name="hazard">
+                                            <Select placeholder="请选择危害性" allowClear>
+                                                {
+                                                    dictionaries['hazard']['dangerousList'].map((item: Dictionaries) => {
+                                                        return <Option key={item.value} label={item.label} value={item.value}>{item.label}</Option>
+                                                    })
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Form.Item label="溶剂" name="hazard">
+                                            <Select placeholder="请选择溶剂" allowClear>
+                                                {
+                                                    solventList.map((item: Dictionaries) => {
+                                                        return <Option key={item.value} label={item.label} value={item.value}>{item.label}</Option>
+                                                    })
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Form.Item label="包装条件" name="packageCondition">
+                                            <Input placeholder='请输入包装条件'/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Form.Item label="存储条件" name="storageCondition">
+                                            <Input placeholder='请输入存储条件'/>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={6}>
+                                        <Form.Item label="重量" name="weight">
+                                            <Input placeholder='请输入重量'/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Form.Item label="是否稳定" name="isStability">
+                                            <Select placeholder="请选择是否稳定" allowClear>
+                                                {
+                                                    dictionaries['stability']['stabilityList'].map((item: Dictionaries) => {
+                                                        return <Option key={item.value} label={item.label} value={item.value}>{item.label}</Option>
+                                                    })
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Form.Item label="水溶解性" name="waterSolubility">
+                                            <Select placeholder="请选择水溶解性" allowClear>
+                                                {
+                                                    dictionaries['waterSolubility']['waterSolubilityList'].map((item: Dictionaries) => {
+                                                        return <Option key={item.value} label={item.label} value={item.value}>{item.label}</Option>
+                                                    })
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={6}>
+                                        <Form.Item label="熔点°C" name="meltingPoint">
+                                            <Input placeholder='请输入熔点'/>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={6}>
+                                        <Form.Item>
+                                            <div onClick={() => setShowMore(!showMore)} className={style.addMoreInfo}>收起</div>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </>
                         }
                     </Col>
                     <Col span={4}>

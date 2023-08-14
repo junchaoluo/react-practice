@@ -36,3 +36,13 @@ export function getUserList(oParams: UserSearchParam) {
     data: oParams
   })
 }
+
+// 通过编码查询字典集
+export function findByParentCodeList(data: {
+  gloablecodeList: string
+}) {
+  return request({
+    url: BASE_PREFIX + `/dict/findByParentCodeList?gloablecodeList=${data.gloablecodeList}`,
+    method: 'post'
+  })
+}
