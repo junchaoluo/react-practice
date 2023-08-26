@@ -1,6 +1,10 @@
 .my-sample {
     &-contanier {
         padding: 16px;
+        margin: 16px;
+        background-color: #fff;
+        border-radius: 4px;
+        height: calc(100vh - 88px);
     }
     &-tab {
         display: flex;
@@ -11,9 +15,8 @@
         }
     }
     &-search {
-        
+
         display: flex;
-        margin-bottom: 16px;
         margin-top: 16px;
     }
     &-table {
