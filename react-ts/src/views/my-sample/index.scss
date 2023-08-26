@@ -1,0 +1,22 @@
+.my-sample {
+    &-contanier {
+        padding: 16px;
+    }
+    &-tab {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        .ant-tabs-nav {
+            margin-bottom: 0;
+        }
+    }
+    &-search {
+        
+        display: flex;
+        margin-bottom: 16px;
+        margin-top: 16px;
+    }
+    &-table {
+
+    }
+}
