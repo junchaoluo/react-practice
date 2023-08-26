@@ -1,14 +1,17 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Layout, Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { RouteType, Menus } from '@/router/index'
 import PermissionOutlet from './permission'
 import BreadcrumbCom from './breadcrumb'
 import Routes from '@/router'
+import { MenuItemType } from 'antd/es/menu/hooks/useItems'
 
 const { Header, Content, Footer, Sider } = Layout
-type MenuItem = Required<MenuProps>['items'][number]
+type MenuItem = Required<MenuProps>['items'][number] & { children?: MenuItem[] };
+
+// type MenuItem = Required<MenuProps>['items'][number] & {children?: MenuItem[]}
 
 const getItem = (
     label: React.ReactNode,
@@ -25,9 +28,13 @@ const getItem = (
 } 
 
 const changeRouterToMenu = (Menus: RouteType[]) => {
-    const tempMenus: MenuItem[] = []
+    const tempMenus: MenuItemType[] = []
     Menus.forEach(menu => {
-        const obj: MenuItem = {}
+        const obj: MenuItemType & {
+            children?: MenuItemType[]
+        } = {
+            key: ''
+        }
         obj.label = menu.name;
         obj.key = menu.path;
         if(menu.icon) {
@@ -53,12 +60,12 @@ const LayoutApp: FC =  () => {
         setCollapsed(collapsed)
     }
 
-    const [selectedKeys, setSelectedKeys] = useState(['/template'])
-    const items: MenuItem[] = changeRouterToMenu(Menus)
+    const [selectedKeys, setSelectedKeys] = useState<Array<string>>(['/template'])
+    const items: MenuItemType[] = changeRouterToMenu(Menus)
     const navigate = useNavigate()
-    const handleClickMenuItem = (e: MenuItem) => {
-        setSelectedKeys([e.key])
-        navigate(e.key)
+    const handleClickMenuItem = (e: MenuItemType) => {
+        setSelectedKeys([e.key as string])
+        navigate(e.key as string)
     }
 
     useEffect(() => {
@@ -86,7 +93,7 @@ const LayoutApp: FC =  () => {
                 <Header style={{ paddingLeft: '16px',height: '56px', background: '#fff' }}>
                     <BreadcrumbCom/>
                 </Header>
-                <Content style={{ margin: '16px', background: '#fff' }}>
+                <Content>
                     <PermissionOutlet/>
                 </Content>
             </Layout>

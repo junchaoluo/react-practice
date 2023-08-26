@@ -6,3 +6,6 @@ export const ELN_PREFIX = '/eln'
 
 // cms服务
 export const CHEM_PREFIX = 'chem'
+
+// 文件
+export const FILE_PREFIX = 'file'

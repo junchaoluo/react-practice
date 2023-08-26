@@ -18,7 +18,7 @@ enum RecordDimensionEnum {
     productAndProjectAndTaskNo = "产品+项目",
 }
 
-const SaveContent: ForwardRefRenderFunction<ForwardedRef, IProps>= forwardRef((props, ref) => {
+const SaveContent= forwardRef<ForwardedRef<unknown>, IProps>((props, ref) => {
     const {title = '新增实验类型', visible = false, record = {}, type = 0, closeModal} = props
     const [form] = Form.useForm()
     const [submitDisable, setSubmitDisable] = useState(false)

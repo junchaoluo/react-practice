@@ -1,0 +1,117 @@
+.container {
+    position: relative;
+}
+.content {
+    padding: 16px;
+    margin: 16px;
+    height: calc(100vh - 120px);
+    background-color: #fff;
+    position: relative;
+    border-radius: 4px;
+    .compoundImg {
+        height: 150px;
+        position: relative;
+        cursor: pointer;
+        .image {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            border: 1px solid #dcdee0;
+            border-radius: 4px;
+            .ant-image {
+                height: 104px;
+            }
+        }
+        .info {
+            background: rgba(25, 27, 39, 0.4);
+            border-radius: 0px 0px 4px 4px;
+            color: #fff;
+            padding: 0 12px;
+            height: 36px;
+            line-height: 36px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+    .basicForm {
+        .ant-form-item{
+            .ant-input-number,
+            .ant-picker {
+                width: 100%;
+            }
+        }
+        .addMoreInfo {
+            cursor: pointer;
+            color: #2f54eb;
+        }
+    }
+}
+
+
+.popCompound {
+    min-height: 328px;
+    max-height: 558px;
+    width: 320px;
+    background-color: #4a80fd;
+    border-radius: 4px;
+    padding: 0;
+    // background-image: url('~assets/images/add_sample_compound.png');
+    background-repeat: no-repeat;
+    background-position-y: 8px;
+    background-position-x: 212px;
+    margin-right: 12px;
+    .title {
+        height: 48px;
+        color: #fff;
+        font-size: 16px;
+        margin-left: 16px;
+        display: flex;
+        align-items: center;
+    }
+    .popContent {
+        border-radius: 4px 4px 4px 4px;
+        margin: 0 8px 8px 8px;
+        background: #ffffff;
+        .contentImg {
+            width: 304px;
+            height: 176px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .contentInfo {
+            padding-top: 12px;
+            padding-bottom: 8px;
+            margin-left: 8px;
+            margin-right: 8px;
+            border-top: 1px solid #dcdee0;
+            overflow-y: auto;
+            max-height: 328px;
+            li {
+                margin-bottom: 4px;
+                font-size: 14px;
+                font-weight: 400;
+                color: #191b27;
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff;
+    right: 0;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
