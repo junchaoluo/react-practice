@@ -2,10 +2,30 @@ import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import './index.scss'
 import { Tabs, Form, Select, Input, Table, Row, Col } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { getMySampleData } from '@/api/sample'
 
 interface DataType {
     index: number,
     name: string
+}
+
+interface Page {
+    pageNum: number,
+    pageSize: number
+}
+
+type Params = string | undefined
+export interface SearchFormParams {
+    detectionItems: Params,
+    depts: Params,
+    analysts: Params,
+    samplesStatuss: Params,
+    samplesTimeType: Params,
+    batchNo: Params
+}
+
+const getData = async (page:Page, data: SearchFormParams) => {
+    const { result } = await getMySampleData(page.pageNum, page.pageSize, data)
 }
 
 const MySample = (props: PropsWithChildren) => {
@@ -155,8 +175,12 @@ const MySample = (props: PropsWithChildren) => {
     ]
 
     useEffect(() => {
-
+        // 查询下拉框数据
     }, [])
+
+    useEffect(() => {
+        // 查询表格数据
+    }, [form, activeKey])
 
     const onValuesChange = useCallback((changeValues, allValues) => {
         console.log(changeValues, allValues)
