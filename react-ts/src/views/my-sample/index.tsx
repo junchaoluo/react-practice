@@ -24,7 +24,7 @@ export interface SearchFormParams {
     batchNo: Params
 }
 
-const getData = async (page:Page, data: SearchFormParams) => {
+const getData = async (page:Page, data: SearchFormParams, setTableData: CallableFunction, setTotal: CallableFunction, setTabList: CallableFunction) => {
     const { result } = await getMySampleData(page.pageNum, page.pageSize, data)
 }
 
@@ -173,6 +173,20 @@ const MySample = (props: PropsWithChildren) => {
             render: (text) => <a>{text}</a>
         },
     ]
+    const [searchParam, setSearchParam] = useState<SearchFormParams>({
+        detectionItems: '',
+        depts: '',
+        analysts: '',
+        samplesStatuss: '',
+        samplesTimeType: '',
+        batchNo: ''
+    })
+    const [tableData, setTableData] = useState([])
+    const [total, setTotal] = useState<number>(0)
+    const [page, setPage] = useState<Page>({
+        pageNum: 1,
+        pageSize: 20
+    })
 
     useEffect(() => {
         // 查询下拉框数据
@@ -180,6 +194,7 @@ const MySample = (props: PropsWithChildren) => {
 
     useEffect(() => {
         // 查询表格数据
+        getData(page, searchParam, setTableData, setTotal, setTabList)
     }, [form, activeKey])
 
     const onValuesChange = useCallback((changeValues, allValues) => {
