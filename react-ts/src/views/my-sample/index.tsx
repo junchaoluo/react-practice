@@ -2,13 +2,14 @@ import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import './index.scss'
 import { Tabs, Form, Select, Input, Table, Row, Col } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { DownOutlined, RightOutlined } from '@ant-design/icons'
 import { getMySampleData } from '@/api/sample'
-import { current } from '@reduxjs/toolkit'
 
 interface DataType {
     id: string,
     index: number,
     name: string,
+    parentNode?: number,
     elnSamplesSendList: Array<DataType>
 }
 
@@ -34,24 +35,27 @@ export interface SearchFormParams {
     batchNo: Params
 }
 
-
-
 const columns: ColumnsType<DataType> = [
     {
         title: '序号',
         dataIndex: 'index',
         key: 'index',
-        width: 80
+        width: 80,
+        onCell: (record, index) => {
+            if(record.parentNode === 1) {
+                return {
+                    colSpan: 12
+                }
+            }
+            return {};
+        },
     },
     {
         title: '样品批号',
         dataIndex: 'batchNo',
         key: 'batchNo',
         width: 250,
-        render: (text) => <a>{text}</a>,
-        onCell: (record: any, rowIndex: number) => ({
-            return <span>123<span>
-        })
+        render: (text) => <a>{text}</a>
     },
     {
         title: '化合物',
@@ -125,6 +129,17 @@ const columns: ColumnsType<DataType> = [
         render: (text) => <a>{text}</a>
     },
 ]
+
+const ExpandIcon = (props: {
+    expanded: boolean,
+    record: any,
+    parentNode: number,
+    onExpand: Function
+}) => {
+    if(props.record.parentNode === 1) {
+        return props.expanded?<DownOutlined onClick={(e) => props.onExpand(props.record, e)}/>:<RightOutlined onClick={(e) => props.onExpand(props.record, e)}/>
+    }
+}
 
 const getData = async (page:Page, data: SearchFormParams, setTableData: CallableFunction, setTotal: CallableFunction, activeKey:string, tabList: Array<TabsProps>, setTabList: CallableFunction) => {
     const { result } = await getMySampleData(page.pageNum, page.pageSize, data)
@@ -301,7 +316,8 @@ const MySample = (props: PropsWithChildren) => {
                 }}
                 expandable={{
                     childrenColumnName: 'elnSamplesSendList',
-                    defaultExpandAllRows: true
+                    defaultExpandAllRows: true,
+                    expandIcon: ExpandIcon
                 }}
                 pagination={{
                     current: page.pageNum,
