@@ -161,7 +161,7 @@ const BasicInfo = memo(forwardRef((props: IProps, ref: ForwardedRef<unknown>) =>
 
     return (
         <>
-            <Card title="基础信息" size="small">
+            <Card className='mt16 ml16 mr16' title="基础信息" size="small">
                 <Form form={form} initialValues={initialValues} onValuesChange={onValuesChange}>
                     <Row gutter={20}>
                         <Col span={8}>

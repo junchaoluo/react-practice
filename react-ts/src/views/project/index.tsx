@@ -344,7 +344,7 @@ const Project = () => {
     }
 
     return (
-        <div className='page-conetnt'>
+        <div className={style.projectCotainer}>
             {contextHolder}
             <div className={style.header}>
                 <span>当前状态：</span>
