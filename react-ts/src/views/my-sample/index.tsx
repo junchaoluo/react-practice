@@ -1,8 +1,8 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import './index.scss'
-import { Tabs, Form, Select, Input, Table, Row, Col } from 'antd'
+import { Tabs, Form, Select, Input, Table, Row, Col, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { DownOutlined, RightOutlined } from '@ant-design/icons'
+import { DownOutlined, RightOutlined, PrinterOutlined } from '@ant-design/icons'
 import { getMySampleData } from '@/api/sample'
 
 interface DataType {
@@ -10,6 +10,7 @@ interface DataType {
     index: number,
     name: string,
     parentNode?: number,
+    code: string,
     elnSamplesSendList: Array<DataType>
 }
 
@@ -35,12 +36,63 @@ export interface SearchFormParams {
     batchNo: Params
 }
 
+const printRowData = (row: DataType) => {
+    console.log(row)
+}
+
+const samplesStatuss = [ // 检测状态
+          {
+            name: '待检测',
+            color: '#faad14',
+            value: 0
+          },
+          {
+            name: '已撤回',
+            color: '#bbbcbf',
+            value: 1
+          },
+          { name: '已拒样', color: '#d90013', value: 2 },
+          { name: '已收样', color: '#2f54eb', value: 3 },
+          {
+            name: '已作废',
+            color: '#bbbcbf',
+            value: 4
+          },
+
+          {
+            name: '检测中',
+            color: '#2f54eb',
+            value: 5
+          },
+          {
+            name: '已完成',
+            color: '#30bf78',
+            value: 6
+          }
+        ]
+
 const columns: ColumnsType<DataType> = [
     {
         title: '序号',
         dataIndex: 'index',
         key: 'index',
         width: 80,
+        className: 'col-span-expand',
+        render: (text, record, index) => {
+            if(record.parentNode === 1) {
+                return (
+                    <div style={{display: 'flex'}}>
+                        <div style={{marginRight: '24px'}}>送样单：{record.code}</div>
+                        <div onClick={() => printRowData(record)}>
+                            <PrinterOutlined style={{color: 'rgb(220, 222, 224)', fontSize: '16px'}}/>
+                            <Button type='link'>打印</Button>
+                        </div>
+                    </div>
+                )
+            }else{
+                return <span>{text}</span>
+            }
+        },
         onCell: (record, index) => {
             if(record.parentNode === 1) {
                 return {
@@ -55,70 +107,74 @@ const columns: ColumnsType<DataType> = [
         dataIndex: 'batchNo',
         key: 'batchNo',
         width: 250,
-        render: (text) => <a>{text}</a>
+ellipsis: true,
     },
     {
         title: '化合物',
         dataIndex: 'materialName',
         key: 'materialName',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '当前状态',
         dataIndex: 'samplesStatus',
         key: 'samplesStatus',
         width: 150,
-        render: (text) => <a>{text}</a>
+        ellipsis: true,
+        render: (text) => {
+            let status = samplesStatuss.find(item => text === item.value)
+            return <span style={{color: status?.color}}>{status?.name}</span>
+        }
     },
     {
         title: '编号',
         dataIndex: 'intNo',
         key: 'intNo',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '检测项',
         dataIndex: 'detectionName',
         key: 'detectionName',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '检测部门',
         dataIndex: 'deptName',
         key: 'deptName',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '分析员',
         dataIndex: 'analyzeName',
         key: 'analyzeName',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '实验记录',
         dataIndex: 'testRecord',
         key: 'testRecord',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '分析完成日期',
         dataIndex: 'analysisTime',
         key: 'analysisTime',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '送样日期',
         dataIndex: 'samplesTime',
         key: 'samplesTime',
         width: 150,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
     {
         title: '操作',
@@ -126,19 +182,21 @@ const columns: ColumnsType<DataType> = [
         key: 'action',
         fixed:'right',
         width: 250,
-        render: (text) => <a>{text}</a>
+ellipsis: true
     },
 ]
 
+// 展开行的图标
 const ExpandIcon = (props: {
     expanded: boolean,
     record: any,
-    parentNode: number,
+    parentNode?: number,
     onExpand: Function
 }) => {
     if(props.record.parentNode === 1) {
         return props.expanded?<DownOutlined onClick={(e) => props.onExpand(props.record, e)}/>:<RightOutlined onClick={(e) => props.onExpand(props.record, e)}/>
     }
+    return <span></span>
 }
 
 const getData = async (page:Page, data: SearchFormParams, setTableData: CallableFunction, setTotal: CallableFunction, activeKey:string, tabList: Array<TabsProps>, setTabList: CallableFunction) => {
@@ -191,36 +249,7 @@ const MySample = (props: PropsWithChildren) => {
         detectionItems: [], // 检测项
         depts: [], // 检测部门
         analysts: [], // 分析员
-        samplesStatuss: [ // 检测状态
-          {
-            name: '待检测',
-            color: '#faad14',
-            value: 0
-          },
-          {
-            name: '已撤回',
-            color: '#bbbcbf',
-            value: 1
-          },
-          { name: '已拒样', color: '#d90013', value: 2 },
-          { name: '已收样', color: '#2f54eb', value: 3 },
-          {
-            name: '已作废',
-            color: '#bbbcbf',
-            value: 4
-          },
-
-          {
-            name: '检测中',
-            color: '#2f54eb',
-            value: 5
-          },
-          {
-            name: '已完成',
-            color: '#30bf78',
-            value: 6
-          }
-        ],
+        samplesStatuss: samplesStatuss,
         samplesTimeType: [ // 送检时间
           { label: '本周送检', value: 1 },
           { label: '近2周送检', value: 2 },
@@ -254,10 +283,13 @@ const MySample = (props: PropsWithChildren) => {
     useEffect(() => {
         // 查询表格数据
         getData(page, searchParam, setTableData, setTotal, activeKey, tabList, setTabList)
-    }, [form, activeKey, page])
+    }, [form, activeKey, page, searchParam])
 
     const onValuesChange = useCallback((changeValues, allValues) => {
-        console.log(changeValues, allValues)
+        setSearchParam({
+            ...searchParam,
+            ...changeValues
+        })
     }, [form])
 
     return (
@@ -269,32 +301,34 @@ const MySample = (props: PropsWithChildren) => {
             <div className='my-sample-search'>
                 <Form form={form} onValuesChange={onValuesChange}>
                     <Row gutter={20}>
-                        <Col span={4}>
+                        <Col span={8}>
                             <Form.Item name='detectionItems'>
-                                <Select allowClear={true} options={searchList.detectionItems} placeholder='请选择检测项'></Select>
+                                <Select allowClear={true} options={searchList.detectionItems} placeholder='请选择检测项' mode='multiple'></Select>
                             </Form.Item>
                         </Col>
-                        <Col span={4}>
+                        <Col span={8}>
                             <Form.Item name='depts'>
-                                <Select allowClear={true} options={searchList.depts} placeholder='请选择检测部门'></Select>
+                                <Select allowClear={true} options={searchList.depts} placeholder='请选择检测部门' mode='multiple'></Select>
                             </Form.Item>
                         </Col>
-                        <Col span={4}>
+                        <Col span={8}>
                             <Form.Item name='analysts'>
-                                <Select allowClear={true} options={searchList.analysts} placeholder='请选择分析员'></Select>
+                                <Select allowClear={true} options={searchList.analysts} placeholder='请选择分析员' mode='multiple'></Select>
                             </Form.Item>
                         </Col>
-                        <Col span={4}>
+                    </Row>
+                    <Row gutter={20}>
+                        <Col span={8}>
                             <Form.Item name='samplesStatuss'>
-                                <Select allowClear={true} options={searchList.samplesStatuss} fieldNames={{label: 'name', value: 'value'}} placeholder='请选择检测状态'></Select>
+                                <Select allowClear={true} options={searchList.samplesStatuss} fieldNames={{label: 'name', value: 'value'}} placeholder='请选择检测状态' mode='multiple'></Select>
                             </Form.Item>
                         </Col>
-                        <Col span={4}>
+                        <Col span={8}>
                             <Form.Item name='samplesTimeType'>
                                 <Select allowClear={true} options={searchList.samplesTimeType} placeholder='请选择送检时间'></Select>
                             </Form.Item>
                         </Col>
-                        <Col span={4}>
+                        <Col span={8}>
                             <Form.Item name='batchNo'>
                                 <Input allowClear={true} placeholder='请输入样品批号查询'/>
                             </Form.Item>
@@ -305,7 +339,7 @@ const MySample = (props: PropsWithChildren) => {
             <div className='my-sample-table'>
                 <Table
                 scroll={{
-                    y: `calc(100vh - 328px)`
+                    y: `calc(100vh - 384px)`
                 }}
                 columns={columns}
                 bordered={true}

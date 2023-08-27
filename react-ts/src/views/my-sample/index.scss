@@ -15,11 +15,21 @@
         }
     }
     &-search {
-
-        display: flex;
+        // display: flex;
         margin-top: 16px;
     }
     &-table {
 
+    }
+}
+
+.col-span-expand {
+    line-height: 32px;
+    .anticon-right,
+    .anticon-down {
+        float: left;
+        height: 32px;
+        line-height: 32px;
+        margin-right: 24px;
     }
 }
