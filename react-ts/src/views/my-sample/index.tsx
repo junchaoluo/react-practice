@@ -3,10 +3,13 @@ import './index.scss'
 import { Tabs, Form, Select, Input, Table, Row, Col } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { getMySampleData } from '@/api/sample'
+import { current } from '@reduxjs/toolkit'
 
 interface DataType {
+    id: string,
     index: number,
-    name: string
+    name: string,
+    elnSamplesSendList: Array<DataType>
 }
 
 interface Page {
@@ -14,29 +17,156 @@ interface Page {
     pageSize: number
 }
 
+interface TabsProps {
+    label: string,
+    name: string,
+    key: string,
+    count: number
+}
+
 type Params = string | undefined
 export interface SearchFormParams {
-    detectionItems: Params,
-    depts: Params,
-    analysts: Params,
-    samplesStatuss: Params,
+    detectionItems: Array<string>,
+    depts: Array<string>,
+    analysts: Array<string>,
+    samplesStatuss: Array<string>,
     samplesTimeType: Params,
     batchNo: Params
 }
 
-const getData = async (page:Page, data: SearchFormParams, setTableData: CallableFunction, setTotal: CallableFunction, setTabList: CallableFunction) => {
+
+
+const columns: ColumnsType<DataType> = [
+    {
+        title: '序号',
+        dataIndex: 'index',
+        key: 'index',
+        width: 80
+    },
+    {
+        title: '样品批号',
+        dataIndex: 'batchNo',
+        key: 'batchNo',
+        width: 250,
+        render: (text) => <a>{text}</a>,
+        onCell: (record: any, rowIndex: number) => ({
+            return <span>123<span>
+        })
+    },
+    {
+        title: '化合物',
+        dataIndex: 'materialName',
+        key: 'materialName',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '当前状态',
+        dataIndex: 'samplesStatus',
+        key: 'samplesStatus',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '编号',
+        dataIndex: 'intNo',
+        key: 'intNo',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '检测项',
+        dataIndex: 'detectionName',
+        key: 'detectionName',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '检测部门',
+        dataIndex: 'deptName',
+        key: 'deptName',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '分析员',
+        dataIndex: 'analyzeName',
+        key: 'analyzeName',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '实验记录',
+        dataIndex: 'testRecord',
+        key: 'testRecord',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '分析完成日期',
+        dataIndex: 'analysisTime',
+        key: 'analysisTime',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '送样日期',
+        dataIndex: 'samplesTime',
+        key: 'samplesTime',
+        width: 150,
+        render: (text) => <a>{text}</a>
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        fixed:'right',
+        width: 250,
+        render: (text) => <a>{text}</a>
+    },
+]
+
+const getData = async (page:Page, data: SearchFormParams, setTableData: CallableFunction, setTotal: CallableFunction, activeKey:string, tabList: Array<TabsProps>, setTabList: CallableFunction) => {
     const { result } = await getMySampleData(page.pageNum, page.pageSize, data)
+    setTotal(Number(result.total))
+    let index = 1
+    let i = 1
+    let arr = result.list?.map(item => {
+        item.parentNode = 1
+          item.onlyCode = i
+          ++i
+          item.elnSamplesSendList &&
+            item.elnSamplesSendList.forEach(aItem => {
+                aItem.onlyCode = i
+              ++i
+              aItem.index = index++
+            })
+            return item
+    })
+    setTableData(arr || [])
+    let tabs = tabList.map(tab => {
+        if(tab.key === activeKey) {
+            tab.count = Number(result.total)
+            tab.label = `${tab.name}(${Number(result.total)})`
+        }
+        return tab
+    })
+    setTabList(tabs)
 }
 
 const MySample = (props: PropsWithChildren) => {
-    const [tabList, setTabList] = useState([
+    const [tabList, setTabList] = useState<Array<TabsProps>>([
         {
             label: `全部`,
-            key: '1'
+            name: `全部`,
+            key: '1',
+            count: 0
         },
         {
             label: '变更待确认',
-            key: '2'
+            name: `全部`,
+            key: '2',
+            count: 0
         }
     ])
     const [activeKey, setActiveKey] = useState('1')
@@ -86,98 +216,11 @@ const MySample = (props: PropsWithChildren) => {
         ]
     })
 
-    const columns: ColumnsType<DataType> = [
-        {
-            title: '序号',
-            dataIndex: 'index',
-            key: 'index',
-            width: 80,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '样品批号',
-            dataIndex: 'batchNo',
-            key: 'batchNo',
-            width: 250,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '化合物',
-            dataIndex: 'materialName',
-            key: 'materialName',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '当前状态',
-            dataIndex: 'samplesStatus',
-            key: 'samplesStatus',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '编号',
-            dataIndex: 'intNo',
-            key: 'intNo',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '检测项',
-            dataIndex: 'detectionName',
-            key: 'detectionName',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '检测部门',
-            dataIndex: 'deptName',
-            key: 'deptName',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '分析员',
-            dataIndex: 'analyzeName',
-            key: 'analyzeName',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '实验记录',
-            dataIndex: 'testRecord',
-            key: 'testRecord',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '分析完成日期',
-            dataIndex: 'analysisTime',
-            key: 'analysisTime',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '送样日期',
-            dataIndex: 'samplesTime',
-            key: 'samplesTime',
-            width: 150,
-            render: (text) => <a>{text}</a>
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            fixed:'right',
-            width: 250,
-            render: (text) => <a>{text}</a>
-        },
-    ]
     const [searchParam, setSearchParam] = useState<SearchFormParams>({
-        detectionItems: '',
-        depts: '',
-        analysts: '',
-        samplesStatuss: '',
+        detectionItems: [],
+        depts: [],
+        analysts: [],
+        samplesStatuss: [],
         samplesTimeType: '',
         batchNo: ''
     })
@@ -190,12 +233,13 @@ const MySample = (props: PropsWithChildren) => {
 
     useEffect(() => {
         // 查询下拉框数据
+
     }, [])
 
     useEffect(() => {
         // 查询表格数据
-        getData(page, searchParam, setTableData, setTotal, setTabList)
-    }, [form, activeKey])
+        getData(page, searchParam, setTableData, setTotal, activeKey, tabList, setTabList)
+    }, [form, activeKey, page])
 
     const onValuesChange = useCallback((changeValues, allValues) => {
         console.log(changeValues, allValues)
@@ -244,9 +288,34 @@ const MySample = (props: PropsWithChildren) => {
                 </Form>
             </div>
             <div className='my-sample-table'>
-                <Table scroll={{
-                    y: `calc(100vh - 116px)`
-                }} columns={columns} bordered={true} size='small'></Table>
+                <Table
+                scroll={{
+                    y: `calc(100vh - 328px)`
+                }}
+                columns={columns}
+                bordered={true}
+                size='small'
+                dataSource={tableData}
+                rowKey={function(record: DataType) {
+                    return record.id
+                }}
+                expandable={{
+                    childrenColumnName: 'elnSamplesSendList',
+                    defaultExpandAllRows: true
+                }}
+                pagination={{
+                    current: page.pageNum,
+                    pageSize: page.pageSize,
+                    total: total,
+                    showTitle: true,
+                    onChange(pageNum, pageSize) {
+                        setPage({
+                            ...page,
+                            pageNum,
+                            pageSize
+                        })
+                    },
+                }}></Table>
             </div>
         </div>
     )
