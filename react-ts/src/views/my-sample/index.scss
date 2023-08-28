@@ -1,0 +1,35 @@
+.my-sample {
+    &-contanier {
+        padding: 16px;
+        margin: 16px;
+        background-color: #fff;
+        border-radius: 4px;
+        height: calc(100vh - 88px);
+    }
+    &-tab {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        .ant-tabs-nav {
+            margin-bottom: 0;
+        }
+    }
+    &-search {
+        // display: flex;
+        margin-top: 16px;
+    }
+    &-table {
+
+    }
+}
+
+.col-span-expand {
+    line-height: 32px;
+    .anticon-right,
+    .anticon-down {
+        float: left;
+        height: 32px;
+        line-height: 32px;
+        margin-right: 24px;
+    }
+}

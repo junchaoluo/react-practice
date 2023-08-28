@@ -84,12 +84,12 @@ const AddProject = () => {
             <Space direction="vertical" style={{width: '100%'}}>
                 <BasicInfo type={0} projectInfo={project} ref={basicInfoRef}></BasicInfo>
                 <ProjectMember type={0} ref={projectMember}></ProjectMember>
-                <Card size="small">
+                <div style={{backgroundColor: '#fff', height: '48px'}}>
                     <div className={style.footer}>
                         <Button>取消</Button>
                         <Button type="primary" onClick={save}>保存</Button>
                     </div>
-                </Card>
+                </div>
             </Space>
         </div>
     )

@@ -227,7 +227,7 @@ const ProjectMember = memo(forwardRef((props: IProps, ref: ForwardedRef<unknown>
 
     return (
         <>
-            <Card title='项目人员' size="small">
+            <Card className='mt16 ml16 mr16' title='项目人员' size="small">
                 <Table dataSource={dataSource} rowKey={(record: any) => record.id} columns={columns} size="small" scroll={{y: scrollY}} pagination={false} />
                 {
                     chooseUserModal?
