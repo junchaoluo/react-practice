@@ -1,7 +1,7 @@
 import { memo, PropsWithChildren, FC, useState, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash'
 import style from '../index.module.scss'
-import { Divider, Button, Input, Tree, message, Table } from 'antd'
+import { Divider, Button, Input, Tree, message, Table, Switch } from 'antd'
 import { SearchOutlined, StarOutlined, StarFilled } from '@ant-design/icons'
 import type { DataNode } from 'antd/es/tree'
 import type { ColumnsType } from 'antd/es/table'
@@ -124,89 +124,6 @@ const findParentItem = (dataList: Array<TreeProps>, item: TreeProps) => {
        return findItem
 }
 
-const columns: ColumnsType<any> = [
-       {
-              key: 'name',
-              dataIndex: 'name',
-              title: '检测项目',
-              ellipsis: true,
-              width: 120,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'isSelf',
-              dataIndex: 'isSelf',
-              title: '是否自检',
-              ellipsis: true,
-              width: 120,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'name',
-              dataIndex: 'name',
-              title: '检测部门/人',
-              width: 120,
-              ellipsis: true,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'isSelf',
-              dataIndex: 'isSelf',
-              title: '测试目的',
-              width: 120,
-              ellipsis: true,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'name',
-              dataIndex: 'name',
-              title: '方法信息',
-              width: 120,
-              ellipsis: true,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'isSelf',
-              dataIndex: 'isSelf',
-              title: '检项要求',
-              width: 120,
-              ellipsis: true,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'name',
-              dataIndex: 'name',
-              width: 120,
-              title: '备注',
-              ellipsis: true,
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-       {
-              key: 'isSelf',
-              dataIndex: 'isSelf',
-              title: '操作',
-              width: 120,
-              fixed: 'right',
-              render: (text, record, index) => {
-                     return <span>{text}</span>
-              }
-       },
-]
-
 const DetectionInfo: FC<PropsWithChildren> = (props) => {
        const [detectionClassifyItemList, setDetectionClassifyItemList] = useState([])
        // 检测项树数据
@@ -244,8 +161,6 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
               }
               getTreeData({}, setDetectionClassifyItemList, [], '', setDetectionTree, setDetectionTreeMap)
        }
-
-       const [detectionTable, setDetectionTable] = useState([])
 
        const onCheck = (checkedKeysNodes: Array<string>, e:{checked: boolean, checkedNodes: Array<TreeProps>, node: TreeProps, event: Event}) => {
               console.log('onCheck', checkedKeys, e);
@@ -291,6 +206,105 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                      setCheckedKeys(arr)
               }
        };
+
+       const columns: ColumnsType<any> = [
+              {
+                     key: 'name',
+                     dataIndex: 'name',
+                     title: '检测项目',
+                     ellipsis: true,
+                     width: 120,
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+              {
+                     key: 'isSelf',
+                     dataIndex: 'isSelf',
+                     title: '是否自检',
+                     ellipsis: true,
+                     width: 120,
+                     render: (text, record, index) => {
+                            return (
+                                   <Switch size='small' defaultChecked={record.isSelf} checked={record.isSelf} onChange={() => changeSelf(record)} />
+                            )
+                     }
+              },
+              {
+                     key: 'name',
+                     dataIndex: 'name',
+                     title: '检测部门/人',
+                     width: 120,
+                     ellipsis: true,
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+              {
+                     key: 'isSelf',
+                     dataIndex: 'isSelf',
+                     title: '测试目的',
+                     width: 120,
+                     ellipsis: true,
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+              {
+                     key: 'name',
+                     dataIndex: 'name',
+                     title: '方法信息',
+                     width: 120,
+                     ellipsis: true,
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+              {
+                     key: 'isSelf',
+                     dataIndex: 'isSelf',
+                     title: '检项要求',
+                     width: 120,
+                     ellipsis: true,
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+              {
+                     key: 'name',
+                     dataIndex: 'name',
+                     width: 120,
+                     title: '备注',
+                     ellipsis: true,
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+              {
+                     key: 'isSelf',
+                     dataIndex: 'isSelf',
+                     title: '操作',
+                     width: 120,
+                     fixed: 'right',
+                     render: (text, record, index) => {
+                            return <span>{text}</span>
+                     }
+              },
+       ] 
+       const [detectionTable, setDetectionTable] = useState([])
+
+       const changeSelf = (record) => {
+              detectionTable.forEach(item => {
+                     if(item.configItemId === record.configItemId) {
+                            item.isSelf = record.isSelf
+                            item.analyst = ''
+                            item.analyzeName = ''
+                            item.dept = ''
+                            item.deptName = ''
+                     }
+              })
+              setDetectionTable(detectionTable)
+       }
 
        return (
               <div className={style.detection}>
@@ -360,6 +374,9 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                                           columns={columns}
                                           pagination={false}
                                           size='small'
+                                          expandable={{
+                                                 childrenColumnName: 'aa'
+                                          }}
                                           scroll={{
                                                  x: `calc(100% - ${treeWidth}px - 48px)`,
                                                  y: '510px'
