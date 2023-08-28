@@ -1,9 +1,10 @@
 import { memo, PropsWithChildren, FC, useState, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash'
 import style from '../index.module.scss'
-import { Divider, Button, Input, Tree, message } from 'antd'
+import { Divider, Button, Input, Tree, message, Table } from 'antd'
 import { SearchOutlined, StarOutlined, StarFilled } from '@ant-design/icons'
 import type { DataNode } from 'antd/es/tree'
+import type { ColumnsType } from 'antd/es/table'
 import { getDetectionClassifyItemList, deleteSampleDetect, setCollection } from '@/api/sample'
 import { GetDetectionClassifyItemListParams } from '@/interfaces/sample'
 
@@ -24,7 +25,8 @@ type TreeProps = {
        name: string,
        parentId: string,
        isCare: boolean,
-       configItemId: string
+       configItemId: string,
+       children?: Array<TreeProps>
 } & DataNode
 
 // 获取实验分类检测配置项
@@ -117,14 +119,102 @@ const handleDetectiomConfigItem = (aTree = [], alist: Array<ElnSamplesDetectDto>
        return [aTree, oTreeMap]
 }
 
+const findParentItem = (dataList: Array<TreeProps>, item: TreeProps) => {
+       const findItem: TreeProps = dataList.find(data => data.configItemId === item.parentId)
+       return findItem
+}
+
+const columns: ColumnsType<any> = [
+       {
+              key: 'name',
+              dataIndex: 'name',
+              title: '检测项目',
+              ellipsis: true,
+              width: 120,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'isSelf',
+              dataIndex: 'isSelf',
+              title: '是否自检',
+              ellipsis: true,
+              width: 120,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'name',
+              dataIndex: 'name',
+              title: '检测部门/人',
+              width: 120,
+              ellipsis: true,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'isSelf',
+              dataIndex: 'isSelf',
+              title: '测试目的',
+              width: 120,
+              ellipsis: true,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'name',
+              dataIndex: 'name',
+              title: '方法信息',
+              width: 120,
+              ellipsis: true,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'isSelf',
+              dataIndex: 'isSelf',
+              title: '检项要求',
+              width: 120,
+              ellipsis: true,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'name',
+              dataIndex: 'name',
+              width: 120,
+              title: '备注',
+              ellipsis: true,
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+       {
+              key: 'isSelf',
+              dataIndex: 'isSelf',
+              title: '操作',
+              width: 120,
+              fixed: 'right',
+              render: (text, record, index) => {
+                     return <span>{text}</span>
+              }
+       },
+]
+
 const DetectionInfo: FC<PropsWithChildren> = (props) => {
        const [detectionClassifyItemList, setDetectionClassifyItemList] = useState([])
        // 检测项树数据
        const [detectionTree, setDetectionTree] = useState<Array<TreeProps>>([])
        // 检测项枚举集合
        const [detectionTreeMap, setDetectionTreeMap] = useState({})
-       const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
-       const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+       const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
+       const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
        // tree的宽度
        const [treeWidth, setTreeWidth] = useState<number>(230)
 
@@ -155,14 +245,51 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
               getTreeData({}, setDetectionClassifyItemList, [], '', setDetectionTree, setDetectionTreeMap)
        }
 
-       const onCheck = (checkedKeys: Array<string>, e:{checked: boolean, checkedNodes, node, event, halfCheckedKeys}) => {
-              console.log('onCheck', checkedKeys, e);
-              setCheckedKeys(checkedKeys);
-       };
+       const [detectionTable, setDetectionTable] = useState([])
 
-       const onSelect = (selectedKeysValue: React.Key[], info: any) => {
-              console.log('onSelect', info);
-              setSelectedKeys(selectedKeysValue);
+       const onCheck = (checkedKeysNodes: Array<string>, e:{checked: boolean, checkedNodes: Array<TreeProps>, node: TreeProps, event: Event}) => {
+              console.log('onCheck', checkedKeys, e);
+              const checked = e.checked
+              const node = e.node
+              const configItemId = node.configItemId
+              if(checked) {
+                     // 选中 拼接名称
+                     if(node.parentId === '0') {
+                            // 选中父级
+                            setSelectedKeys([...selectedKeys, configItemId])
+                            setCheckedKeys([...checkedKeys, configItemId])
+                            let obj = {
+                                   name: node.name
+                            }
+                            setDetectionTable([...detectionTable, node])
+                     }else {
+                            // 选中子级 查询子级的父级是否选中 没选中给选中 选中了就继续执行子级选中操作
+                            const parentConfigItemId = findParentItem(detectionTree, node).configItemId
+                            const exsit = selectedKeys.includes(parentConfigItemId || '')
+                            const arr = [configItemId]
+                            if(exsit) {
+                                   // 选中了就直接拼接名称
+                            }else{
+                                   arr.push(parentConfigItemId)
+                                   // 没选中就新增一条表格数据
+                            }
+                            setSelectedKeys([...selectedKeys, ...arr])
+                            setCheckedKeys([...checkedKeys, ...arr])
+                     }
+              }else{
+                     // 取消选中 拼接名称
+                     let arr = []
+                     if(node.parentId === '0') {
+                            // 取消选中的父级 全部子级也取消
+                            const childId = [...node.children?.map(item => item.configItemId) || [], configItemId]
+                            arr = selectedKeys.filter(select => childId?.every(child => select !== child))
+                     }else {
+                            // 取消选中的子级
+                            arr = selectedKeys.filter(select => select !== configItemId)
+                     }
+                     setSelectedKeys(arr)
+                     setCheckedKeys(arr)
+              }
        };
 
        return (
@@ -194,7 +321,6 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                                                         key: 'configItemId',
                                                         children: 'children'
                                                  }}
-                                                 onSelect={onSelect}
                                                  checkStrictly={true}
                                                  onCheck={onCheck}
                                                  showIcon={true}
@@ -228,7 +354,18 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                                                  />
                                    </div>
                             </div>
-                            <div className={style.table}></div>
+                            <div className={style.table}>
+                                   <Table 
+                                          dataSource={detectionTable}
+                                          columns={columns}
+                                          pagination={false}
+                                          size='small'
+                                          scroll={{
+                                                 x: `calc(100% - ${treeWidth}px - 48px)`,
+                                                 y: '510px'
+                                          }}
+                                   />
+                            </div>
                      </div>
               </div>
        )
