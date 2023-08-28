@@ -37,3 +37,23 @@ export function getAnalyzeList(data: any) {
       params
     })
   }
+
+  // 取消关注检测项
+export function deleteSampleDetect(data: Array<string>) {
+  return request({
+    url: ELN_PREFIX + `/care/deleteSampleDetect`,
+    method: 'DELETE',
+    data
+  })
+}
+
+// 我的实验列表实验收藏
+export function setCollection(data: Array<{
+  sampleDetectId: string
+}>) {
+  return request({
+    url: ELN_PREFIX + `/care/add`,
+    method: 'post',
+    data
+  })
+}
