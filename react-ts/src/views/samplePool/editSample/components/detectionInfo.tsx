@@ -1,12 +1,13 @@
-import { memo, PropsWithChildren, FC, useState, useEffect, useRef } from 'react';
+import { memo, PropsWithChildren, FC, useState, useEffect, useRef, useCallback } from 'react';
 import { cloneDeep } from 'lodash'
 import style from '../index.module.scss'
-import { Divider, Button, Input, Tree, message, Table, Switch } from 'antd'
+import { Divider, Button, Input, Tree, message, Table, Switch, Select } from 'antd'
 import { SearchOutlined, StarOutlined, StarFilled } from '@ant-design/icons'
 import type { DataNode } from 'antd/es/tree'
 import type { ColumnsType } from 'antd/es/table'
 import { getDetectionClassifyItemList, deleteSampleDetect, setCollection } from '@/api/sample'
 import { GetDetectionClassifyItemListParams } from '@/interfaces/sample'
+import { useSelector } from 'react-redux'
 
 type ElnSamplesDetectDto = {
        samplesStatus?: number,
@@ -84,12 +85,12 @@ const handleDetectiomConfigItem = (aTree = [], alist: Array<ElnSamplesDetectDto>
               // 新增有记录本缓存的时候要查询最新的检测项
               alist.forEach(al => {
                      cloneDeep(aTree).forEach(pn => {
-                     if (al.configItemId.includes(pn.id)) {
-                     // 测试目的、方法信息、检测标准
-                     columnSetMap.forEach(columnSet => {
-                            al[columnSet.key] = pn[columnSet.fromKey] ? pn[columnSet.fromKey] : {}
-                     })
-                     }
+                            if (al.configItemId.includes(pn.id)) {
+                                   // 测试目的、方法信息、检测标准
+                                   columnSetMap.forEach(columnSet => {
+                                          al[columnSet.key] = pn[columnSet.fromKey] ? pn[columnSet.fromKey] : {}
+                                   })
+                            }
                      })
               })
        }
@@ -106,13 +107,14 @@ const handleDetectiomConfigItem = (aTree = [], alist: Array<ElnSamplesDetectDto>
                      oTreeMap[cNode.id] = cNode.name
                      cNode.configItemId = cNode.id
                      if (pNode.disabled) {
-                     cNode.disabled = true
+                            cNode.disabled = true
                      }
                      delete cNode.id
               })
               // 测试目的、方法信息、检测标准
               columnSetMap.forEach(columnSet => {
                      pNode[columnSet.key] = pNode[columnSet.fromKey] ? pNode[columnSet.fromKey] : {}
+                     delete pNode[columnSet.fromKey]
               })
               return pNode
        })
@@ -124,7 +126,24 @@ const findParentItem = (dataList: Array<TreeProps>, item: TreeProps) => {
        return findItem
 }
 
+interface TableProps {
+       detectionItem?: string,
+       detectionName?: string,
+       isSelf?: boolean, // 是否自检
+       dept?: string, // 检测部门id
+       analyst?: string, // 分析员id
+       analyMethod?: string, // 分析方法
+       // standard: string, // 检测标准
+       detectionRequirement?: string, // 检项要求
+       deptName?: string, // 检测部门名称
+       analyzeName?: string, // 分析员名称
+       checkUser?: Array<unknown>,
+       nowDept?: object
+}
+
 const DetectionInfo: FC<PropsWithChildren> = (props) => {
+       const { userInfo } = useSelector((store) => store.user)
+
        const [detectionClassifyItemList, setDetectionClassifyItemList] = useState([])
        // 检测项树数据
        const [detectionTree, setDetectionTree] = useState<Array<TreeProps>>([])
@@ -161,9 +180,9 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
               }
               getTreeData({}, setDetectionClassifyItemList, [], '', setDetectionTree, setDetectionTreeMap)
        }
-
-       const onCheck = (checkedKeysNodes: Array<string>, e:{checked: boolean, checkedNodes: Array<TreeProps>, node: TreeProps, event: Event}) => {
-              console.log('onCheck', checkedKeys, e);
+       
+       const [detectionTable, setDetectionTable] = useState([])
+       const onCheck = useCallback((checkedKeysNodes: Array<string>, e:{checked: boolean, checkedNodes: Array<TreeProps>, node: TreeProps, event: Event}) => {
               const checked = e.checked
               const node = e.node
               const configItemId = node.configItemId
@@ -173,20 +192,47 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                             // 选中父级
                             setSelectedKeys([...selectedKeys, configItemId])
                             setCheckedKeys([...checkedKeys, configItemId])
-                            let obj = {
-                                   name: node.name
-                            }
                             setDetectionTable([...detectionTable, node])
                      }else {
                             // 选中子级 查询子级的父级是否选中 没选中给选中 选中了就继续执行子级选中操作
                             const parentConfigItemId = findParentItem(detectionTree, node).configItemId
+                            const parentName = findParentItem(detectionTree, node).name
                             const exsit = selectedKeys.includes(parentConfigItemId || '')
                             const arr = [configItemId]
                             if(exsit) {
                                    // 选中了就直接拼接名称
+                                   const table = detectionTable.find(table => table.configItemId.includes(parentConfigItemId))
+                                   let name = table.name
+                                   const childNameList = name.substring(name.indexOf('(') + 1, name.indexOf(')'))
+                                   let childName = []
+                                   if(childNameList) {
+                                          if(childNameList.includes(';')) {
+                                                 childName = childNameList.split(';')
+                                          }else{
+                                                 childName = [childNameList]
+                                          }
+                                   }
+                                   childName.push(node.name)
+                                   name = `${parentName}(${childName.join(';')})`
+                                   const newConfigItemId = `${table.configItemId},${configItemId}`
+                                   detectionTable.forEach(item => {
+                                          if(item.configItemId.includes(parentConfigItemId)) {
+                                                 item.name = name
+                                                 item.configItemId = newConfigItemId
+                                          }
+                                   })
+                                   setDetectionTable(detectionTable)
                             }else{
                                    arr.push(parentConfigItemId)
-                                   // 没选中就新增一条表格数据
+                                   // 没选中就新增一条表格数据 拼接父级和子级名称和configItemId
+                                   const parent = findParentItem(detectionTree, node)
+                                   const name = `${parent.name}(${node.name})`
+                                   const newConfigItemId = `${parent.configItemId},${configItemId}`
+                                   setDetectionTable([...detectionTable, {
+                                          ...node,
+                                          name: name,
+                                          configItemId: newConfigItemId
+                                   }])
                             }
                             setSelectedKeys([...selectedKeys, ...arr])
                             setCheckedKeys([...checkedKeys, ...arr])
@@ -198,21 +244,53 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                             // 取消选中的父级 全部子级也取消
                             const childId = [...node.children?.map(item => item.configItemId) || [], configItemId]
                             arr = selectedKeys.filter(select => childId?.every(child => select !== child))
+                            // 取消选中 数据也减少
+                            const tableData = detectionTable.filter(table => !table.configItemId.includes(configItemId))
+                            setDetectionTable(tableData)
                      }else {
                             // 取消选中的子级
                             arr = selectedKeys.filter(select => select !== configItemId)
+                            // 取消选中的子级 将子级名称去掉 将configItemId也去掉
+                            const tableData = detectionTable.map(table => {
+                                   if(table.configItemId.includes(configItemId)) {
+                                          let configItemIdList = table.configItemId.split(',')
+                                          configItemIdList.splice(configItemIdList.indexOf(configItemId), 1)
+                                          table.configItemId = configItemIdList.join(',')
+                                          let parentName = table.name.substring(0, table.name.indexOf('('))
+                                          let childNameList = table.name.substring(table.name.indexOf('(') + 1, table.name.indexOf(')'))
+                                          let childName = []
+                                          if(childNameList) {
+                                                 if(childNameList.includes(';')) {
+                                                        // 多个
+                                                        childName = childNameList.split(';')
+                                                        childName?.splice(childName.indexOf(node.name), 1)
+                                                 }else{
+                                                        childName = []
+                                                 }
+                                          }
+                                          if(childName.length > 0) {
+                                                 table.name = `${parentName}(${childName.join(';')})`
+                                          }else{
+                                                 table.name = `${parentName}`
+                                          }
+                                   }
+                                   console.log(table)
+                                   return table
+                            })
+                            setDetectionTable(tableData)
                      }
                      setSelectedKeys(arr)
                      setCheckedKeys(arr)
               }
-       };
+       }, [selectedKeys, checkedKeys, detectionTable, detectionTree])
+
+       console.log(detectionTable)
 
        const columns: ColumnsType<any> = [
               {
                      key: 'name',
                      dataIndex: 'name',
                      title: '检测项目',
-                     ellipsis: true,
                      width: 120,
                      render: (text, record, index) => {
                             return <span>{text}</span>
@@ -226,33 +304,61 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                      width: 120,
                      render: (text, record, index) => {
                             return (
-                                   <Switch size='small' defaultChecked={record.isSelf} checked={record.isSelf} onChange={() => changeSelf(record)} />
+                                   <Switch size='small' defaultChecked={record.isSelf} checked={record.isSelf} onChange={(checked) => changeSelf(checked, record)} />
                             )
                      }
               },
               {
-                     key: 'name',
-                     dataIndex: 'name',
+                     key: 'analyst',
+                     dataIndex: 'analyst',
                      title: '检测部门/人',
                      width: 120,
                      ellipsis: true,
                      render: (text, record, index) => {
-                            return <span>{text}</span>
+                            if(record.isSelf) {
+                                   return <span>{record.analyzeName}</span>
+                            }else{
+                                   return (
+                                          <div>
+                                                 {
+                                                        record.analyst?
+                                                        <div>{record.analyzeName}</div>
+                                                        :
+                                                        (
+                                                               record.dept?
+                                                               <div>{record.deptName}</div>
+                                                               :
+                                                               ''
+                                                        )
+                                                 }
+                                          </div>
+                                   )
+                            }
                      }
               },
               {
-                     key: 'isSelf',
-                     dataIndex: 'isSelf',
+                     key: 'detectionPurpose',
+                     dataIndex: 'detectionPurpose',
                      title: '测试目的',
                      width: 120,
                      ellipsis: true,
                      render: (text, record, index) => {
-                            return <span>{text}</span>
+                            return (
+                                   <div>
+                                          {
+                                                 record.required?
+                                                 <div>必填</div>
+                                                 :
+                                                 ''
+                                          }
+                                          <Select></Select>
+                                   </div>
+                            )
                      }
               },
               {
-                     key: 'name',
-                     dataIndex: 'name',
+                     key: 'detectionMethod',
+                     dataIndex: 'detectionMethod',
                      title: '方法信息',
                      width: 120,
                      ellipsis: true,
@@ -261,8 +367,8 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                      }
               },
               {
-                     key: 'isSelf',
-                     dataIndex: 'isSelf',
+                     key: 'detectionRequirement',
+                     dataIndex: 'detectionRequirement',
                      title: '检项要求',
                      width: 120,
                      ellipsis: true,
@@ -271,8 +377,8 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                      }
               },
               {
-                     key: 'name',
-                     dataIndex: 'name',
+                     key: 'detectionRemark',
+                     dataIndex: 'detectionRemark',
                      width: 120,
                      title: '备注',
                      ellipsis: true,
@@ -281,29 +387,45 @@ const DetectionInfo: FC<PropsWithChildren> = (props) => {
                      }
               },
               {
-                     key: 'isSelf',
-                     dataIndex: 'isSelf',
+                     key: 'action',
+                     dataIndex: 'action',
                      title: '操作',
                      width: 120,
                      fixed: 'right',
                      render: (text, record, index) => {
-                            return <span>{text}</span>
+                            return (
+                                   <Button type='link' onClick={() => deleteDetectionTable(index)}>删除</Button>
+                            )
                      }
               },
        ] 
-       const [detectionTable, setDetectionTable] = useState([])
-
-       const changeSelf = (record) => {
-              detectionTable.forEach(item => {
+       // 是否自检
+       const changeSelf = useCallback((checked: boolean, record) => {
+              let arr = detectionTable.map(item => {
                      if(item.configItemId === record.configItemId) {
-                            item.isSelf = record.isSelf
-                            item.analyst = ''
-                            item.analyzeName = ''
-                            item.dept = ''
-                            item.deptName = ''
+                            item.isSelf = checked
+                            if(checked) {
+                                   console.log(userInfo)
+                                   item.analyst = userInfo.id
+                                   item.analyzeName = userInfo.name || userInfo.nickname
+                                   item.dept = userInfo.departmentList[userInfo.departmentList.length - 1]
+                                   item.deptName = userInfo.departmentName
+                            }else{
+                                   item.analyst = ''
+                                   item.analyzeName = ''
+                                   item.dept = ''
+                                   item.deptName = ''
+                            }
                      }
+                     return item
               })
-              setDetectionTable(detectionTable)
+              setDetectionTable(arr)
+       }, [detectionTable, userInfo])
+
+       // 删除检测项
+       const deleteDetectionTable = (index: number) => {
+              const arr = detectionTable.filter((item, i) => i !== index)
+              setDetectionTable(arr)
        }
 
        return (
